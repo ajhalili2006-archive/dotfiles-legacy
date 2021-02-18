@@ -2,7 +2,7 @@
 [user]
 # Please adapt and uncomment the following lines:
 	name = Andrei Jiroh Eugenio Halili
-	email = andreijiroh@mafebythepins.tk
+	email = andreijiroh@madebythepins.tk
 	signingKey = A30EBE40AD856D88
 [commit]
 	signoff = true
