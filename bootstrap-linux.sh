@@ -7,7 +7,7 @@ sleep 3
 
 echo "==> Prompt ahead: Enter your GitLab Auth tokens"
 read -p "Your username: "  GH_USERNAME
-read -p "Your GitLab.com PAT: " GH_PAT
+read -s -p "Your GitLab.com PAT: " GH_PAT
 
 if echo $OSTYPE | grep linux-android.*; then
     # Assuming that you ibstalled wget and curl
