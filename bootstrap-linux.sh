@@ -5,12 +5,18 @@ echo "Bootstrap Script for Linix by Andrei Jiroh"
 echo "Starting up in 3 seconds..."
 sleep 3
 
-echo "==> Prompt ahead: Enter your GitLab Auth tokens"
+echo "==> Checking for GitLab Auth tokens in env..."
 
-read -p "Your username: " GH_USERNAME
-
-read -sp "Your GitLab.com PAT: " GH_PAT
-
+if [[ $GH_PAT == "" ]] && [[ $GH_USERNAME == "" ]];
+    echo "GH_USERNAME and GH_PAT can't be blank!"
+    exit 1
+elif [[ $GH_USERNAME != "AndreiJirohHaliliDev2006" ]]; then
+    echo "Only Andrei Jiroh can do this!"
+    exit 1
+elif [[ $GH_USERNAME == "AndreiJirohHaliliDev2006" ]] && [[ $GH_PAT != "" ]]; then
+    echo "Missing GitLab.com PAT!"
+    exit 1
+fi
 if echo $OSTYPE | grep linux-android.*; then
     # Assuming that you ibstalled wget and curl
     echo "==> Installing dependencies..."
