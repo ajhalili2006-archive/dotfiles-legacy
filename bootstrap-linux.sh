@@ -7,7 +7,7 @@ sleep 3
 
 echo "==> Checking for GitLab Auth tokens in env..."
 
-if [[ $GH_PAT == "" ]] && [[ $GH_USERNAME == "" ]];
+if [[ $GH_PAT == "" ]] && [[ $GH_USERNAME == "" ]]; then
     echo "GH_USERNAME and GH_PAT can't be blank!"
     exit 1
 elif [[ $GH_USERNAME != "AndreiJirohHaliliDev2006" ]]; then
@@ -16,7 +16,11 @@ elif [[ $GH_USERNAME != "AndreiJirohHaliliDev2006" ]]; then
 elif [[ $GH_USERNAME == "AndreiJirohHaliliDev2006" ]] && [[ $GH_PAT != "" ]]; then
     echo "Missing GitLab.com PAT!"
     exit 1
+else
+    echo "Proceeding, please don't expect if things go brrr..."
+    ##
 fi
+
 if echo $OSTYPE | grep linux-android.*; then
     # Assuming that you ibstalled wget and curl
     echo "==> Installing dependencies..."
