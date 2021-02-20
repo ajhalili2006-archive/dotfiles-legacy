@@ -1,14 +1,15 @@
 # Start GPG and SSH agents
 export GPG_TTY=$(tty)
-gpg-agent --daemon --enable-ssh-support \
-          --write-env-file "${HOME}/.gpg-agent-info"
+eval $(gpg-agent --daemon --enable-ssh-support --write-env-file "${HOME}/.gpg-agent-info")
 if [ -f "${HOME}/.gpg-agent-info" ]; then
+  # gpg-agent[****]: WARNING: "--write-env-file" is an obsolete
+  # option - it has no effect
   . "${HOME}/.gpg-agent-info"
   export GPG_AGENT_INFO
   export SSH_AUTH_SOCK
   export SSH_AGENT_PID
 else
-  eval $(ssh-agent -s)
+  echo "Howdy, user ID ${EUID}. Shenanigans beget shenanigans. $(eval $(ssh-agent -s))"
 fi
 
 # Run this with add-ssh-keys instead
