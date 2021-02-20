@@ -13,7 +13,7 @@ if [[ $GH_PAT == "" ]] && [[ $GH_USERNAME == "" ]]; then
 elif [[ $GH_USERNAME != "AndreiJirohHaliliDev2006" ]]; then
     echo "Only Andrei Jiroh can do this!"
     exit 1
-elif [[ $GH_USERNAME == "AndreiJirohHaliliDev2006" ]] && [[ $GH_PAT != "" ]]; then
+elif [[ $GH_USERNAME == "AndreiJirohHaliliDev2006" ]] && [[ $GH_PAT == "" ]]; then
     echo "Missing GitLab.com PAT!"
     exit 1
 else
