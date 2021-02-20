@@ -9,7 +9,7 @@ if [ -f "${HOME}/.gpg-agent-info" ]; then
   export SSH_AUTH_SOCK
   export SSH_AGENT_PID
 else
-  echo "Howdy, user ID ${EUID}. Shenanigans beget shenanigans. $(eval $(ssh-agent -s))"
+  echo "Howdy, user ID ${EUID}. Shenanigans beget shenanigans." && eval $(ssh-agent -s)
 fi
 
 # Run this with add-ssh-keys instead
