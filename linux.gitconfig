@@ -1,0 +1,8 @@
+[credential "https://github.com"]
+	helper = !gh auth git-credential
+[user]
+	email = andreijiroh@madebythepins.tk
+	name = Andrei Jiroh Eugenio Halili
+	signingkey = A30EBE40AD856D88
+[commit]
+	gpgsign = true
