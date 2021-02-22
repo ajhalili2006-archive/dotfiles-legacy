@@ -4,10 +4,16 @@ VSCODE_PATH=$(command -v code)
 NANO_PATH=$(command -v code)
 VI_PATH=$(command -v code)
 
-if [[ $VSCODE_PATH != "" ]]; then
-    code --wait $1
-elif [[ $NANO_PATH != "" ]]; then
+if [[ $2 == "--use-nano" ]]; then
     nano $1
+elif [[ $2 == "--use-code" ]]; then
+    vscode --wait $1
 else
-    vi $1
+    if [[ $VSCODE_PATH != "" ]]; then
+        code --wait $1
+    elif [[ $NANO_PATH != "" ]]; then
+        nano $1
+    else
+        vi $1
+    fi
 fi
