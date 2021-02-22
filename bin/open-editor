@@ -8,7 +8,7 @@ if [[ $2 == "--use-nano" ]]; then
     nano $1
 elif [[ $2 == "--use-code" ]]; then
     vscode --wait $1
-else
+elif [[ $2 == "" ]] && [[ $1 != "" ]]; then
     if [[ $VSCODE_PATH != "" ]]; then
         code --wait $1
     elif [[ $NANO_PATH != "" ]]; then
@@ -16,4 +16,6 @@ else
     else
         vi $1
     fi
+else
+    echo "Usage: $0 </path/to/file> [--use-nano|code]"
 fi
