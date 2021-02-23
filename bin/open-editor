@@ -1,8 +1,8 @@
 #!/bin/env bash
 
 VSCODE_PATH=$(command -v code)
-NANO_PATH=$(command -v code)
-VI_PATH=$(command -v code)
+NANO_PATH=$(command -v nano)
+VI_PATH=$(command -v vi)
 
 if [[ $2 == "--use-nano" ]]; then
     nano $1
