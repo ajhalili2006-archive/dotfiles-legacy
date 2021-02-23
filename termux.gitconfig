@@ -13,4 +13,4 @@
 	## For god's sake, use Nano as possible.
 	## This way, we don't need to install VS Code again
 	## if we want to edit files.
-	editor = nano
+	editor = open-editor
