@@ -11,7 +11,9 @@ if [ -f "${HOME}/.gpg-agent-info" ]; then
 else
   echo "Howdy, user ID ${EUID}. Shenanigans beget shenanigans."
   # not needed this because we have .ssh/config
-  #eval $(ssh-agent -s)
+  # but keep this uncommented because Git is being
+  # an dougebag in every single shell sessiob.
+  eval $(ssh-agent -s)
 fi
 
 # Run this with add-ssh-keys instead
