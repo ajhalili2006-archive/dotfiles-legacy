@@ -1,0 +1,9 @@
+[user]
+    email = andreijiroh@madebythepins.tk
+    name = Andrei Jiroh Halili
+[credential "https://github.com"]
+	helper = !gh auth git-credential
+[credential]
+	helper = /mnt/c/Program\\ Files/Git/mingw64/libexec/git-core/git-credential-manager.exe
+[protocol]
+	version = 2
