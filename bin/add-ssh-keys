@@ -1,3 +1,11 @@
 #!/usr/bin/env bash
 
-ssh-add $HOME/.ssh/github-personal
+if [[ $@ != "" ]]; then
+    echo "==> Adding your SSH key..."
+    ssh-add $HOME/.ssh/$@
+elif [[ $@ == "" ]]; then
+    echo "==> Adding all of your SSH keys..."
+    ssh-add ~/.ssh/github-personal
+    ssh-add ~/.ssh/launchpad
+else
+fi
