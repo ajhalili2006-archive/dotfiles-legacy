@@ -7,5 +7,4 @@ elif [[ $@ == "" ]]; then
     echo "==> Adding all of your SSH keys..."
     ssh-add ~/.ssh/github-personal
     ssh-add ~/.ssh/launchpad
-else
 fi

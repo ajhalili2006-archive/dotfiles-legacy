@@ -13,7 +13,7 @@ else
   # not needed this because we have .ssh/config
   # but keep this uncommented because Git is being
   # an dougebag in every single shell sessiob.
-  eval $(ssh-agent -s)
+  source ~/.dotfiles/bin/source-ssh-agent
 fi
 
 # Run this with add-ssh-keys instead

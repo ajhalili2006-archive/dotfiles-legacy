@@ -1,0 +1,31 @@
+#!/usr/bin/sh
+# copied from Termux app.
+# source-ssh-agent: Script to source for ssh-agent to work.
+
+# Check if accidentaly executed instead of sourced:
+if echo "$0" | grep -q source-ssh-agent; then
+	echo "source-ssh-agent: Do not execute directly - source me instead!"
+	exit 1
+fi
+
+if echo $OSTYPE | grep -qE "^linux-android.*"; then
+  export SSH_AUTH_SOCK=$PREFIX/tmp/ssh-agent
+else
+  mkdir ~/.local>> /dev/null
+  export SSH_AUTH_SOCK="$HOME/.local/ssh-agent"
+fi
+
+start_agent() {
+	rm -f $SSH_AUTH_SOCK
+	eval $(ssh-agent -a $SSH_AUTH_SOCK -s)> /dev/null
+	ssh-add
+}
+
+MESSAGE=$(ssh-add -L 2>&1)
+if [ "$MESSAGE" = 'Could not open a connection to your authentication agent.' -o \
+     "$MESSAGE" = 'Error connecting to agent: Connection refused' -o \
+     "$MESSAGE" = 'Error connecting to agent: No such file or directory' ]; then
+	start_agent
+elif [ "$MESSAGE" = "The agent has no identities." ]; then
+	ssh-add
+fi
