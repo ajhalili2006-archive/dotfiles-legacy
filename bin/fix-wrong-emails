@@ -1,16 +1,25 @@
-git filter-branch --env-filter '
-WRONG_EMAIL="andreijiroh@mafebythepins.tk"
-NEW_NAME="Andrei Jiroh Eugenio Halili"
-NEW_EMAIL="andreijiroh@madebythepins.tk"
+#!/bin/bash
 
-if [ "$GIT_COMMITTER_EMAIL" = "$WRONG_EMAIL" ]
-then
-    export GIT_COMMITTER_NAME="$NEW_NAME"
-    export GIT_COMMITTER_EMAIL="$NEW_EMAIL"
+if [[ $1 != "" ]]; then
+    git filter-branch --env-filter '
+    WRONG_EMAIL=$1
+    NEW_NAME="Andrei Jiroh Eugenio Halili"
+    NEW_EMAIL="andreijiroh@madebythepins.tk"
+
+    if [ "$GIT_COMMITTER_EMAIL" = "$WRONG_EMAIL" ]
+    then
+        export GIT_COMMITTER_NAME="$NEW_NAME"
+        export GIT_COMMITTER_EMAIL="$NEW_EMAIL"
+    fi
+    if [ "$GIT_AUTHOR_EMAIL" = "$WRONG_EMAIL" ]
+    then
+        export GIT_AUTHOR_NAME="$NEW_NAME"
+        export GIT_AUTHOR_EMAIL="$NEW_EMAIL"
+    fi
+    ' --tag-name-filter cat -- --branches --tags
+else
+    echo "Usage $0 <wrong-email@host.me>"
+    echo "Easily fix wrong emails in Git commit history. It is advised to use this script only"
+    echo "on non-public commits, since this might be distaterous for forks to pull any changes"
+    echo "in the public commits."
 fi
-if [ "$GIT_AUTHOR_EMAIL" = "$WRONG_EMAIL" ]
-then
-    export GIT_AUTHOR_NAME="$NEW_NAME"
-    export GIT_AUTHOR_EMAIL="$NEW_EMAIL"
-fi
-' --tag-name-filter cat -- --branches --tags
