@@ -1,16 +1,1 @@
-# This is Git's per-user configuration file.
-[user]
-# Please adapt and uncomment the following lines:
-	name = Andrei Jiroh Eugenio Halili
-	email = andreijiroh@madebythepins.tk
-	signingKey = A30EBE40AD856D88
-[commit]
-	signoff = true
-	gpgSign = true
-[tag]
-	gpgSign = true
-[core]
-	## For god's sake, use Nano as possible.
-	## This way, we don't need to install VS Code again
-	## if we want to edit files.
-	editor = open-editor
+gitconfig/termux
