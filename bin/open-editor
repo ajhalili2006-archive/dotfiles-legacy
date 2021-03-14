@@ -3,19 +3,67 @@
 VSCODE_PATH=$(command -v code)
 NANO_PATH=$(command -v nano)
 VI_PATH=$(command -v vi)
+OPEN_EDITOR_LOCKFILE=$HOME/.dotfiles/config/open-editor
 
-if [[ $2 == "--use-nano" ]]; then
-    nano $1
-elif [[ $2 == "--use-code" ]]; then
-    vscode --wait $1
-elif [[ $2 == "" ]] && [[ $1 != "" ]]; then
-    if [[ $VSCODE_PATH != "" ]]; then
-        code --wait $1
-    elif [[ $NANO_PATH != "" ]]; then
-        nano $1
-    else
-        vi $1
-    fi
+if [[ $1 == "" ]]; then
+    echo "Want to learn more how to use me? Use the '--help' flag to see the docs."
+    exit
 else
-    echo "Usage: $0 </path/to/file> [--use-nano|code]"
+    if [[ $VSCODE_PATH != "" ]]; then
+      code --wait "$1"
+      exit
+    elif [[ $NANO_PATH != "" ]]; then
+      nano "$1"
+    else
+      vi "$1"
+    fi
 fi
+
+while test $# -gt 0; do
+  case "$1" in
+    -h|--help)
+      echo "$0 - shortcut to open editors within and from command line"
+      echo "By default, the script will attempt to guess what text editor to use as much"
+      echo "as possible. You can lock with the ~/.dotfiles/config/open-editor file"
+      echo
+      echo "$0 [options] filename"
+      echo " "
+      echo "options:"
+      echo "-h, --help                show brief help"
+      echo "-c, --use-code            use Visual Studio Code, with the 'wait' flag"
+      echo "-n, --use-nano            use GNU Nano"
+      echo "--lockfile                Generate a lockfile within your home directory"
+      echo "                          or edit if found."
+      exit 0
+      ;;
+    -c|--use-code)
+      shift
+      if test $# -gt 0; then
+        code --wait "$1"
+      else
+        echo "error: no file specified, aborting..."
+        exit 1
+      fi
+      shift
+      ;;
+    -n|--use-nano)
+      shift
+      if test $# -gt 0; then
+        nano "$1"
+      fi
+      shift
+      ;;
+    --lockfile)
+      shift
+      if test $# -gt 0; then
+        export OUTPUT=$1
+      else
+        echo "no output dir specified"
+        exit 1
+      fi
+      shift
+      ;;
+  esac
+done
+
+exit
