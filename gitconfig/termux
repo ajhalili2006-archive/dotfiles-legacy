@@ -3,6 +3,7 @@
 # Please adapt and uncomment the following lines:
 	name = Andrei Jiroh Eugenio Halili
 	email = andreijiroh@madebythepins.tk
+        # Don't ask why I don't use my old GPG key anymore.
 	signingKey = A30EBE40AD856D88
 [commit]
 	signoff = true
@@ -13,4 +14,4 @@
 	## For god's sake, use Nano as possible.
 	## This way, we don't need to install VS Code again
 	## if we want to edit files.
-	editor = open-editor
+	editor = nano
