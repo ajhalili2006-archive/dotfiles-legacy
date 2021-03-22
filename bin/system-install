@@ -1,0 +1,33 @@
+#!/bin/env sh
+
+SUDO_PATH=$(command -v sudo)
+SU_PATH=$(command -v su)
+
+if [ "$1" = "" ]; then
+    echo "Usage: [sudo|su root -] $0 [COMMAND] [ARG]"
+    echo "Permanently installs your .dotfiles/bin scripts into your system for"
+    echo "all users. These system-wide installs are on /usr/local/bin/dotfiles-bin"
+    echo "to ensure that your dotfiles-bin installation doesn't mess up with"
+    echo "other locally-built packages in your Linus system."
+    echo
+    echo "Available commands:"
+    echo "install quick      Install .dotfiles/bin scripts as system-wide"
+    echo "                   scripts, available for use in /usr/local/bin/dotfiles-bin"
+    echo "                   Requires root access (atleast with sudo) in order to"
+    echo "                   copy scripts into there. If ran as non-root user, this"
+    echo "                   script will attempt to run sudo or su root - as needed."
+    echo "                   It automatically detects your system for you before doing"
+    echo "                   anything to /usr/local/bin."
+    echo "install guided     Guides you throughout the installation progress, including"
+    echo "                   choosing dest location. The script will check"
+    echo "                   file permissions for you"
+    echo "update DOTFILES_SYS_INSTALL_PATH"
+    echo "                   Update your system-wide scripts install as possibe, may"
+    echo "                   require root qccess. If the argument left blank, it will"
+    echo "                   attempt to find your ~/.dotfiles/config/sysbin-path.lock"
+    echo "                   file and sue the DOTFILES_SYS_INSTALL_PATH variable"
+    echo "                   Otherwise, this script will assume that you"
+    echo "                   installed it on /usr/local/bin/dotfiles-bin"
+    echo "uninstall          Remove files from /usr/bin/local/dotfiles-bins"
+    echo "                   and any remaining artifacts. 
+fi

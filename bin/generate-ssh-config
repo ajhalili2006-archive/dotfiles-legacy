@@ -1,0 +1,26 @@
+#!/bin/env bash
+
+if [[ $1 == "" ]]; then
+  echo "Usage: $0 <--client|server|edit> [--online=url]"
+  echo "Generate predefined configuration for OpenSSH client/server, based on"
+  echo "the scrpit's defined config, stored in your ~/.dotfiles/config/ssh/* files."
+  echo ""
+  echo
+  echo "Available options:"
+  echo "  --client        Generate OpenSSH client config, usually"
+  echo "                  saved in ~/.ssh/config"
+  echo "  --server        Generate OpenSSH server config, either run"
+  echo "                  this script with the flag as root user"
+  echo "                  OR prefix with 'sudo' if your admin"
+  echo "                  allows you to use sudo."
+  echo "  --online        Generate OpenSSH client/server config from"
+  echo "                  the Internet, optionally provide the URL to"
+  echo "                  that publicly-available config file."
+  echo "                  To ensure that things don't break, we'll"
+  echo "                  keep an backup of the original file for you"
+  echo "                  just in case shit happens. You may need to"
+  echo "                  merge them manually since this script doesn't"
+  echo "                  have git-lile automerge and merge conflict"
+  echo "                  resolution toolkits yet."
+  exit 
+fi
