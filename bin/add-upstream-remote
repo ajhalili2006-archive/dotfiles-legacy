@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/env bash
 
 if [[ -f "$PWD/.git/config" ]] && [[ $1 != "" ]]; then
     UPSTREAM_REPO_URL=$1
-    git remote --verbose add upstream $1 || git remote --verbose set-url upstream $1
+    git remote --verbose add upstream $UPSTREAM_REPO_URL || git remote --verbose set-url upstream $UPSTREAM_REPO_URL
     git fetch --all
-elif [[ ! -f "$PWD/.git/config" ]] && [[ $1 != "" ]]; then
+elif [[ ! -f "$PWD/.git/config" ]]; then
     echo "Is this an git repository? I doubt."
 else
     echo "Usage: ${0} <git-url>"
