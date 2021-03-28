@@ -1,0 +1,16 @@
+Host ubuntu-vm
+    Hostname localhost
+    Port 1222
+    User thepinsteam
+    IdentityFile ~/.ssh/github-personal
+
+Host gitlab.com
+    User git
+    IdentityFile ~/.ssh/github-personal
+
+# LXC containers, please append as possible
+Host ghost-localhost
+    Hostname 10.29.113.229
+    User ubuntu
+    IdentityFile ~/.ssh/github-personal
+
