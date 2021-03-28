@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
 if echo "$OSTYPE" | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; then
-   IS_ANDROID=false
    PKGMGR="sudo apt-get"
 else
-   IS_ANDROID=true
    PKGMGR="pkg"
 fi
 
@@ -16,9 +14,10 @@ else
 fi
 
 ## Then, install Node.js using nvm
-NODEJS_INSTALL_PATH=$(command -v node))
-if [[ $NODEJS_IBSTALL_PATH == "" ]]; then
-   #Todo
-elif
-   #Todo
+
+NODEJS_INSTALL_PATH=$(command -v node)
+if [[ $NODEJS_INSTALL_PATH == "" ]]; then
+   true
+else
+   echo "info: Node.js is installed, skipping..."
 fi
