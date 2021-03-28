@@ -1,30 +1,23 @@
 #!/bin/env bash
 
+# shellcheck disable=SC2034
 VSCODE_PATH=$(command -v code)
 NANO_PATH=$(command -v nano)
 VI_PATH=$(command -v vi)
 OPEN_EDITOR_LOCKFILE=$HOME/.dotfiles/config/open-editor
 
 if [[ $1 == "" ]]; then
-    echo "Want to learn more how to use me? Use the '--help' flag to see the docs."
+    echo "open-editor: Want to learn more how to use me? Use the '--help' flag to see the docs."
     exit
-else
-    if [[ $VSCODE_PATH != "" ]]; then
-      code --wait "$1"
-      exit
-    elif [[ $NANO_PATH != "" ]]; then
-      nano "$1"
-    else
-      vi "$1"
-    fi
 fi
 
+# Stack Overflow: https://stackoverflow.com/questions/7069682/how-to-get-arguments-with-flags-in-bash#21128172
 while test $# -gt 0; do
   case "$1" in
     -h|--help)
       echo "$0 - shortcut to open editors within and from command line"
       echo "By default, the script will attempt to guess what text editor to use as much"
-      echo "as possible. You can lock with the ~/.dotfiles/config/open-editor file"
+      echo "as possible. You can lock with the ~/.dotfiles/config/open-editor file."
       echo
       echo "$0 [options] filename"
       echo " "
@@ -38,8 +31,11 @@ while test $# -gt 0; do
       ;;
     -c|--use-code)
       shift
+      echo "open-editor: Firing up your editor, please wait..."
+      sleep 3
       if test $# -gt 0; then
-        code --wait "$1"
+        # shellcheck disable=SC2086
+        code --wait $1
       else
         echo "error: no file specified, aborting..."
         exit 1
@@ -48,8 +44,12 @@ while test $# -gt 0; do
       ;;
     -n|--use-nano)
       shift
+      echo "open-editor: Firing up your editor, please wait..."
+      sleep 3
       if test $# -gt 0; then
-        nano "$1"
+        # shellcheck disable=SC2086
+        nano $1
+        exit
       fi
       shift
       ;;
@@ -63,7 +63,26 @@ while test $# -gt 0; do
       fi
       shift
       ;;
+    -*)
+      echo "open-editor: Unsupported flag, edit the script file to customize."
+      exit 1
+      ;;
   esac
 done
 
-exit
+if [[ $VSCODE_PATH != "" ]]; then
+  echo "open-editor: Firing up your editor, please wait..."
+  sleep 3
+  code --wait "$1"
+  exit
+elif [[ $NANO_PATH != "" ]]; then
+  echo "open-editor: Firing up your editor, please wait..."
+  sleep 3
+  nano "$1"
+  exit
+else
+  echo "open-editor: Firing up your editor, please wait..."
+  sleep 3
+  vi "$1"
+  exit
+fi
