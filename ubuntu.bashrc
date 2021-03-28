@@ -126,3 +126,10 @@ export PATH="$HOME/.deta/bin:$PATH"
 
 # scripts in ~/.local/bin and ~/.dotfiles/bin
 export PATH="$HOME/.local/bin:$HOME/.dotfiles/bin:$PATH"
+
+# use nano instead of vi
+# for git, there's the option of firing up VS Code, if you prefered.
+EDITOR=nano
+
+# autocompletion for GitHub CLI
+eval "$(gh completion -s bash)"
