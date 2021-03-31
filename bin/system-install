@@ -3,14 +3,17 @@
 SUDO_PATH=$(command -v sudo)
 SU_PATH=$(command -v su)
 
-if [ "$1" = "" ]; then
-    echo "Usage: [sudo|su root -] $0 [COMMAND] [ARG]"
+if [ "$1" = "" -o "$1" = "help" ]; then
+    echo "Usage: [sudo|su root -] $0 COMMAND [ARG]"
     echo "Permanently installs your .dotfiles/bin scripts into your system for"
     echo "all users. These system-wide installs are on /usr/local/bin/dotfiles-bin"
     echo "to ensure that your dotfiles-bin installation doesn't mess up with"
-    echo "other locally-built packages in your Linus system."
+    echo "other locally-built packages in your Linux system."
     echo
     echo "Available commands:"
+    echo "status             Checks if the dotfiles-bin installation is there"
+    echo "                   and also prints out your default install path if"
+    echo "                   DOTFILES_SYS_INSTALL_PATH isn't found"
     echo "install quick      Install .dotfiles/bin scripts as system-wide"
     echo "                   scripts, available for use in /usr/local/bin/dotfiles-bin"
     echo "                   Requires root access (atleast with sudo) in order to"
@@ -29,5 +32,19 @@ if [ "$1" = "" ]; then
     echo "                   Otherwise, this script will assume that you"
     echo "                   installed it on /usr/local/bin/dotfiles-bin"
     echo "uninstall          Remove files from /usr/bin/local/dotfiles-bins"
-    echo "                   and any remaining artifacts. 
+    echo "                   and any remaining artifacts."
+    exit 0
+fi
+
+if [ $@ = "status" ]; then
+   if [ ! $DOTFILES_SYS_INSTALL_PATH = "" ]; then
+      echo "Local install: $DOTFILES_SYS_INSTALL_PATH"
+   elif [ -f "$HOME/.dotfiles/config/sysbin-path" ]; then
+      DOTFILES_SYS_IBSTALL_PATH=$(cat "$HOME/.dotfiles/config/sysbin-path")
+      echo "Local install: $DOTFILES_SYS_INSTALL_PATH"
+   else
+      echo "Local install: ✖ Not found"
+   fi
+else
+   echo "That command isn't supported, yet. See 'system-install help' for details."
 fi
