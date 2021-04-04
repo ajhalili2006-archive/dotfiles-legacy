@@ -28,7 +28,7 @@ fi
 if echo $OSTYPE | grep linux-android.*; then
     # Assuming that you ibstalled wget and curl
     echo "==> Installing dependencies..."
-    pkg install man git nano gnupg openssh python nodejs proot resolv-conf
+    pkg install man git nano gnupg openssh proot resolv-conf #python nodejs
 
     # Clone our stuff
     echo "==> Cloning the dotfiles repo"
