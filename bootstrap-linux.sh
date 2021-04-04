@@ -50,8 +50,8 @@ if echo $OSTYPE | grep linux-android.*; then
     cp .dotfiles/secrets/ssh/launchpad.pub ~/.ssh/launchpad.pub
     chmod 600 ~/.ssh/launchpad
     chmod 600 ~/.ssh/github-personal
-    echo "==> Generating OpenSSH client config..."
-    ./.dotfiles/bin/generate-ssh-config --client
+    #echo "==> Generating OpenSSH client config..."
+    #$HOME/.dotfiles/bin/generate-ssh-config --client
 
     # Link softly
     echo "==> Creating soft links for .bashrc and .gitconfig"
