@@ -60,7 +60,7 @@ if echo $OSTYPE | grep linux-android.*; then
 
     echo "✔ Task completed. Now, you need to manually import your"
     echo "  PGP keys with the included import-pgp-keys script."
-elif echo $OSTYPE | grep linux-gnu.* && ;then
+#elif echo $OSTYPE | grep linux-gnu.* && ;then
 else
     echo "Script unsupported in this machine. See the online README for help."
 fi
