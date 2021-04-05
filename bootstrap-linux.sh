@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-clear
 echo "Bootstrap Script for Linix by Andrei Jiroh"
 echo "Starting up in 3 seconds..."
 sleep 3
@@ -17,7 +16,7 @@ elif [[ $GH_USERNAME == "AndreiJirohHaliliDev2006" ]] && [[ $GH_PAT == "" ]]; th
     echo "⚠ Missing GitLab.com PAT!"
     exit 1
 else
-    echo "⚠ Proceeding, please don't expect if things go brrr..."
+    echo "⚠ Proceeding, please don't expect this works if things go brrr..."
 fi
 
 if [[ $PWD != $HOME ]]; then
@@ -53,7 +52,7 @@ if echo $OSTYPE | grep linux-android.*; then
     chmod 600 ~/.ssh/launchpad
     chmod 600 ~/.ssh/github-personal
     #echo "==> Generating OpenSSH client config..."
-    #$HOME/.dotfiles/bin/generate-ssh-config --client
+    ln -s $HOME/.ssh/config $HOME/.dotfiles/ssh/termux
 
     # Link softly
     echo "==> Creating soft links for .bashrc and .gitconfig"
@@ -62,6 +61,7 @@ if echo $OSTYPE | grep linux-android.*; then
 
     echo "✔ Task completed. Now, you need to manually import your"
     echo "  PGP keys with the included import-pgp-keys script."
+    exit
 #elif echo $OSTYPE | grep linux-gnu.* && ;then
 else
     echo "Script unsupported in this machine. See the online README for help."
