@@ -4,6 +4,8 @@
 	name = Andrei Jiroh Eugenio Halili
 	email = andreijiroh@madebythepins.tk
         # Don't ask why I don't use my old GPG key anymore.
+	# The old key I'm saying is the one in Keybase.
+	# Looks kinda outdated, but I'll fix it soon.
 	signingKey = A30EBE40AD856D88
 [commit]
 	signoff = true
@@ -15,3 +17,13 @@
 	## This way, we don't need to install VS Code again
 	## if we want to edit files.
 	editor = nano
+
+# Enforce SSH
+[url "git@github.com:"]
+  insteadOf = https://github.com/
+  pushInsteadOf = https://github.com/
+[url "git@gitlab.com:"]
+  insteadOf = https://gitlab.com/
+  pushInsteadOf = https://gitlab.com/
+[url "git@bitbucket.org:"]
+  insteadOf = https://bitbucket.org/

@@ -1,1 +1,42 @@
-/data/data/com.termux/files/home/.dotfiles/ssh/termux
+# Launchpad.net SSH keys for mirroring some repos manually,
+# partularly the gitlab.com:termux-package-android5x/src.git repo
+# among any sort of shits and giggles.
+Host launchpad-git
+    Hostname git.launchpad.net
+    IdentityFile  ~/.ssh/launchpad
+    User ajhalili2006
+Host launchpad-bazar
+    Hostname bazar.launchpad.net
+    IdentityFile ~/.ssh/launchpad
+    User ajhalili2006
+
+# GitHub.com and some GitLab instance SSH Keys
+# Copying-pasting PAT is a distater in case they're yeeted by
+# some random pajeet who hacked my motherfucking Linux/Win10 PC
+# Sometimes, these are shortcuts in case I need to check
+# if they're still working after importing my keys or when I need
+# to generate 2FA backup codes remotely.
+Host github
+    Hostname github.com
+    IdentityFile ~/.ssh/github-personal
+    User git
+Host gitlab
+    Hostname gitlab.com
+    IdentityFile ~/.ssh/github-personal
+    User git
+
+# Git sometimes an shit in SSH client conifg
+# especially if I typed the full domain instead of
+# shortcuts I made.
+Host github.com
+    IdentityFile ~/.ssh/github-personal
+    User git
+Host gitlab.com
+    IdentityFile ~/.ssh/github-personal
+    User git
+Host git.launchpad.net
+    IdentityFile ~/.ssh/launchpad
+    User ajhalili2006
+Host bazar.launchpad.net
+    IdentityFile ~/.ssh/launchpad
+    User ajhalili2006

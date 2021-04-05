@@ -22,3 +22,7 @@ fi
 # Then add my scripts
 export DOTFILES_STUFF_BIN="$HOME/.dotfiles/bin"
 export PATH=$PATH:$DOTFILES_STUFF_BIN
+
+# clean up bash history
+echo
+rm .bash_history && echo "Shell history cleaned for past session"
