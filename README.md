@@ -12,7 +12,7 @@ export GH_USERNAME=AndreiJirohHaliliDev2006
 export GH_PAT=<my-gitlabdotcom-PAT>
 
 ## Run the bootstrap script
-$(command -v curl>>/dev/null && echo curl -o-||wget -q0-) https://raw.githubusercontent.com/AndreiJirohHaliliDev2006/.dotfiles/main/bootstrap-linux.sh | bash -
+$(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.githubusercontent.com/AndreiJirohHaliliDev2006/.dotfiles/main/bootstrap-linux.sh | bash -
 
 ## Done?
 unset GH_USERNAME GH_PAT
