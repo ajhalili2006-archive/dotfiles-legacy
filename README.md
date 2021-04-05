@@ -1,6 +1,9 @@
 # My Personal Dotfiles
 
-Personal configuration for Linux/macOS stuff. If you're working at The Pins Team, see [our dotfiles](https://gitlab.com/MadeByThePinsHub/dotfiles).
+Personal configuration for Linux/macOS stuff. If you're
+working at The Pins Team, see [our dotfiles][df-gl].
+
+[df-gl]: https://gitlab.com/MadeByThePinsHub/dotfiles
 
 ## Getting Started
 
@@ -20,7 +23,10 @@ unset GH_USERNAME GH_PAT
 
 ## Want to fork me owo?
 
-Follow the checklist below after forking to ensure no references to mine are found. **Remember that your fork, your problem.** It's up to you on how do you customize stuff.
+Follow the checklist below after forking to ensure no
+references to mine are found. **Remember that your fork,
+your problem.** It's up to you on how do you customize
+stuff.
 
 * [ ] Customize the `bootstrap-linux.sh` into your needs.
 * [ ] Delete any existing dotfiles I made (e.g. `*.gitconfig`, `*.bashrc`, etc.) and do `bin/backup-dotfiles`. That script will move your current config into your `.dotfiles` local repo and do soft links.
