@@ -31,12 +31,14 @@ if echo $OSTYPE | grep linux-android.*; then
 
     # Clone our stuff
     echo "==> Cloning the dotfiles repo"
-    git clone https://github.com/AndreiJirohHaliliDev2006/.dotfiles.git
-    cd .dotfiles && git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets secrets && chmod 700 $HOME/.dotfiles/secrets
+    git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles.git
+    cd .dotfiles && git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets secrets
 
     if [[ $? != 0 ]]; then
        echo "❌ That kinda sus, but only Andrei Jiroh can proceed!"
        exit 1
+    else
+       chmod 700 $HOME/.dotfiles/secrets
     fi
 
     cd ~
