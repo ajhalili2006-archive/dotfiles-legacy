@@ -7,7 +7,7 @@ working at The Pins Team, see [our dotfiles][df-gl].
 
 ## Getting Started
 
-### Using the bootstraper script
+### Using the bootstraper script without cloning
 
 ```sh
 ## configure required variables
@@ -21,12 +21,18 @@ $(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.git
 unset GH_USERNAME GH_PAT
 ```
 
+### With Cloning the Repo
+
+```sh
+
+```
+
 ## Want to fork me owo?
 
-Follow the checklist below after forking to ensure no
-references to mine are found. **Remember that your fork,
-your problem.** It's up to you on how do you customize
-stuff.
+Follow the checklist below after forking to ensure no references to mine are found. **Remember that your fork, your problem.** It's
+up to you on how do you customize stuff. You can use [The Pins Team's dotfiles template][template] to start from our template.
+
+[template]: https://github.com/MadeByThePinsHub/dotfiles-template
 
 * [ ] Customize the `bootstrap-linux.sh` into your needs.
 * [ ] Delete any existing dotfiles I made (e.g. `*.gitconfig`, `*.bashrc`, etc.) and do `bin/backup-dotfiles`. That script will move your current config into your `.dotfiles` local repo and do soft links.

@@ -5,7 +5,7 @@ if [[ -f "$PWD/.git/config" ]] && [[ $1 != "" ]]; then
     git remote --verbose add upstream $UPSTREAM_REPO_URL || git remote --verbose set-url upstream $UPSTREAM_REPO_URL
     git fetch --all
 elif [[ ! -f "$PWD/.git/config" ]]; then
-    echo "Is this an git repository? I doubt."
+    echo "Is this an git repository? I doubt." && exit 1
 else
     echo "Usage: ${0} <git-url>"
 fi

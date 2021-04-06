@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+doCheckStatusHere() {
+    GIT_STATUS=$(echo $?)
+
+    if [[ $GIT_STATUS != "0" ]]; then
+        echo "error: Failed to run because it exited with a non-zero code."
+        exit 1
+    else
+        return 0
+    fi
+}
+
+if [[ $1 != "" && $2 == "" ]]; then
+    OLD_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+    NEW_BRANCH_NAME=$1
+
+    # we're gonna do some error handling here
+    git status>>/dev/null
+    doCheckStatusHere
+
+    git branch -m $NEW_BRANCH_NAME
+    git push -u origin $NEW_BRANCH_NAME
+    echo "info: I didn't delete the old branch name, just in case you need it."
+    echo "info: To delete the old branch both locally and in remote, run the following command:"
+    echo "info:    git branch --d $OLD_BRANCH_NAME && git push origin :$OLD_BRANCH_NAME "
+    exit
+elif [[ $GIT_STATUS == "0" ]] && [[ $1 != "" && $2 != "" ]]; then
+    echo $1 && echo $2
+    exit
+elif [[ $GIT_STATUS != "1" ]]; then
+    echo "error: Is this an git repository? I doubt." && exit 1
+else
+    echo "Usage: ${0} <new-branch-name> [target-branch-optionally-to-rename"
+fi
