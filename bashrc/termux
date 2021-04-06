@@ -16,13 +16,13 @@ else
   source ~/.dotfiles/bin/source-ssh-agent
 fi
 
-# Run this with add-ssh-keys instead
-#ssh-add $HOME/.ssh/github-personal
-
 # Then add my scripts
 export DOTFILES_STUFF_BIN="$HOME/.dotfiles/bin"
 export PATH=$PATH:$DOTFILES_STUFF_BIN
 
 # clean up bash history
 echo
-rm .bash_history && echo "Shell history cleaned for past session"
+history -c && echo "history-cleanup: Shell history cleaned for past session" || echo "history-cleanup: No bash_history file found for past session."
+
+# add my aliases
+source ~/.dotfiles/bashrc/aliases

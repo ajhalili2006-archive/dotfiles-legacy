@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# shortcuts to Git
+alias commit="git commit --signoff --gpg-sign"
+alias tag="git tag --gpg-sign"
+alias rename-branch="git branch -m"
+
+# remote management
+alias change-origin="git remote set-url origin"
+alias change-upstream="git remote set-url upstream"
+alias set-upstream-remote="git branch -u"
+alias add-remote="git remote add"
+alias change-remote-url="git remote set-url"
+alias nuke-remote="git remote remove"
+alias remove-remote="nuke-remote"
+
+# git push
+alias push="git push"
+## add main:master since Git assumes local branch to
+## remote branch when running this alias
+alias deploy-divio="git push divio"
+
+# fetch / pull
+alias fetch="git fetch --all"
+## depending on remote branch at upstream,
+## assumes its same branch.
+alias pull-upstream="fetch && git pull upstream"
+alias pull-origin="fetch && git pull origin"
