@@ -40,3 +40,10 @@ Host git.launchpad.net
 Host bazar.launchpad.net
     IdentityFile ~/.ssh/launchpad
     User ajhalili2006
+Host git.divio.com
+    IdentityFile ~/.ssh/launchpad
+    User git
+
+# Divio Stuff
+Host ssh.black.aldryn.ne
+    IdentityFile ~/.ssh/launchpad
