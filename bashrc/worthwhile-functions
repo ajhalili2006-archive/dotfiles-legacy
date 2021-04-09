@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# logic goes here
+disable-funcs () {
+   echo "Unimplemented yet."
+}
+
+list-debs-size () {
+   dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | less
+}
