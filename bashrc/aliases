@@ -44,7 +44,7 @@ alias yeet-stash="git stash drop"
 ## staging stuff
 alias stage="git add"
 alias unstage="git rm --cached"
-alias nuke="git rm"
+alias nuke-from-index="git rm"
 
 # branch management
 alias rename-branch="git branch -m"
@@ -72,15 +72,15 @@ alias pull-upstream="fetch && git pull upstream"
 alias pull-origin="fetch && git pull origin"
 
 # history-cleanup like scripts
-alias clean-shellhis="history -c"
+alias clean-shellhis="history -c && clear"
 
 # test SSH connections
 alias test-gh-ssh="ssh -p 22 git@github.com"
 alias test-gl-ssh="ssh -p 22 git@gitlab.com"
 
 # ssh-agent stuff
+## quock shortcut into add-ssh-keys stuff
 alias add-ssh-key="$HOME/.dotfiles/bin/add-ssh-keys"
 
-# list installed debs by size
-#alias list-debs-size:less="dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | less"
-#alias list-debs-size="dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn"
+# shortcuts to some functions
+alias edit-script="edit-script-file"
