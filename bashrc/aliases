@@ -1,14 +1,58 @@
 #!/bin/bash
 
-# shortcuts to Git
+##################################################
+#                                                #
+#     AN NOTE ON ADDING ALIASES INTO HERE:       #
+#                                                #
+##################################################
+#                                                #
+# I don't like to implement every single         #
+# shortcuts as an script in the .dotfiles/bin    #
+# directory, bacause it mostly consume my time on#
+# testing and formatting shit.                   #
+#                                                #
+# So for people who forked my dotfiles repo, I   #
+# recommend to only create an alias on simple    #
+# commands or as an shortcut to scripts provided #
+# in .dotfiles/bin or ~/.toolkit-mgr-bin. Also   #
+# when adding aliases, make sure the real command#
+# is an one-liner. For those who want to go on an#
+# multi-line chaos, good luck to y'all.          #
+#                                                #
+# For noobs/newbies, the syntax is:              #
+#     alias here-owo="real-stuff --goes here"    #
+#                                                #
+##################################################
+
+# basic git commands
+alias stats="git status"
+## shortcuts to creating commits
 alias commit="git commit --signoff --gpg-sign"
-alias tag="git tag --gpg-sign"
+alias commit-nogpg="git commit --signoff --no-gpg-sign"
+alias new-checkpoint="commit"
+alias new-checkpoint-nogpg="commit-nogpg"
+## shortcuts to creating tags
+alias tag-checkpoint="git tag --gpg-sign"
+alias tag-checkpoint-nogpg="git tag --no-gpg-sign"
+alias new-tag="tag-checkpoint"
+alias new-tag-nogpg="tag-checkpoint-nogpg"
+## shortcuts to managing yiff stash
+alias stash="git stash push --keep-index"
+alias pop-stash="git stash pop"
+alias apply-stash="git stash apply"
+alias yeet-stash="git stash drop"
+## staging stuff
+alias stage="git add"
+alias unstage="git rm --cached"
+alias nuke-from-index="git rm"
+
+# branch management
 alias rename-branch="git branch -m"
+alias set-upstream-remote="git branch -u"
 
 # remote management
 alias change-origin="git remote set-url origin"
 alias change-upstream="git remote set-url upstream"
-alias set-upstream-remote="git branch -u"
 alias add-remote="git remote add"
 alias change-remote-url="git remote set-url"
 alias nuke-remote="git remote remove"
@@ -26,3 +70,17 @@ alias fetch="git fetch --all"
 ## assumes its same branch.
 alias pull-upstream="fetch && git pull upstream"
 alias pull-origin="fetch && git pull origin"
+
+# history-cleanup like scripts
+alias clean-shellhis="history -c && clear"
+
+# test SSH connections
+alias test-gh-ssh="ssh -p 22 git@github.com"
+alias test-gl-ssh="ssh -p 22 git@gitlab.com"
+
+# ssh-agent stuff
+## quock shortcut into add-ssh-keys stuff
+alias add-ssh-key="$HOME/.dotfiles/bin/add-ssh-keys"
+
+# shortcuts to some functions
+alias edit-script="edit-script-file"

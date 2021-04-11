@@ -1,5 +1,5 @@
-# import ours first
-include /data/data/com.termux/files/home/.dotfiles/nanorc/highlighting/*.nanorc
-
-# then the package defaults
+# import package defaults first
 include /data/data/com.termux/files/usr/share/nano/*
+
+# then import ours
+include /data/data/com.termux/files/home/.dotfiles/nanorc/highlighting/*.nanorc

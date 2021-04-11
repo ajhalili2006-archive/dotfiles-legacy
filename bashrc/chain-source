@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# these commands should be triggered on shell startup
+source ~/.dotfiles/bashrc/aliases
+source ~/.dotfiles/bashrc/worthwhile-functions

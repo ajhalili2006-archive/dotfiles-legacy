@@ -1,0 +1,29 @@
+#!/usr/bin/bash
+
+# custom function management here
+# changes to the worthwhile-functions filepath requires
+# an update o the filepath via 'edit-script reload-funcs-bashrc
+# and also any reference here
+disable-funcs () {
+   echo "info: Unimplemented yet. Tell Andrei to add it to his todo."
+}
+edit-funcs-bashrc() {
+   $(echo $EDITOR || command -v nano>>/dev/null && echo nano || echo vi) ~/.dotfiles/bashrc/worthwhile-functions
+}
+
+list-debs-size () {
+   dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | less
+}
+
+edit-script-file () {
+    # if you use other editor, please set $EDITOR.
+    $(echo $EDITOR || command -v nano>>/dev/null && echo nano || echo vi) $(command -v $1)
+}
+
+# reloading stuff
+refresh-funcs() {
+   $DOTFILES_STUFF_BIN/reload-funcs-bashrc
+}
+refresh-aliases() {
+   source $HOME/.dotfiles/bashrc/aliases
+}

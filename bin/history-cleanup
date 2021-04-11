@@ -1,0 +1,20 @@
+#!/bin/bash
+
+usage() {
+    echo "history-cleanup: Remove .*_history files from your home directory"
+    echo "Usage: $0 [COMMAND]"
+    echo "When used without any arguments, the script will assume 'all' was used."
+    echo
+    echo "WARNING: Since this script is written in Bash, there'll be no support"
+    echo "for other shells, considering the best-effort policy, from the"
+    echo "original script author"
+    echo "Available commands:"
+    echo "all                  Delete any history file found in home directory."
+    echo "bash                 Delete ~/.bash_history + run history -c"
+    echo "python"
+    exit
+}
+
+if [[ $@ == "" ]]; then
+    usage
+fi

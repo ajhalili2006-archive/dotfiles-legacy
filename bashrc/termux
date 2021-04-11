@@ -21,8 +21,8 @@ export DOTFILES_STUFF_BIN="$HOME/.dotfiles/bin"
 export PATH=$PATH:$DOTFILES_STUFF_BIN
 
 # clean up bash history
-echo
-history -c && echo "history-cleanup: Shell history cleaned for past session" || echo "history-cleanup: No bash_history file found for past session."
+#echo
+#rm -rf ~/.bash_history>>/dev/null && history -c && echo "history-cleanup: Shell history cleaned for past session" || echo "history-cleanup: No bash_history file found for past session."
 
-# add my aliases
-source ~/.dotfiles/bashrc/aliases
+# then do chain sourcing
+source ~/.dotfiles/bashrc/chain-source
