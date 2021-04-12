@@ -8,9 +8,18 @@ Host gitlab.com
     User git
     IdentityFile ~/.ssh/github-personal
 
+# Launchpad.net SSH keys for mirroring some repos manually,
+# partularly the gitlab.com:termux-package-android5x/src.git repo
+# among any sort of shits and giggles.
+Host git.launchpad.net
+    IdentityFile  ~/.ssh/launchpad
+    User ajhalili2006
+Host bazar.launchpad.net
+    IdentityFile ~/.ssh/launchpad
+    User ajhalili2006
+
 # LXC containers, please append as possible
 Host ghost-localhost
     Hostname 10.29.113.229
     User ubuntu
     IdentityFile ~/.ssh/github-personal
-
