@@ -6,3 +6,5 @@
 	signingkey = A30EBE40AD856D88
 [commit]
 	gpgsign = true
+[url "git+ssh://ajhalili2006@git.launchpad.net/"]
+        insteadof = lp:
