@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "Bootstrap Script for Linix by Andrei Jiroh"
+echo "Dotfiles Bootstrap Script by Andrei Jiroh"
 echo "Starting up in 3 seconds..."
 sleep 3
 
@@ -9,6 +9,7 @@ echo "==> Checking for GitLab Auth tokens in env..."
 if [[ $GH_PAT == "" ]] && [[ $GH_USERNAME == "" ]]; then
     echo "⚠ GH_USERNAME and GH_PAT can't be blank!"
     exit 1
+# Probably change my GitLab SaaS username with yours
 elif [[ $GH_USERNAME != "AndreiJirohHaliliDev2006" ]]; then
     echo "⚠ Only Andrei Jiroh can do this!"
     exit 1
@@ -25,9 +26,11 @@ if [[ $PWD != $HOME ]]; then
 fi
 
 if echo $OSTYPE | grep linux-android.*; then
-    # Assuming that you ibstalled wget and curl
+    # Assuming that you istalled either wget or curl
     echo "==> Installing dependencies..."
-    pkg install -y man git nano gnupg openssh proot resolv-conf asciinema #python nodejs
+    pkg install -y man git nano gnupg openssh proot resolv-conf asciinema
+    echo "info: Essientials are installed, if you need Node.js"
+    echo "info: just do `pkg install nodejs` anytime"
 
     # Clone our stuff
     echo "==> Cloning the dotfiles repo"
@@ -35,7 +38,8 @@ if echo $OSTYPE | grep linux-android.*; then
     cd .dotfiles && git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets secrets
 
     if [[ $? != 0 ]]; then
-       echo "❌ That kinda sus, but only Andrei Jiroh can proceed!"
+       echo "❌ That kinda sus, but either only Andrei Jiroh can proceed"
+       echo "   or maybe the PAT you used is invalid."
        exit 1
     else
        chmod 700 $HOME/.dotfiles/secrets
@@ -66,5 +70,6 @@ if echo $OSTYPE | grep linux-android.*; then
     exit
 #elif echo $OSTYPE | grep linux-gnu.* && ;then
 else
-    echo "Script unsupported in this machine. See the online README for help."
+    echo "error: Script unsupported for this machine. See the online README for"
+    echo "error: guide on manual bootstrapping."
 fi
