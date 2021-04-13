@@ -30,12 +30,13 @@ if echo $OSTYPE | grep linux-android.*; then
     echo "==> Installing dependencies..."
     pkg install -y man git nano gnupg openssh proot resolv-conf asciinema
     echo "info: Essientials are installed, if you need Node.js"
-    echo "info: just do `pkg install nodejs` anytime"
+    echo "info: just do 'pkg install nodejs' (we recommend"
+    echo "info: installing the LTS one for stability) anytime"
 
     # Clone our stuff
     echo "==> Cloning the dotfiles repo"
-    git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles.git
-    cd .dotfiles && git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets secrets
+    git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles.git $HOME/.dotfiles
+    git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
 
     if [[ $? != 0 ]]; then
        echo "❌ That kinda sus, but either only Andrei Jiroh can proceed"
@@ -45,11 +46,9 @@ if echo $OSTYPE | grep linux-android.*; then
        chmod 700 $HOME/.dotfiles/secrets
     fi
 
-    cd ~
-
     # Importing our SSH keys
     echo "==> Checking if ~/.ssh exists..."
-    mkdir ~/.ssh && echo "We made that directory for you." || echo "warning: ~/.ssh exists!"
+    mkdir ~/.ssh && echo "We made that directory for you." || echo "warning: ~/.ssh exists! Skipping directory creation..."
     echo "==> Copying SSH keys"
     cp $HOME/.dotfiles/secrets/ssh/github-personal ~/.ssh/github-personal
     cp $HOME/.dotfiles/secrets/ssh/github-personal.pub ~/.ssh/github-personal.pub
