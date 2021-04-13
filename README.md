@@ -15,7 +15,7 @@ export GH_USERNAME=AndreiJirohHaliliDev2006
 export GH_PAT=<my-gitlabdotcom-PAT>
 
 ## Run the bootstrap script
-$(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.githubusercontent.com/AndreiJirohHaliliDev2006/.dotfiles/main/bootstrap-linux.sh | bash -
+$(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.githubusercontent.com/AndreiJirohHaliliDev2006/.dotfiles/main/dotfiles-bootstrapper-script.sh | bash -
 
 ## Done?
 unset GH_USERNAME GH_PAT
@@ -24,7 +24,12 @@ unset GH_USERNAME GH_PAT
 ### With Cloning the Repo
 
 ```sh
+# assuming git is installed
+git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles $HOME/.dotfiles
+cd $HOME/.dotfiles
 
+# no need for exporting my PAT before running this
+./setup.sh [android|ubuntu-debian|arch|alpine|macos]
 ```
 
 ## Want to fork me owo?
