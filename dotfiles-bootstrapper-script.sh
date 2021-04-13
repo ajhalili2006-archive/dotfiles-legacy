@@ -66,7 +66,7 @@ if echo $OSTYPE | grep linux-android.*; then
     ln -s $HOME/.dotfiles/termux.gitconfig ~/.gitconfig
 
     echo "✔ Task completed successfully."
-    echo '==> Cleaning up to ensure no secrets are leaked..."
+    echo "==> Cleaning up to ensure no secrets are leaked..."
     history -c
     unset GH_USERNAME GH_PAT
     exit
