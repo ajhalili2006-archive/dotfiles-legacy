@@ -1,0 +1,5 @@
+# import package defaults first
+include /usr/share/nano/*
+
+# then import ours
+include /home/gildedguy/.dotfiles/nanorc/highlighting/*.nanorc
