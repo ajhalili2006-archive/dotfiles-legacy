@@ -62,11 +62,13 @@ if echo $OSTYPE | grep linux-android.*; then
 
     # Link softly
     echo "==> Creating soft links for .bashrc and .gitconfig"
-    ln -s .dotfiles/termux.bashrc ~/.bashrc
-    ln -s .dotfiles/termux.gitconfig ~/.gitconfig
+    ln -s $HOME/.dotfiles/termux.bashrc ~/.bashrc
+    ln -s $HOME/.dotfiles/termux.gitconfig ~/.gitconfig
 
-    echo "✔ Task completed. Now, you need to manually import your"
-    echo "  PGP keys with the included import-pgp-keys script."
+    echo "✔ Task completed successfully."
+    echo '==> Cleaning up to ensure no secrets are leaked..."
+    history -c
+    unset GH_USERNAME GH_PAT
     exit
 #elif echo $OSTYPE | grep linux-gnu.* && ;then
 else
