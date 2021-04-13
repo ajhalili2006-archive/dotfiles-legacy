@@ -23,15 +23,18 @@ fi
 if [[ $PWD != $HOME ]]; then
     echo "This script only works if you're in the home directory"
     exit 1
+else
+    echo todo
 fi
 
-if echo $OSTYPE | grep linux-android.*; then
+if echo $OSTYPE | grep -qE linux-android.*; then
     # Assuming that you istalled either wget or curl
     echo "==> Installing dependencies..."
-    pkg install -y man git nano gnupg openssh proot resolv-conf asciinema
+    pkg install -y man git nano gnupg openssh proot resolv-conf asciinema openssl-tool
     echo "info: Essientials are installed, if you need Node.js"
     echo "info: just do 'pkg install nodejs' (we recommend"
     echo "info: installing the LTS one for stability) anytime"
+    sleep 5
 
     # Clone our stuff
     echo "==> Cloning the dotfiles repo"
@@ -45,10 +48,11 @@ if echo $OSTYPE | grep linux-android.*; then
     else
        chmod 700 $HOME/.dotfiles/secrets
     fi
+    sleep 5
 
     # Importing our SSH keys
     echo "==> Checking if ~/.ssh exists..."
-    mkdir ~/.ssh && echo "We made that directory for you." || echo "warning: ~/.ssh exists! Skipping directory creation..."
+    mkdir ~/.ssh && echo "We made that directory for you." || echo "warning: ~/.ssh exists! Skipping directory creation, probably created during install..."
     echo "==> Copying SSH keys"
     cp $HOME/.dotfiles/secrets/ssh/github-personal ~/.ssh/github-personal
     cp $HOME/.dotfiles/secrets/ssh/github-personal.pub ~/.ssh/github-personal.pub
@@ -56,18 +60,27 @@ if echo $OSTYPE | grep linux-android.*; then
     cp $HOME/.dotfiles/secrets/ssh/launchpad.pub ~/.ssh/launchpad.pub
     chmod 600 ~/.ssh/launchpad
     chmod 600 ~/.ssh/github-personal
-    #echo "==> Creating soft links for OpenSSH client config..."
+    echo "==> Creating soft links for OpenSSH client config..."
     ln -s $HOME/.dotfiles/ssh-client/termux ~/.ssh/config
+    sleep 5
 
     # Link softly
     echo "==> Creating soft links for .bashrc and .gitconfig"
     ln -s $HOME/.dotfiles/termux.bashrc ~/.bashrc
     ln -s $HOME/.dotfiles/termux.gitconfig ~/.gitconfig
+    sleep 5
+
+    echo "==> Soft-linking your nanorc config..."
+    ln -s $HOME/.dotfiles/nanorc/config/termux $HOME/.nanorc
+    sleep 5
 
     echo "✔ Task completed successfully."
-    echo "==> Cleaning up to ensure no secrets are leaked..."
-    history -c
+    echo "==> Cleaning up to ensure no secrets are leaked on env vars..."
     unset GH_USERNAME GH_PAT
+    echo "info: Please also cleanup your shell history with 'history -c' to ensure"
+    echo "info: your GitLab SaaS PAT is safe. Enjoy your day!"
+    echo "info: Exiting..."
+    sleep 2
     exit
 #elif echo $OSTYPE | grep linux-gnu.* && ;then
 else
