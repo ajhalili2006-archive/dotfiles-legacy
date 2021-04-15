@@ -18,21 +18,21 @@ Host launchpad-bazar
 # to generate 2FA backup codes remotely.
 Host github
     Hostname github.com
-    IdentityFile ~/.ssh/github-personal
+    IdentityFile ~/.ssh/launchpad
     User git
 Host gitlab
     Hostname gitlab.com
-    IdentityFile ~/.ssh/github-personal
+    IdentityFile ~/.ssh/launchpad
     User git
 
 # Git sometimes an shit in SSH client conifg
 # especially if I typed the full domain instead of
 # shortcuts I made.
 Host github.com
-    IdentityFile ~/.ssh/github-personal
+    IdentityFile ~/.ssh/launchpad
     User git
 Host gitlab.com
-    IdentityFile ~/.ssh/github-personal
+    IdentityFile ~/.ssh/launchpad
     User git
 Host git.launchpad.net
     IdentityFile ~/.ssh/launchpad
@@ -45,5 +45,5 @@ Host git.divio.com
     User git
 
 # Divio Stuff
-Host ssh.black.aldryn.ne
+Host ssh.black.aldryn.net
     IdentityFile ~/.ssh/launchpad

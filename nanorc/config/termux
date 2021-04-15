@@ -3,3 +3,7 @@ include /data/data/com.termux/files/usr/share/nano/*
 
 # then import ours
 include /data/data/com.termux/files/home/.dotfiles/nanorc/highlighting/*.nanorc
+
+# enable soft wrapping
+#set softwrap
+

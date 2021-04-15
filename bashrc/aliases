@@ -25,6 +25,7 @@
 ##################################################
 
 # basic git commands
+alias clone="git clone"
 alias stats="git status"
 ## shortcuts to creating commits
 alias commit="git commit --signoff --gpg-sign"
@@ -43,7 +44,7 @@ alias apply-stash="git stash apply"
 alias yeet-stash="git stash drop"
 ## staging stuff
 alias stage="git add"
-alias unstage="git rm --cached"
+alias unstage="git restore --staged"
 alias nuke-from-index="git rm"
 
 # branch management
