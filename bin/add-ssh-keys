@@ -5,6 +5,6 @@ if [[ $@ != "" ]]; then
     ssh-add $HOME/.ssh/$@
 elif [[ $@ == "" ]]; then
     echo "==> Adding all of your SSH keys..."
-    ssh-add ~/.ssh/github-personal
+    #ssh-add ~/.ssh/github-personal
     ssh-add ~/.ssh/launchpad
 fi
