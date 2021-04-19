@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ "$#" == "0" ]; then
+  echo "Usage: $0 your-pgp-key-name-here"
+  echo "If the script says the file isn't found, make sure"
+  echo "you placed it on your DOTFILES_HOME/secrets/pgp directory"
+  echo "(
+fi

@@ -85,3 +85,6 @@ alias add-ssh-key="$HOME/.dotfiles/bin/add-ssh-keys"
 
 # shortcuts to some functions
 alias edit-script="edit-script-file"
+
+# add a bit of test here
+alias guild-test="echo successfully imported owo"

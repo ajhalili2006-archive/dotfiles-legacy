@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "Reloading aliases and functions..."
+. $DOTFILES_HOME/bashrc/chain-source
+echo "info: We recommend to restart your terminal to ensure"
+echo "info: removed entries and renamed ones are being loaded"
+echo "info: and to avoid conflicts chaos."
