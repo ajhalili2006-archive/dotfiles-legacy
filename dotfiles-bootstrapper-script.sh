@@ -74,9 +74,16 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     ln -s $HOME/.dotfiles/nanorc/config/termux $HOME/.nanorc
     sleep 5
 
+    echo "==> Installing ShellCheck from GitHub..."
+    scversion="stable" # or "v0.4.7", or "latest"
+    wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv
+    cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
+
     echo "✔ Task completed successfully."
     echo "==> Cleaning up to ensure no secrets are leaked on env vars..."
-    unset GH_USERNAME GH_PAT
+    export GH_USERNAME=null
+    export GH_PAT=null
+    rm -rf ~/shellcheck*
     echo "info: Please also cleanup your shell history with 'history -c' to ensure"
     echo "info: your GitLab SaaS PAT is safe. Enjoy your day!"
     echo "info: Exiting..."
@@ -86,4 +93,5 @@ if echo $OSTYPE | grep -qE linux-android.*; then
 else
     echo "error: Script unsupported for this machine. See the online README for"
     echo "error: guide on manual bootstrapping."
+    exit 1
 fi
