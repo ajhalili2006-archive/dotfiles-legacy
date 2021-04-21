@@ -27,3 +27,5 @@
   pushInsteadOf = https://gitlab.com/
 [url "git@bitbucket.org:"]
   insteadOf = https://bitbucket.org/
+[init]
+	defaultBranch = main
