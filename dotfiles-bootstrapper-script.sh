@@ -79,6 +79,9 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv
     cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
 
+    echo "==> Installing python3-pip:thefuck..."
+    pkg install clang -y && pip install thefuck -U
+
     echo "✔ Task completed successfully."
     echo "==> Cleaning up to ensure no secrets are leaked on env vars..."
     export GH_USERNAME=null
