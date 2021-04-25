@@ -4,5 +4,11 @@ if [ "$#" == "0" ]; then
   echo "Usage: $0 your-pgp-key-name-here"
   echo "If the script says the file isn't found, make sure"
   echo "you placed it on your DOTFILES_HOME/secrets/pgp directory"
-  echo "(
+  exit
 fi
+
+PGP_KEY_EXPORT_FILE="$HOME/.dotfiles/secrets/pgp/$1.pgp.sec"
+echo "info: Export file: ~/.dotfiles/secrets/pgp/$1.pgp.sec"
+PASSPHRASE_BASE64=$(cat ~/.dotfiles/secrets/pgp/passphrase-$PGP_KEY_EXPORT_FILE)
+echo "info: Base64'd file contents: $PASSPHRASE_BASE64"
+echo $PASSPHARSE_BASE64 | base64 -d

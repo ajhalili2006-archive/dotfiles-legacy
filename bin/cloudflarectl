@@ -1,0 +1,59 @@
+#!/bin/bash
+
+HTTP_CLIENT_PATH=$(command -v curl)
+
+if [[ $HTTP_CLIENT_PATH == "" ]]; then
+   echo "Please install cURL first as this script may not work in wGET."
+   exit 1
+fi
+
+if command -v jq >> /dev/null; then
+   echo "OK" >> /dev/null
+else
+   echo "Please install jq to prettify JSON responses from API."
+   exit 1
+fi
+
+# API Handler
+apiHandler() {
+  CF_HOST="https://api.cloudflare.com/client/v4"
+  RESPONSE_FORMAT="application/json"
+  API_METHOD=${2:GET}
+  curl -H "Content-Type:$RESPONSE_FORMAT" \
+     -H "Authorization: Bearer $CF_API_KEY" \
+     -X "$API_METHOD" "$CF_HOST/$1"
+}
+
+if [[ $# == "0" ]] || [[ $1 == "help" ]]; then
+  echo "Usage: $0 COMMAND ARGS"
+  echo "Available commands:"
+  echo "validate-token        Check if an token is still working"
+  echo "zones                 Manage your Cloudflare zones"
+else
+  if [[ $@ == "validate-token" ]]; then
+     if [[ $CF_API_EMAIL != "" ]]; then
+        echo "Unsupported variable found: CF_API_EMAIL"
+        echo "Please use API keys instead of global API token."
+         exit 1
+     fi
+     if [[ $CF_API_KEY != "" ]]; then
+        apiHandler user/tokens/verify GET | jq
+     else
+        echo "No token found! Set your API token with:"
+        echo "   export CF_API_KEY=abcdef123456"
+     fi
+  elif [[ $@ == "zones" ]]; then
+     echo "Usage: $0 zones [ARGS]"
+     echo
+     echo "Manage and list your zones managed by Cloudflare."
+     echo "Available arguments:"
+     echo "list            List available zones to manage"
+     echo "add             Add new zone"
+     echo "remove          Remove an zone"
+     exit
+  elif [[ $@ == "zones list" ]]; then
+     apiHandler zones GET | jq .result
+  else
+     echo "Unsupported command! See the help command for details"
+  fi
+fi
