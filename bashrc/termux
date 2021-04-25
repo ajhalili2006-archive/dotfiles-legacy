@@ -34,6 +34,7 @@ if [[ $TF_PYTHON_PATH != "" ]];then
   eval $(thefuck --alias what-the-fuck)>>/dev/null
   eval $(thefuck --alias holy-shit)>>/dev/null
   eval $(thefuck --alias stfu)>>/dev/null
+  eval $(thefuck --alias fuck)>>/dev/null
 fi
 
 # Export my Cloudflare API keys
