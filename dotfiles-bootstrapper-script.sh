@@ -14,7 +14,7 @@ elif [[ $GH_USERNAME != "AndreiJirohHaliliDev2006" ]]; then
     echo "⚠ Only Andrei Jiroh can do this!"
     exit 1
 elif [[ $GH_USERNAME == "AndreiJirohHaliliDev2006" ]] && [[ $GH_PAT == "" ]]; then
-    echo "⚠ Missing GitLab.com PAT!"
+    echo "⚠ Missing GitLab SaaS PAT! Check your Bitwarden vault for that key."
     exit 1
 else
     echo "⚠ Proceeding, please don't expect this works if things go brrr..."
@@ -23,8 +23,6 @@ fi
 if [[ $PWD != $HOME ]]; then
     echo "This script only works if you're in the home directory"
     exit 1
-else
-    echo todo
 fi
 
 if echo $OSTYPE | grep -qE linux-android.*; then
@@ -79,14 +77,18 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv
     cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
 
+    echo "==> Installing Cloudflare CLI..."
+    wget -q0- https://github.com/cloudflare/cloudflare-go/releases/download/v0.16.0/flarectl_0.16.0_linux_armv6.tar.xz | tar -xJx
+
     echo "==> Installing python3-pip:thefuck..."
     pkg install clang -y && pip install thefuck -U
 
     echo "✔ Task completed successfully."
     echo "==> Cleaning up to ensure no secrets are leaked on env vars..."
-    export GH_USERNAME=null
-    export GH_PAT=null
-    rm -rf ~/shellcheck*
+    # just add chaos to these secrets to avoid leaks
+    export GH_USERNAME=gildedguy
+    export GH_PAT=build-guid-sus-among-computers-moment
+    rm -rf ~/{shellcheck,flarectl,LICENSE,README.txt,README.md}
     echo "info: Please also cleanup your shell history with 'history -c' to ensure"
     echo "info: your GitLab SaaS PAT is safe. Enjoy your day!"
     echo "info: Exiting..."
