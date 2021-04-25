@@ -26,3 +26,21 @@ export DOTFILES_HOME=$HOME/.dotfiles
 
 # then do chain sourcing
 source ~/.dotfiles/bashrc/chain-source
+
+# check if thefuck Python3 package is there
+TF_PYTHON_PATH=$(command -v thefuck)
+if [[ $TF_PYTHON_PATH != "" ]];then
+  eval $(thefuck --alias fuckwit)>>/dev/null
+  eval $(thefuck --alias what-the-fuck)>>/dev/null
+  eval $(thefuck --alias holy-shit)>>/dev/null
+  eval $(thefuck --alias stfu)>>/dev/null
+fi
+
+# Export my Cloudflare API keys
+source ~/.dotfiles/secrets/cloudflare.api-keys
+
+# do console cleanup
+clear
+
+# then have termux-chroot
+termux-chroot
