@@ -1,3 +1,5 @@
+#!/bin/env bash
+
 # Start GPG and SSH agents
 export GPG_TTY=$(tty)
 eval $(gpg-agent --daemon --enable-ssh-support --write-env-file "${HOME}/.gpg-agent-info")
@@ -25,6 +27,7 @@ export DOTFILES_HOME=$HOME/.dotfiles
 #rm -rf ~/.bash_history>>/dev/null && history -c && echo "history-cleanup: Shell history cleaned for past session" || echo "history-cleanup: No bash_history file found for past session."
 
 # then do chain sourcing
+<<<<<<< Updated upstream
 source ~/.dotfiles/bashrc/chain-source
 
 # check if thefuck Python3 package is there
@@ -45,3 +48,6 @@ clear
 
 # then have termux-chroot
 termux-chroot
+=======
+source "$HOME/.dotfiles/bashrc/chain-source"
+>>>>>>> Stashed changes

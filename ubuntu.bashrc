@@ -1,3 +1,5 @@
+#!/usr/bin/bash
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -126,15 +128,21 @@ export PATH="$HOME/.deta/bin:$PATH"
 
 # scripts in ~/.local/bin and ~/.dotfiles/bin
 # also $HOME/.cargo/bin
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.dotfiles/bin:$PATH"
+export DOTFILES_STUFF_BIN="$HOME/.dotfiles/bin"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$DOTFILES_STUFF_BIN:$PATH"
 
 # use nano instead of vi
 # for git, there's the option of firing up VS Code, if you prefered.
-EDITOR=nano
+export EDITOR=nano
 
 # autocompletion for GitHub CLI
 eval "$(gh completion -s bash)"
 
 # custom aliases and functions I made
 # sorucing through the chain-source script
-source $HOME/.dotfiles/bashrc/chain-source
+source "$HOME/.dotfiles/bashrc/chain-source"
+
+# https://packaging.ubuntu.com/html/getting-set-up.html#configure-your-shell
+export DEBFULLNAME="Andrei Jiroh Halili"
+## can't add this email to my Launchpad profile, probably because I'm using an free domain lol.
+export DEBEMAIL="andreijiroh@madebythepins.tk"

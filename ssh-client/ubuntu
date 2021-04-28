@@ -6,7 +6,10 @@ Host ubuntu-vm
 
 Host gitlab.com
     User git
-    IdentityFile ~/.ssh/github-personal
+    IdentityFile ~/.ssh/launchpad
+Host github.com
+    User git
+    IdentityFile ~/.ssh/launchpad
 
 # Launchpad.net SSH keys for mirroring some repos manually,
 # partularly the gitlab.com:termux-package-android5x/src.git repo
