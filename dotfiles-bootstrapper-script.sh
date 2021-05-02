@@ -77,8 +77,8 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv
     cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
 
-    echo "==> Installing Cloudflare CLI..."
-    wget -q0- https://github.com/cloudflare/cloudflare-go/releases/download/v0.16.0/flarectl_0.16.0_linux_armv6.tar.xz | tar -xJx
+    #echo "==> Installing Cloudflare CLI..."
+    #wget -q0- https://github.com/cloudflare/cloudflare-go/releases/download/v0.16.0/flarectl_0.16.0_linux_armv6.tar.xz | tar -xJx
 
     echo "==> Installing python3-pip:thefuck..."
     pkg install clang -y && pip install thefuck -U
@@ -88,7 +88,8 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     # just add chaos to these secrets to avoid leaks
     export GH_USERNAME=gildedguy
     export GH_PAT=build-guid-sus-among-computers-moment
-    rm -rf ~/{shellcheck,flarectl,LICENSE,README.txt,README.md}
+    rm -rfv ~/{shellcheck,flarectl,LICENSE,README.txt,README.md}
+    pkg uninstall clang --yes && apt autoremove --yes
     echo "info: Please also cleanup your shell history with 'history -c' to ensure"
     echo "info: your GitLab SaaS PAT is safe. Enjoy your day!"
     echo "info: Exiting..."

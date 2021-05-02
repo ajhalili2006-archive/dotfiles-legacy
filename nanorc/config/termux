@@ -7,3 +7,6 @@ include /data/data/com.termux/files/home/.dotfiles/nanorc/highlighting/*.nanorc
 # enable soft wrapping
 set softwrap
 
+# switch between buffers
+# to switch, use Alt+, and Alt+.
+set multibuffer

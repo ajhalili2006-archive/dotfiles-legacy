@@ -47,3 +47,9 @@ Host git.divio.com
 # Divio Stuff
 Host ssh.black.aldryn.net
     IdentityFile ~/.ssh/launchpad
+
+# Alwaysdata
+Host main-ald
+    IdentityFile ~/.ssh/launchpad
+    User ajhalili2006
+    Hostname ssh-ajhalili2006.alwaysdata.net

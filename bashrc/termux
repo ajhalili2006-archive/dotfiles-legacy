@@ -27,7 +27,6 @@ export DOTFILES_HOME=$HOME/.dotfiles
 #rm -rf ~/.bash_history>>/dev/null && history -c && echo "history-cleanup: Shell history cleaned for past session" || echo "history-cleanup: No bash_history file found for past session."
 
 # then do chain sourcing
-<<<<<<< Updated upstream
 source ~/.dotfiles/bashrc/chain-source
 
 # check if thefuck Python3 package is there
@@ -44,10 +43,4 @@ fi
 source ~/.dotfiles/secrets/cloudflare.api-keys
 
 # do console cleanup
-clear
-
-# then have termux-chroot
-termux-chroot
-=======
-source "$HOME/.dotfiles/bashrc/chain-source"
->>>>>>> Stashed changes
+#clear
