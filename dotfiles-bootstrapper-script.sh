@@ -44,7 +44,7 @@ if echo $OSTYPE | grep -qE linux-android.*; then
        echo "   or maybe the PAT you used is invalid."
        exit 1
     else
-       chmod 700 $HOME/.dotfiles/secrets
+       chmod 600 $HOME/.dotfiles/secrets/{ssh,pgp}
     fi
     sleep 5
 
@@ -95,7 +95,37 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     echo "info: Exiting..."
     sleep 2
     exit
-#elif echo $OSTYPE | grep linux-gnu.* && ;then
+
+elif echo "$OSTYPE" | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; then
+    echo "==> Installing dependencies..."
+    sudo apt install gnupg git nano -y
+    if command -v python3 | grep -qE '^/usr/bin.*'; then
+       sudo $(which python3) -m pip install asciinema
+    elif command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
+       $(which python3) -m pip install asciinema
+    fi
+    
+    echo "==> Cloning the dotfiles repo"
+    git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles.git $HOME/.dotfiles
+    git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
+
+    if [[ $? != 0 ]]; then
+       echo "❌ That kinda sus, but either only Andrei Jiroh can proceed"
+       echo "   or maybe the PAT you used is invalid."
+       exit 1
+    else
+       chmod 600 $HOME/.dotfiles/secrets/{ssh,pgp}
+    fi
+    sleep 5
+    
+    echo "==> Creating soft links for .bashrc and .gitconfig"
+    if [[ $SKIP_BASHRC_LINKING == "" ]]; then
+        ln -s $HOME/.dotfiles/ubuntu.bashrc ~/.bashrc
+    fi
+    ln -s $HOME/.dotfiles/linux.gitconfig ~/.gitconfig
+    sleep 5
+    
+    
 else
     echo "error: Script unsupported for this machine. See the online README for"
     echo "error: guide on manual bootstrapping."
