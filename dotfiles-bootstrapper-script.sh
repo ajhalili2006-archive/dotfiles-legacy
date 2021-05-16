@@ -20,10 +20,10 @@ else
     echo "⚠ Proceeding, please don't expect this works if things go brrr..."
 fi
 
-if [[ $PWD != $HOME ]]; then
-    echo "This script only works if you're in the home directory"
-    exit 1
-fi
+#if [[ $PWD != $HOME ]]; then
+#    echo "This script only works if you're in the home directory"
+#    exit 1
+#fi
 
 if echo $OSTYPE | grep -qE linux-android.*; then
     # Assuming that you istalled either wget or curl
