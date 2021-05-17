@@ -36,3 +36,7 @@ function git() {
     git symbolic-ref HEAD refs/heads/main
   fi
 }
+
+list-nodejs-scripts() {
+  cat package.json | jq .scripts || echo "No package.json found in current directory."
+}
