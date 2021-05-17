@@ -10,3 +10,6 @@ set softwrap
 # switch between buffers
 # to switch, use Alt+, and Alt+.
 set multibuffer
+
+# also enable suspension
+set suspend

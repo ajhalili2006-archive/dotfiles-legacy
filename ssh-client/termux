@@ -53,3 +53,10 @@ Host main-ald
     IdentityFile ~/.ssh/launchpad
     User ajhalili2006
     Hostname ssh-ajhalili2006.alwaysdata.net
+
+# Linux computers
+Host gildedguy
+    IdentityFile ~/.ssh/launchpad
+    User gildedguy
+    Hostname 192.168.254.114
+    Port 8022
