@@ -20,7 +20,7 @@ fi
 
 # Then add my scripts
 export DOTFILES_STUFF_BIN="$HOME/.dotfiles/bin"
-export PATH=$PATH:$DOTFILES_STUFF_BIN
+export PATH=$PATH:$DOTFILES_STUFF_BIN:$HOME/.local/bin
 export DOTFILES_HOME=$HOME/.dotfiles
 # clean up bash history
 #echo

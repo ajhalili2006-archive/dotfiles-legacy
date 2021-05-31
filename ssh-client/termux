@@ -59,4 +59,4 @@ Host gildedguy
     IdentityFile ~/.ssh/launchpad
     User gildedguy
     Hostname 192.168.254.114
-    Port 8022
+    Port 22
