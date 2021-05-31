@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Updater script for Cloudflared
+# Basically it's an script for installing Cloudflared
+# during image build btw
+
+# pull the builder's arch first
+ARCH_TO_USE="$IMAGE_ARCH"
+
+if [[ $ARCH_TO_USE == "" ]]; then
+  ARCH_TO_USE="$(uname -p)"
+fi
+
+if [[ -f /usr/local/bin/cloudflared ]]; then
+  echo "[cloudlfared-updater] Removing old version..."
+  sudo rm -fv /usr/local/bin/cloudflared
+fi
+
+CLOUDFLARED_VERSION=$(curl --silent "https://api.github.com/repos/cloudflare/cloudflared/releases/latest" | jq -r .tag_name)
+
+echo "[cloudflared-updater] Installing latest version of Argo Tunnel agent.."
+if [[ $ARCH_TO_USE == "aarch64" ]]; then
+  sudo wget https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-arm64 -O /usr/local/bin/cloudflared
+else
+  sudo wget https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-amd64 -O /usr/local/bin/cloudflared
+fi
+sudo chmod +x /usr/local/bin/cloudflared
+
+if [[ $? == "0" ]]; then
+  echo "[cloudflared-installer] Successfully updated!"
+else
+  echo "[cloudlfared-installer] Installer failed, exiting..."
+  exit $?
+fi

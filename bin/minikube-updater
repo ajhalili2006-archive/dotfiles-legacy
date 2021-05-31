@@ -1,0 +1,19 @@
+#!/bin/bash
+
+install() {
+    if [ ! -f "/usr/local/bin/minikube"]; then
+       rm -v /usr/local/bin/minikube
+    fi
+
+    sudo wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 -O /usr/local/bin/minikube
+    sudo chmod +x /usr/local/bin/minikube
+}
+
+# Install virtualbox and the extension packs
+sudo apt install virtualbox virtualbox-ext-pack
+
+# then download the latest Minukube version
+install
+
+# finally, check if it's success.
+minikube version
