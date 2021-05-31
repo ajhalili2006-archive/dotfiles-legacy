@@ -25,6 +25,7 @@ fi
 #    exit 1
 #fi
 
+# todo: NEED ALOT OF REWRITE ON THIS
 if echo $OSTYPE | grep -qE linux-android.*; then
     # Assuming that you istalled either wget or curl
     echo "==> Installing dependencies..."
@@ -40,8 +41,8 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
 
     if [[ $? != 0 ]]; then
-       echo "❌ That kinda sus, but either only Andrei Jiroh can proceed"
-       echo "   or maybe the PAT you used is invalid."
+       echo "error: That kinda sus, but either only Andrei Jiroh can proceed"
+       echo "error: or maybe the PAT you used is invalid."
        exit 1
     else
        chmod 600 $HOME/.dotfiles/secrets/{ssh,pgp}
@@ -52,8 +53,8 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     echo "==> Checking if ~/.ssh exists..."
     mkdir ~/.ssh && echo "We made that directory for you." || echo "warning: ~/.ssh exists! Skipping directory creation, probably created during install..."
     echo "==> Copying SSH keys"
-    cp $HOME/.dotfiles/secrets/ssh/github-personal ~/.ssh/github-personal
-    cp $HOME/.dotfiles/secrets/ssh/github-personal.pub ~/.ssh/github-personal.pub
+    #cp $HOME/.dotfiles/secrets/ssh/github-personal ~/.ssh/github-personal
+    #cp $HOME/.dotfiles/secrets/ssh/github-personal.pub ~/.ssh/github-personal.pub
     cp $HOME/.dotfiles/secrets/ssh/launchpad ~/.ssh/launchpad
     cp $HOME/.dotfiles/secrets/ssh/launchpad.pub ~/.ssh/launchpad.pub
     chmod 600 ~/.ssh/launchpad
@@ -89,7 +90,7 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     export GH_USERNAME=gildedguy
     export GH_PAT=build-guid-sus-among-computers-moment
     rm -rfv ~/{shellcheck,flarectl,LICENSE,README.txt,README.md}
-    pkg uninstall clang --yes && apt autoremove --yes
+#   pkg uninstall clang --yes && apt autoremove --yes
     echo "info: Please also cleanup your shell history with 'history -c' to ensure"
     echo "info: your GitLab SaaS PAT is safe. Enjoy your day!"
     echo "info: Exiting..."
@@ -98,34 +99,37 @@ if echo $OSTYPE | grep -qE linux-android.*; then
 
 elif echo "$OSTYPE" | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; then
     echo "==> Installing dependencies..."
-    sudo apt install gnupg git nano -y
+    sudo apt install gnupg git nano openssh -y
     if command -v python3 | grep -qE '^/usr/bin.*'; then
-       sudo $(which python3) -m pip install asciinema
+       $(which python3) -m pip install asciinema thefuck --user
     elif command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
        $(which python3) -m pip install asciinema
+    else
+       echo "error: Python3 installation not found, please run this script again"
+       echo "error: or run 'manual-bootstrapper python3' after the script succeeds."
     fi
-    
+
     echo "==> Cloning the dotfiles repo"
     git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles.git $HOME/.dotfiles
     git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
 
     if [[ $? != 0 ]]; then
-       echo "❌ That kinda sus, but either only Andrei Jiroh can proceed"
-       echo "   or maybe the PAT you used is invalid."
+       echo "error: That kinda sus, but either only Andrei Jiroh can proceed"
+       echo "error: or maybe the PAT you used is invalid."
        exit 1
     else
        chmod 600 $HOME/.dotfiles/secrets/{ssh,pgp}
     fi
     sleep 5
-    
+
     echo "==> Creating soft links for .bashrc and .gitconfig"
-    if [[ $SKIP_BASHRC_LINKING == "" ]]; then
+    if [[ $SKIP_FILE_LINKING == "" ]]; then
         ln -s $HOME/.dotfiles/ubuntu.bashrc ~/.bashrc
+        ln -s $HOME/.dotfiles/linux.gitconfig ~/.gitconfig
+    else
+        echo "Soft link creation is disabled due to presence of SKIP_FILE_LINKING variable"
     fi
-    ln -s $HOME/.dotfiles/linux.gitconfig ~/.gitconfig
     sleep 5
-    
-    
 else
     echo "error: Script unsupported for this machine. See the online README for"
     echo "error: guide on manual bootstrapping."
