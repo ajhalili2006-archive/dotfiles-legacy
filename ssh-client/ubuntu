@@ -1,7 +1,13 @@
+# My VMs
 Host ubuntu-vm
     Hostname localhost
     Port 1222
     User thepinsteam
+    IdentityFile ~/.ssh/github-personal
+Host bshq
+    Hostname localhost
+    Port 3055
+    User shitfuckery
     IdentityFile ~/.ssh/github-personal
 
 Host gitlab.com

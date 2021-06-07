@@ -6,14 +6,14 @@ sleep 3
 
 echo "==> Checking for GitLab Auth tokens in env..."
 
-if [[ $GH_PAT == "" ]] && [[ $GH_USERNAME == "" ]]; then
-    echo "⚠ GH_USERNAME and GH_PAT can't be blank!"
+if [[ $GITLAB_TOKEN == "" ]] && [[ $GITLAB_LOGIN == "" ]]; then
+    echo "⚠ GitLab login and token can't be blank!"
     exit 1
 # Probably change my GitLab SaaS username with yours
-elif [[ $GH_USERNAME != "AndreiJirohHaliliDev2006" ]]; then
+elif [[ $GITLAB_LOGIN != "AndreiJirohHaliliDev2006" ]]; then
     echo "⚠ Only Andrei Jiroh can do this!"
     exit 1
-elif [[ $GH_USERNAME == "AndreiJirohHaliliDev2006" ]] && [[ $GH_PAT == "" ]]; then
+elif [[ $GITLAB_LOGIN == "AndreiJirohHaliliDev2006" ]] && [[ $GITLAB_TOKEN == "" ]]; then
     echo "⚠ Missing GitLab SaaS PAT! Check your Bitwarden vault for that key."
     exit 1
 else
@@ -27,7 +27,7 @@ fi
 
 # todo: NEED ALOT OF REWRITE ON THIS
 if echo $OSTYPE | grep -qE linux-android.*; then
-    # Assuming that you istalled either wget or curl
+    # Assuming that you installed either wget or curl
     echo "==> Installing dependencies..."
     pkg install -y man git nano gnupg openssh proot resolv-conf asciinema openssl-tool
     echo "info: Essientials are installed, if you need Node.js"
@@ -38,7 +38,7 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     # Clone our stuff
     echo "==> Cloning the dotfiles repo"
     git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles.git $HOME/.dotfiles
-    git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
+    git clone https://$GITLAB_LOGIN:$GITLAB_TOKEN@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
 
     if [[ $? != 0 ]]; then
        echo "error: That kinda sus, but either only Andrei Jiroh can proceed"
@@ -90,9 +90,8 @@ if echo $OSTYPE | grep -qE linux-android.*; then
     export GH_USERNAME=gildedguy
     export GH_PAT=build-guid-sus-among-computers-moment
     rm -rfv ~/{shellcheck,flarectl,LICENSE,README.txt,README.md}
-#   pkg uninstall clang --yes && apt autoremove --yes
-    echo "info: Please also cleanup your shell history with 'history -c' to ensure"
-    echo "info: your GitLab SaaS PAT is safe. Enjoy your day!"
+    pkg uninstall clang --yes && apt autoremove --yes
+    echo "info: Please also cleanup your shell history with 'history -c' to ensure your GitLab SaaS PAT is safe. Enjoy your day!"
     echo "info: Exiting..."
     sleep 2
     exit
@@ -111,11 +110,10 @@ elif echo "$OSTYPE" | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; t
 
     echo "==> Cloning the dotfiles repo"
     git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles.git $HOME/.dotfiles
-    git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
+    git clone https://$GITLAB_LOGIN:$GITLAB_TOKEN@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
 
     if [[ $? != 0 ]]; then
-       echo "error: That kinda sus, but either only Andrei Jiroh can proceed"
-       echo "error: or maybe the PAT you used is invalid."
+       echo "error: That kinda sus, but either only Andrei Jiroh can proceed or maybe the PAT you used is invalid."
        exit 1
     else
        chmod 600 $HOME/.dotfiles/secrets/{ssh,pgp}
@@ -123,15 +121,19 @@ elif echo "$OSTYPE" | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; t
     sleep 5
 
     echo "==> Creating soft links for .bashrc and .gitconfig"
-    if [[ $SKIP_FILE_LINKING == "" ]]; then
+    if [[ $SKIP_BASHRC_LINKING == "" ]] && [ ! -f "~/.bashrc" ]; then
         ln -s $HOME/.dotfiles/ubuntu.bashrc ~/.bashrc
+    elif [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "~/.bashrc" ]; then
+        mv ~/.bashrc ~/.bashrc.bak
+        ln -s ~/.dotfiles/ubuntu.bashrc ~/.bashrc
+    fi
+    if [[ $SKIP_CONFIG_LINKING == "" ]] && [ ! -f "~/.gitconfig" ]; then
         ln -s $HOME/.dotfiles/linux.gitconfig ~/.gitconfig
-    else
-        echo "Soft link creation is disabled due to presence of SKIP_FILE_LINKING variable"
+    elif [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "~/.gitconfig" ]; then
+        echo "warning: Existing Git configuration found, please manually merge them."
     fi
     sleep 5
 else
-    echo "error: Script unsupported for this machine. See the online README for"
-    echo "error: guide on manual bootstrapping."
+    echo "error: Script unsupported for this machine. See the online README for guide on manual bootstrapping."
     exit 1
 fi
