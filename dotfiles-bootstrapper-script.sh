@@ -106,7 +106,7 @@ elif echo "$OSTYPE" | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; t
 
     echo "==> Cloning the dotfiles repo"
     git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles.git $HOME/.dotfiles
-    git clone https://$GH_USERNAME:$GH_PAT@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
+    git clone https://$GITLAB_LOGIN:$GITLAB_TOKEN@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
 
     if [[ $? != 0 ]]; then
        echo "error: That kinda sus, but either only Andrei Jiroh can proceed or maybe the PAT you used is invalid."
