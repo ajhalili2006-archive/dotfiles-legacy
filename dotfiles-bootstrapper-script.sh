@@ -125,7 +125,7 @@ elif echo "$OSTYPE" | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; t
     fi
     if [[ $SKIP_CONFIG_LINKING == "" ]] && [ ! -f "~/.gitconfig" ]; then
         ln -s $HOME/.dotfiles/linux.gitconfig ~/.gitconfig
-    elif [[ $SKIP_CONFIG_LINKING == "" && [ -f "~/.gitconfig" ]; then
+    elif [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "~/.gitconfig" ]; then
         echo "warning: Existing Git configuration found, please manually merge them."
     fi
     sleep 5

@@ -11,14 +11,14 @@ working at The Pins Team, see [our dotfiles][df-gl].
 
 ```sh
 ## configure required variables
-export GH_USERNAME=AndreiJirohHaliliDev2006
-export GH_PAT=<my-gitlab1dotcom-PAT>
+export GITLAB_LOGIN=AndreiJirohHaliliDev2006
+export GITLAB_TOKEN=<my-gitlab1dotcom-PAT>
 
 ## Run the bootstrap script
 $(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.githubusercontent.com/AndreiJirohHaliliDev2006/dotfiles/main/dotfiles-bootstrapper-script.sh | bash -
 
 ## Done?
-unset GH_USERNAME GH_PAT
+unset GITLAB_TOKEN GITLAB_LOGIN
 ```
 
 ### With Cloning the Repo
@@ -30,6 +30,9 @@ cd $HOME/.dotfiles
 
 # no need for exporting my PAT before running this
 ./setup.sh [android|ubuntu-debian|arch|alpine|macos]
+
+# you may optionally run the bootstrapper script if you want
+GITLAB_LOGIN=AndreiJirohHaliliDev2006 GITLAB_TOKEN=<my-gitlab-saas-pat> ./bootstrap
 ```
 
 ## Want to fork me owo?
