@@ -42,7 +42,7 @@ if [[ $TF_PYTHON_PATH != "" ]];then
 fi
 
 # Export my Cloudflare API keys
-source ~/.dotfiles/secrets/cloudflare.api-keys
+#source ~/.dotfiles/secrets/cloudflare.api-keys
 
 # do console cleanup
 #clear
