@@ -1,0 +1,101 @@
+#!/bin/bash
+
+{
+
+: PREIFX=${PREIFX:="$HOME/.local"}
+: HELM_INSTALL_DIR=${$HELM_INSTALL_DIR:="$PREIFX/bin"}
+export PATH=$PATH:$HOME/.local/bin
+
+# Helm
+installHelm() {
+  if [[ $PREFIX == "/usr/local" ]] && [[ $HELM_INSTALL_DIR == "/usr/local/bin" ]]; then
+     export USE_SUDO=true
+  else
+     export USE_SUDO=false
+  fi
+
+  echo "----> Installing Helm using the official script..."
+  curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+  unset USE_SUDO
+}
+
+checkExistingInstalls() {
+  if [[ $1 == "kubectl" ]]; then
+     if [ -f "$HELM_INSTALL_DIR/kubectl" ]; then
+        echo "----> Uninstalling old version of Kubectl..."
+        rm -v $HELM_INSTALL_DIR/kubectl
+     fi
+  elif [[ $1 == "kompose" ]]; then
+     if [ -f "$HELM_INSTALL_DIR/kompose" ]; then
+        echo "----> Uninstalling old version of Kompose"
+        rm -v $HELM_INSTALL_DIR/kompose
+     fi
+  fi
+}
+
+# Kubectl
+installKubectl() {
+  checkExistingInstalls kubectl
+  echo "----> Installing Kubectl..."
+  if wget --fail "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl" -O $HELM_INSTALL_DIR/kubectl; then
+     chmod +x $HELM_INSTALL_DIR/kubectl
+     kubectl version --client
+  else
+     echo "error: Install script failed"
+     exit
+  fi
+}
+
+# Kompose
+installKompose() {
+  checkExistingInstalls kompose
+  echo "----> Installing Kompose..."
+  curl-L https://github.com/kubernetes/kompose/releases/download/v1.22.0/kompose-linux-$ARCH -o $HELM_INSTALL_DIR/kompose
+  chmod +x $HELM_INSTALL_DIR/kompose
+}
+
+initArch() {
+  ARCH=$(uname -m)
+  case $ARCH in
+    armv5*) ARCH="armv5";;
+    armv6*) ARCH="armv6";;
+    armv7*) ARCH="arm";;
+    aarch64) ARCH="arm64";;
+    x86) ARCH="386";;
+    x86_64) ARCH="amd64";;
+    i686) ARCH="386";;
+    i386) ARCH="386";;
+  esac
+}
+
+main() {
+  initArch
+
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      'helm')
+         shift
+         installHelm
+         ;;
+      'kubectl')
+         shift
+         installKubectl
+         ;;
+      'kompose')
+         shift
+         installKompose
+         ;;
+      *) echo "Unsupported option, use the help command for avaipable options." && exit 1
+         ;;
+      esac
+      shift
+  done
+
+  installHelm
+  installKubectl
+  installKompose
+}
+
+main "$@"
+
+}
