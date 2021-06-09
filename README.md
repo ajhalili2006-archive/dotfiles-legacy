@@ -15,7 +15,7 @@ export GITLAB_LOGIN=AndreiJirohHaliliDev2006
 export GITLAB_TOKEN=<my-gitlab1dotcom-PAT>
 
 ## Run the bootstrap script
-$(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.githubusercontent.com/AndreiJirohHaliliDev2006/dotfiles/main/dotfiles-bootstrapper-script.sh | bash -
+$(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.githubusercontent.com/AndreiJirohHaliliDev2006/dotfiles/main/bootstrap | bash -
 
 ## Done?
 unset GITLAB_TOKEN GITLAB_LOGIN
@@ -29,10 +29,10 @@ git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles $HOME/.dotfiles
 cd $HOME/.dotfiles
 
 # no need for exporting my PAT before running this
-./setup.sh [android|ubuntu-debian|arch|alpine|macos]
+./bootstrap --flags-over-here --and-this-one stuff
 
 # you may optionally run the bootstrapper script if you want
-GITLAB_LOGIN=AndreiJirohHaliliDev2006 GITLAB_TOKEN=<my-gitlab-saas-pat> ./bootstrap
+GITLAB_LOGIN=AndreiJirohHaliliDev2006 GITLAB_TOKEN=<my-gitlab-saas-pat> ./bootstrap --flags-over here
 ```
 
 ## Want to fork me owo?

@@ -182,9 +182,9 @@ installShellCheck() {
        cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
     else
         if [[ $isOwnedByUser == "" ]]; then
-          sudo rm $PREFIX/bin/shellcheck
+          sudo rm "${PREFIX}/bin/shellcheck"
         else
-          rm $PREFIX/bin/shellcheck
+          rm "${PREFIX}/bin/shellcheck"
         fi
     fi
 }
