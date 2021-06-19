@@ -43,6 +43,10 @@ Host bazar.launchpad.net
 Host git.divio.com
     IdentityFile ~/.ssh/launchpad
     User git
+Host git.cloudron.io
+    IdentityFile ~/.ssh/launchpad
+    User git
+    Port 6000
 
 # Divio Stuff
 Host ssh.black.aldryn.net
