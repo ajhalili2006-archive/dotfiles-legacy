@@ -215,6 +215,18 @@ installTF() {
     fi
 }
 
+installFilterRepo() {
+    if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
+        pip install git-filter-repo
+    else
+        if command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
+            pip3 install git-filter-repo
+        else
+            pip3 install git-filter-repo -U
+        fi
+    fi
+}
+
 main() {
     useColor
     
@@ -230,6 +242,7 @@ main() {
     # step 4: install additional needed tools
     installAscinema
     installTF
+    installFilterRepo
 
     # step 5: copy and symlink files
     copyGitConfig
@@ -237,7 +250,7 @@ main() {
     copyBashrc
     copyKeysSSH
 
-    # step : finally clean up bullshit
+    # step 6: finally clean up bullshit
     cleanup
 }
 
