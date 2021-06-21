@@ -69,15 +69,17 @@ installDeps() {
            curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
        elif [[ $UPDATE_SYSTEM_PYTHON_INSTALL != "" ]]; then
            echoStageName "Updating Python install"
-           sudo apt install python3 python3-pip
+           sudo apt install python3 python3-pip --yes
        fi
     fi
 }
 
 cloneRepo() {
     if [ ! -d "$HOME/.dotfiles" ]; then
+        echoStageName "Cloning the dotfiles repo"
         git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles.git $HOME/.dotfiles
     else
+        echoStageName "Dotfiles repo found, pulling remote changes instead"
         git -C "$HOME/.dotfiles" fetch --all
         git -C "$HOME/.dotfiles" pull origin
     fi
@@ -91,20 +93,22 @@ cloneRepo() {
         error "Missing GitLab SaaS PAT! Check your Bitwarden vault for that key." && exit 1
     fi
     if [ ! -d "$HOME/.dotfiles/secrets" ]; then
+        echoStageName "Cloning secrets repo"
         git clone https://$GITLAB_LOGIN:$GITLAB_TOKEN@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
         [ $? == "0" ] && echo "error: That kinda sus, but either only Andrei Jiroh can proceed or maybe the PAT you used is invalid." && exit 1
         chmod 600 $HOME/.dotfiles/secrets/{ssh,pgp}
         sleep 5
     else
         git -C "$HOME/.dotfiles/secrets" fetch --all
+        git -C "$HOME/.dotfiles/secrets" pull
     fi
 }
 
 cleanup() {
-    echoStageName "----> Bootstrapper successfully ran, cleaning up to ensure no secrets are leaked on env vars..."
+    echoStageName "Bootstrapper successfully ran, cleaning up to ensure no secrets are leaked on env vars..."
     # just add chaos to these secrets to avoid leaks
-    export GH_USERNAME=gildedguy
-    export GH_PAT=build-guid-sus-among-computers-moment
+    export GITLAB_LOGIN=gildedguy
+    export GITLAB_TOKEN=build-guid-sus-among-computers-moment
     if echo $OSTYPE | grep -qE "linux-android.*"; then
         rm -rfv ~/{shellcheck,flarectl,LICENSE,README.txt,README.md}
         pkg uninstall clang --yes && apt autoremove --yes
