@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+#set -e
 
 echo "Dotfiles Bootstrap Script by Andrei Jiroh"
 echo "Starting up in 3 seconds..."
@@ -83,6 +83,7 @@ cloneRepo() {
         git -C "$HOME/.dotfiles" fetch --all
         git -C "$HOME/.dotfiles" pull origin
     fi
+    slepp 5
 
     if [[ $GITLAB_TOKEN == "" ]] && [[ $GITLAB_LOGIN == "" ]]; then
         error "GitLab login and token can't be blank!" && exit 1
@@ -101,6 +102,7 @@ cloneRepo() {
     else
         git -C "$HOME/.dotfiles/secrets" fetch --all
         git -C "$HOME/.dotfiles/secrets" pull
+        sleep 5
     fi
 }
 
@@ -113,6 +115,7 @@ cleanup() {
         rm -rfv ~/{shellcheck,flarectl,LICENSE,README.txt,README.md}
         pkg uninstall clang --yes && apt autoremove --yes
     fi
+    unset DOTFILES_OS_NAME
     echo "info: Please also cleanup your shell history with 'history -c' to ensure your GitLab SaaS PAT is safe. Enjoy your day!"
     echo "info: Exiting..."
     sleep 2
@@ -126,12 +129,10 @@ copyKeysSSH() {
         cp $HOME/.dotfiles/secrets/ssh/launchpad ~/.ssh/launchpad
         cp $HOME/.dotfiles/secrets/ssh/launchpad.pub ~/.ssh/launchpad.pub
         chmod 600 ~/.ssh/launchpad
-        chmod 600 ~/.ssh/github-personal
     else
         cp $HOME/.dotfiles/secrets/ssh/launchpad ~/.ssh/launchpad
         cp $HOME/.dotfiles/secrets/ssh/launchpad.pub ~/.ssh/launchpad.pub
         chmod 600 ~/.ssh/launchpad
-        chmod 600 ~/.ssh/github-personal
     fi
 
     echoStageName "Linking config files"
@@ -147,11 +148,12 @@ copyKeysSSH() {
 
 copyBashrc() {
     if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
-        ln -s $HOME/.dotfiles/termux.gitconfig ~/.gitconfig
+        ln -s $HOME/.dotfiles/termux.bashrc ~/.bashrc
     elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]]; then
         if [[ $SKIP_CONFIG_LINKING == "" ]] && [ ! -f "$HOME/.bashrc" ]; then
            ln -s "$HOME/.dotfiles/ubuntu.bashrc" ~/.bashrc
         elif [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "$HOME/.bashrc" ]; then
+           warn
            mv ~/.bashrc ~/.bashrc.bak
            ln -s "$HOME/.dotfiles/ubuntu.bashrc" ~/.bashrc
         fi
@@ -161,11 +163,11 @@ copyBashrc() {
 copyGitConfig() {
     echoStageName "Symlinking Git config"
     if [[ $DOTFILES_OS_NAME == "android-termux" ]] && [[ $SKIP_CONFIG_LINKING == "" ]]; then
-        [ ! -f "$HOME/.ssh/config" ] && ln -s $HOME/.dotfiles/gitconfig/termux ~/.gitconfig || warn "Git configuration on userspace found, please merge them manually!"
+        [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/gitconfig/termux ~/.gitconfig || warn "Git configuration on userspace found, please merge them manually!"
     # TODO: Write checks if it's Ubuntu or Debian
     # See https://superuser.com/a/741610/1124908 for details
     elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]] && [[ $SKIP_CONFIG_LINKING == "" ]]; then
-        [ ! -f "$HOME/.ssh/config" ] && ln -s $HOME/.dotfiles/linux/ubuntu ~/.gitconfig || warn "Git configuration on userspace found, please merge them manually!"
+        [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/linux/ubuntu ~/.gitconfig || warn "Git configuration on userspace found, please merge them manually!"
     fi
 }
 

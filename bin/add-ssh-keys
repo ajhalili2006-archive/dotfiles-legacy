@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
 if [[ $@ != "" ]]; then
-    echo "==> Adding your SSH key..."
+    echo "==> Adding your SSH key ($1) to SSH agent..."
     ssh-add $HOME/.ssh/$@
 elif [[ $@ == "" ]]; then
-    echo "==> Adding all of your SSH keys..."
-    #ssh-add ~/.ssh/github-personal
+    echo "==> Adding all of your SSH keys from ~/.ssh directory..."
     ssh-add ~/.ssh/launchpad
 fi
