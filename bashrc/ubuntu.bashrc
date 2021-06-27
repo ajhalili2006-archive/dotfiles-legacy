@@ -128,9 +128,8 @@ export PATH="$HOME/.deta/bin:$PATH"
 
 # scripts in ~/.local/bin and ~/.dotfiles/bin
 # also $HOME/.cargo/bin
-export DOTFILES_HOME="$HOME/.dotfiles"
-export DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin"
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$DOTFILES_STUFF_BIN:$PATH"
+export DOTFILES_HOME="$HOME/.dotfiles" DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin" GOLANG_PATH=/usr/local/go/bin
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$GOLANG_PATH:$DOTFILES_STUFF_BIN:$PATH"
 
 # use nano instead of vi
 # for git, there's the option of firing up VS Code, if you prefered.
