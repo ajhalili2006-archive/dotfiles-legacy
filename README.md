@@ -11,11 +11,11 @@ working at The Pins Team, see [our dotfiles][df-gl].
 
 ```sh
 ## configure required variables
-export GITLAB_LOGIN=AndreiJirohHaliliDev2006
+export GITLAB_LOGIN=ajhalili2006
 export GITLAB_TOKEN=<my-gitlab1dotcom-PAT>
 
 ## Run the bootstrap script
-$(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.githubusercontent.com/AndreiJirohHaliliDev2006/dotfiles/main/bootstrap | bash -
+$(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.githubusercontent.com/ajhalili2006/dotfiles/main/bootstrap | bash -
 
 ## Done?
 unset GITLAB_TOKEN GITLAB_LOGIN
@@ -25,7 +25,7 @@ unset GITLAB_TOKEN GITLAB_LOGIN
 
 ```sh
 # assuming git is installed
-git clone https://github.com/AndreiJirohHaliliDev2006/dotfiles $HOME/.dotfiles
+git clone https://github.com/ajhalili2006/dotfiles $HOME/.dotfiles
 cd $HOME/.dotfiles
 
 # no need for exporting my PAT before running this
