@@ -104,7 +104,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+    . "~/.bash_aliases"
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -148,4 +148,7 @@ export DEBFULLNAME="Andrei Jiroh Halili"
 export DEBEMAIL="andreijiroh@madebythepins.tk"
 
 # Homebrew
-test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# Golang
+export PATH=/home/gildedguy/go/bin:$PATH GOPATH=/home/gildedguy/go
