@@ -2,9 +2,12 @@
 
 #set -e
 
-echo "Dotfiles Bootstrap Script by Andrei Jiroh"
-echo "Starting up in 3 seconds..."
-sleep 3
+# TODO: Make this better
+banner() {
+  echo "Dotfiles Bootstrap Script by Andrei Jiroh"
+  echo "Starting up in 3 seconds..."
+  sleep 3
+}
 
 useColor() {
   # Only use colors if connected to a terminal
@@ -28,16 +31,16 @@ useColor() {
 }
 
 echoStageName() {
-    echo "$(${BOLD})----> $*$(${RESET})"
+    echo "${BOLD}----> $* ${RESET}"
 }
 
 warn() {
-    echo "$(${YELLOW})!     $*$(${YELLOW})"
+    echo "${YELLOW}!     $* ${RESET}"
 }
 
 error() {
     # this will be long, so I must do "&& exit 1" manually
-    echo "$(${RED})X     $*$(${RED})"
+    echo "${RED}X     $* ${RESET}"
 }
 
 checkOs() {
@@ -57,10 +60,10 @@ checkOs() {
 
 installDeps() {
     echoStageName "Installating essiential dependencies"
-    if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
+    if [[ $DOTFILES_OS_NAME == "android-termux" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
        pkg install -y man git nano gnupg openssh proot resolv-conf asciinema openssl-tool
        echo "info: Essientials are installed, if you need Node.js just do 'pkg install nodejs' (we recommend installing the LTS one for stability) anytime"
-    elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]]; then
+    elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
        sudo apt install gnupg git nano -y
 
        if [[ $USE_PYENV != "" ]]; then
@@ -71,7 +74,10 @@ installDeps() {
            echoStageName "Updating Python install"
            sudo apt install python3 python3-pip --yes
        fi
+    else
+       warn "Dependency installs are being skipped" 
     fi
+    sleep 5
 }
 
 cloneRepo() {
@@ -85,14 +91,15 @@ cloneRepo() {
     fi
     slepp 5
 
-    if [[ $GITLAB_TOKEN == "" ]] && [[ $GITLAB_LOGIN == "" ]]; then
+    if [[ $GITLAB_TOKEN == "" ]] && [[ $GITLAB_LOGIN == "" ]] && [ ! -d "$HOME/.dotfiles/secrets" ]; then
         error "GitLab login and token can't be blank!" && exit 1
     # Probably change my GitLab SaaS username with yours
-    elif [[ $GITLAB_LOGIN != "AndreiJirohHaliliDev2006" ]]; then
+    elif [[ $GITLAB_LOGIN != "AndreiJirohHaliliDev2006" ]] && [ ! -d "$HOME/.dotfiles/secrets" ]; then
         error "Only Andrei Jiroh can do this!" && exit 1
-    elif [[ $GITLAB_LOGIN == "AndreiJirohHaliliDev2006" ]] && [[ $GITLAB_TOKEN == "" ]]; then
+    elif [[ $GITLAB_LOGIN == "AndreiJirohHaliliDev2006" ]] && [[ $GITLAB_TOKEN == "" ]] && [ ! -d "$HOME/.dotfiles/secrets" ]; then
         error "Missing GitLab SaaS PAT! Check your Bitwarden vault for that key." && exit 1
     fi
+
     if [ ! -d "$HOME/.dotfiles/secrets" ]; then
         echoStageName "Cloning secrets repo"
         git clone https://$GITLAB_LOGIN:$GITLAB_TOKEN@gitlab.com/AndreiJirohHaliliDev2006/dotfiles-secrets $HOME/.dotfiles/secrets
@@ -233,8 +240,33 @@ installFilterRepo() {
     fi
 }
 
+# usage stuff
+usage() {
+   echo "Accepted bootstrap script arguments are:"
+   echo "* --help|-d - Show this text."
+   echo "* --skip-dependency-install, -d - Skip inst"
+}
+
 main() {
+    # check if the help flag is here
+    [[ $DEBUG != "" ]] && echo "flags: $*"
+    while [[ $# -gt 0 ]]; do
+      case $1 in
+        "--help"|-h)
+           shift
+           usage
+           exit
+           ;;
+        *)
+           shift
+           error "Invalid arguments, add the help flag for usage." && exit 1
+      esac
+      shift
+    done
+
+    # import colors and show the banner
     useColor
+    banner
     
     # step 1: check the OS first
     checkOs
