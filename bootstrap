@@ -2,6 +2,9 @@
 
 #set -e
 
+# if undefined, use $HOME/.local
+PREFIX=${PREFIX:#HOME/.local}
+
 # TODO: Make this better
 banner() {
   echoStageNameAdd "Dotfiles Bootstrap Script by Andrei Jiroh"
@@ -131,6 +134,8 @@ cleanup() {
     if echo $OSTYPE | grep -qE "linux-android.*"; then
         rm -rfv ~/{shellcheck,flarectl,LICENSE,README.txt,README.md}
         pkg uninstall clang --yes && apt autoremove --yes
+    else
+        rm -rfv ~/{shellcheck,flarectl,LICENSE,README.txt,README.md} || true
     fi
     success "Setting up a new Linux machine was succesfully executed. To ensure no secrets are leaked when logging utfrom shell session, please do 'history -c' to cleanup shell history."
     [ $GOOGLE_CLOUD_SHELL == "true" ] && warn "Looks like you're on Google Cloud Shell, please restart your virtual machine for changes to take effect."
@@ -212,14 +217,15 @@ installShellCheck() {
         else
           rm "${PREFIX}/bin/shellcheck"
         fi
+        cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
     fi
 }
 
 installAscinema() {
     if command -v python3 | grep -qE '^/usr/bin.*'; then
-       sudo "$(which python3)" -m pip install asciinema
+       sudo "$(which python3)" -m pip install asciinema --upgrade
     elif command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
-       $(which python3) -m pip install asciinema
+       $(which python3) -m pip install asciinema --upgrade
     else
        if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
           pkg install asciinema --yes
@@ -231,12 +237,12 @@ installAscinema() {
 
 installTF() {
     if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
-        pkg install clang -y && pip install thefuck -U
+        pkg install clang -y && pip install thefuck --user --upgrade
     else
         if command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
-            pip3 install thefuck
+            pip3 install thefuck --upgrade
         else
-            pip3 install thefuck -U
+            pip3 install thefuck --user --upgrade
         fi
     fi
 }
@@ -246,9 +252,9 @@ installFilterRepo() {
         pip install git-filter-repo
     else
         if command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
-            pip3 install git-filter-repo
+            pip3 install git-filter-repo --upgrade
         else
-            pip3 install git-filter-repo -U
+            pip3 install git-filter-repo --user --upgrade
         fi
     fi
 }
