@@ -3,7 +3,7 @@
 #set -e
 
 # if undefined, use $HOME/.local
-PREFIX=${PREFIX:#HOME/.local}
+PREFIX=${PREFIX:$HOME/.local}
 
 # TODO: Make this better
 banner() {
