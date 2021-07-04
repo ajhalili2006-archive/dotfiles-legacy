@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -88,9 +89,9 @@ fi
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # some more ls aliases
-#alias ll='ls -l'
-#alias la='ls -A'
-#alias l='ls -CF'
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -111,4 +112,22 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# scripts in ~/.local/bin and ~/.dotfiles/bin
+export DOTFILES_HOME="$HOME/.dotfiles" DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin"
+export PATH="$HOME/.local/bin:$DOTFILES_STUFF_BIN:$PATH"
+
+# custom aliases and functions I made
+# sorucing through the chain-source script
+source "$DOTFILES_HOME/bashrc/chain-source"
+
+# TODO: Do checks if the GitHub CLI is installed later
+#eval "$(gh completion -s bash)"
+
+# https://packaging.ubuntu.com/html/getting-set-up.html#configure-your-shell
+export DEBFULLNAME="Andrei Jiroh Halili"
+## can't add this email to my Launchpad profile, probably because I'm using an free domain lol.
+export DEBEMAIL="andreijiroh@madebythepins.tk"
+
+# After all of these, initialize Google's devshell bashrc
 source /google/devshell/bashrc.google
