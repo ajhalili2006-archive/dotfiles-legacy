@@ -152,3 +152,7 @@ test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/bre
 
 # Golang
 export PATH=/home/gildedguy/go/bin:$PATH GOPATH=/home/gildedguy/go
+
+if [ -f "/google/devshell/bashrc.google" ]; then
+  source "/google/devshell/bashrc.google"
+fi

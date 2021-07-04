@@ -3,7 +3,9 @@
 #set -e
 
 # if undefined, use $HOME/.local
-PREFIX=${PREFIX:$HOME/.local}
+if [[ $PREFIX == "" ]]; then
+  export PREFIX=$HOME/.local/bin
+fi
 
 # TODO: Make this better
 banner() {
@@ -113,7 +115,7 @@ cloneRepo() {
         git -C "$HOME/.dotfiles" fetch --all
         git -C "$HOME/.dotfiles" pull origin
     fi
-    slepp 5
+    sleep 5
 
     if [[ $GITLAB_TOKEN == "" ]] && [[ $GITLAB_LOGIN == "" ]] && [ ! -d "$HOME/.dotfiles/secrets" ]; then
         error "GitLab login and token can't be blank!" && exit 1
@@ -128,9 +130,10 @@ cloneRepo() {
         echoStageName "Cloning secrets repo"
         git clone https://$GITLAB_LOGIN:$GITLAB_TOKEN@gitlab.com/ajhalili2006/dotfiles-secrets $HOME/.dotfiles/secrets
         [ $? != "0" ] && echo "error: That kinda sus, but either only Andrei Jiroh can proceed or maybe the PAT you used is invalid." && exit 1
-        chmod 600 $HOME/.dotfiles/secrets/{ssh,pgp}
+        chmod 760 $HOME/.dotfiles/secrets
         sleep 5
     else
+        chmod 760 $HOME/.dotfiles/secrets
         git -C "$HOME/.dotfiles/secrets" fetch --all
         git -C "$HOME/.dotfiles/secrets" pull
         sleep 5
@@ -147,6 +150,7 @@ cleanup() {
         pkg uninstall clang --yes && apt autoremove --yes
     else
         rm -rfv ~/{shellcheck,flarectl,LICENSE,README.txt,README.md} || true
+        unset PREFIX
     fi
     success "Setting up a new Linux machine was succesfully executed. To ensure no secrets are leaked when logging utfrom shell session, please do 'history -c' to cleanup shell history."
     [ $GOOGLE_CLOUD_SHELL == "true" ] && warn "Looks like you're on Google Cloud Shell, please restart your virtual machine for changes to take effect."
@@ -187,7 +191,7 @@ copyBashrc() {
            ln -s "$HOME/.dotfiles/ubuntu.bashrc" ~/.bashrc
         elif [[ $GOOGLE_CLOUD_SHELL == "true" ]] && [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "$HOME/.bashrc" ]; then
            rm ~/.bashrc
-           ln -s  "$HOME/.dotfiles/bashrc/googlecloudhsell.bashrc" ~/.bashrc
+           ln -s  "$HOME/.dotfiles/bashrc/googlecloudshell.bashrc" ~/.bashrc
         elif [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "$HOME/.bashrc" ]; then
            warn "Existing bashrc found, renaming to ~/.bashrc.bak"
            mv ~/.bashrc ~/.bashrc.bak
@@ -202,8 +206,9 @@ copyGitConfig() {
         [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/gitconfig/termux ~/.gitconfig || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
     # TODO: Write checks if it's Ubuntu or Debian
     # See https://superuser.com/a/741610/1124908 for details
+    # By default, we'll use the one-size-fits-all Linux config for Git
     elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]] && [[ $SKIP_CONFIG_LINKING == "" ]]; then
-        [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/linux/ubuntu ~/.gitconfig || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
+        [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/gitconfig/linux ~/.gitconfig || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
     fi
 }
 
@@ -216,19 +221,32 @@ copyNanoConfig() {
 
 installShellCheck() {
     echoStageName "Installing Shellcheck"
-    scversion="stable" # or "v0.4.7", or "latest"
-    current_shellcheck_path=$(command -v shellcheck)
-    isOwnedByUser=$(find $PREFIX/bin -user $USER -file shellcheck)
-    wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv
-    if [[ $current_shellcheck_path == "" ]]; then
-       cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
-    else
+    if [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
+      scversion="stable" # or "v0.4.7", or "latest"
+      current_shellcheck_path=$(command -v shellcheck)
+      isOwnedByUser=$(find $PREFIX/bin -user $USER -file shellcheck)
+      current_path_dir=$(dirname $current_shellcheck_path)
+      wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv
+      if [[ $current_shellcheck_path == "" ]]; then
+        cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
+      elif [[ $current_shellcheck_path == "$PREFIX/bin/shellcheck" ]]; then
+        warn "Current ShellCheck install found in $PREFIX/bin, replacing with latest stable release..."
+        if [[ $isOwnedByUser == "" ]]; then
+          warn "Owned by either other user/root, summoning root"
+          sudo rm "${PREFIX}/bin/shellcheck"
+        else
+          rm "${PREFIX}/bin/shellcheck"
+        fi
+        cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
+      else
+        warn "Current ShellCheck install found in $current_shellcheck_bin, will be removed..."
         if [[ $isOwnedByUser == "" ]]; then
           sudo rm "${PREFIX}/bin/shellcheck"
         else
           rm "${PREFIX}/bin/shellcheck"
         fi
         cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
+      fi
     fi
 }
 
@@ -273,8 +291,10 @@ installFilterRepo() {
 # usage stuff
 usage() {
    echo "Accepted bootstrap script arguments are:"
-   echo "* --help|-d - Show this text."
-   echo "* --skip-dependency-install, -d - Skip installing dependencies"
+   echo "* --help|-h - Show this text."
+   echo "* -i - Skip installing different dependencies and packages"
+   echo "* -d - Enable debugging"
+   echo "* -l - Skip symlinking config files (nanorc, bashrc, etc.)"
 }
 
 customizeCloudShell() {
@@ -284,7 +304,7 @@ customizeCloudShell() {
     rm -fv ~/.customize_environment
   fi
   
-  cp ~/.dotfiles/.config/devshell.env .customize_environment && chmod +x ~/.customize_environment
+  cp ~/.dotfiles/.config/devshell.env ~/.customize_environment && chmod +x ~/.customize_environment
 }
 
 main() {
