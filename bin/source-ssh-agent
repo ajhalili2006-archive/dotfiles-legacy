@@ -11,7 +11,9 @@ fi
 if echo $OSTYPE | grep -qE "^linux-android.*"; then
   export SSH_AUTH_SOCK=$PREFIX/tmp/ssh-agent
 else
-  mkdir ~/.local>> /dev/null
+  if [ ! -d "$HOME/.local" ]; then
+    mkdir ~/.local
+  fi
   export SSH_AUTH_SOCK="$HOME/.local/ssh-agent"
 fi
 
