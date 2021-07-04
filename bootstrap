@@ -4,8 +4,8 @@
 
 # TODO: Make this better
 banner() {
-  echo "Dotfiles Bootstrap Script by Andrei Jiroh"
-  echo "Starting up in 3 seconds..."
+  echoStageNameAdd "Dotfiles Bootstrap Script by Andrei Jiroh"
+  echoStageName "Linux machine bootstrapper starts in 3 seconds..."
   sleep 3
 }
 
@@ -34,13 +34,21 @@ echoStageName() {
     echo "${BOLD}----> $* ${RESET}"
 }
 
+echoStageNameAdd() {
+    echo "${BOLD}      $* ${RESET}"
+}
+
 warn() {
-    echo "${YELLOW}!     $* ${RESET}"
+    echo "${YELLOW}warning: $* ${RESET}"
 }
 
 error() {
     # this will be long, so I must do "&& exit 1" manually
-    echo "${RED}X     $* ${RESET}"
+    echo "${RED}error: $* ${RESET}"
+}
+
+success() {
+    echo "${GREEN}success: $* ${RESET}"
 }
 
 checkOs() {
@@ -51,8 +59,10 @@ checkOs() {
         # Since Ubuntu is an major Debian fork, they're both LSB-complaint, so
         # we might need to just use grep for this one in the future.
         export DOTFILES_OS_NAME=debian-ubuntu
-    # TODO: Write stuff for Arch users and macOS.
-    # For WSL, that's an WIP.
+        if  [ -d '/google/devshell' ] && [ -f '/google/devshell/bashrc.google' ]; then
+           export GOOGLE_CLOUD_SHELL=true
+        fi
+    # TODO: Write stuff for Arch users and macOS. For WSL, that's also planned.
     else
         error "Script unsupported for this machine. See the online README for guide on manual bootstrapping." && exit 1
     fi
@@ -94,9 +104,9 @@ cloneRepo() {
     if [[ $GITLAB_TOKEN == "" ]] && [[ $GITLAB_LOGIN == "" ]] && [ ! -d "$HOME/.dotfiles/secrets" ]; then
         error "GitLab login and token can't be blank!" && exit 1
     # Probably change my GitLab SaaS username with yours
-    elif [[ $GITLAB_LOGIN != "ajhalili2006" ]]; then
+    elif [[ $GITLAB_LOGIN != "ajhalili2006" ]] && [ ! -d "$HOME/.dotfiles/secrets" ]; then
         error "Only Andrei Jiroh can do this!" && exit 1
-    elif [[ $GITLAB_LOGIN == "ajhalili2006" ]] && [[ $GITLAB_TOKEN == "" ]]; then
+    elif [[ $GITLAB_LOGIN == "ajhalili2006" ]] && [[ $GITLAB_TOKEN == "" ]] && [ ! -d "$HOME/.dotfiles/secrets" ]; then
         error "Missing GitLab SaaS PAT! Check your Bitwarden vault for that key." && exit 1
     fi
 
@@ -122,10 +132,10 @@ cleanup() {
         rm -rfv ~/{shellcheck,flarectl,LICENSE,README.txt,README.md}
         pkg uninstall clang --yes && apt autoremove --yes
     fi
-    unset DOTFILES_OS_NAME
-    echo "info: Please also cleanup your shell history with 'history -c' to ensure your GitLab SaaS PAT is safe. Enjoy your day!"
-    echo "info: Exiting..."
+    success "Setting up a new Linux machine was succesfully executed. To ensure no secrets are leaked when logging utfrom shell session, please do 'history -c' to cleanup shell history."
+    [ $GOOGLE_CLOUD_SHELL == "true" ] && warn "Looks like you're on Google Cloud Shell, please restart your virtual machine for changes to take effect."
     sleep 2
+    unset DOTFILES_OS_NAME GOOGLE_CLOUD_SHELL
     exit
 }
 
@@ -159,8 +169,11 @@ copyBashrc() {
     elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]]; then
         if [[ $SKIP_CONFIG_LINKING == "" ]] && [ ! -f "$HOME/.bashrc" ]; then
            ln -s "$HOME/.dotfiles/ubuntu.bashrc" ~/.bashrc
+        elif [[ $GOOGLE_CLOUD_SHELL == "true" ]] && [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "$HOME/.bashrc" ]; then
+           rm ~/.bashrc
+           ln -s  "$HOME/.dotfiles/bashrc/googlecloudhsell.bashrc" ~/.bashrc
         elif [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "$HOME/.bashrc" ]; then
-           warn
+           warn "Existing bashrc found, renaming to ~/.bashrc.bak"
            mv ~/.bashrc ~/.bashrc.bak
            ln -s "$HOME/.dotfiles/ubuntu.bashrc" ~/.bashrc
         fi
@@ -170,11 +183,11 @@ copyBashrc() {
 copyGitConfig() {
     echoStageName "Symlinking Git config"
     if [[ $DOTFILES_OS_NAME == "android-termux" ]] && [[ $SKIP_CONFIG_LINKING == "" ]]; then
-        [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/gitconfig/termux ~/.gitconfig || warn "Git configuration on userspace found, please merge them manually!"
+        [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/gitconfig/termux ~/.gitconfig || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
     # TODO: Write checks if it's Ubuntu or Debian
     # See https://superuser.com/a/741610/1124908 for details
     elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]] && [[ $SKIP_CONFIG_LINKING == "" ]]; then
-        [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/linux/ubuntu ~/.gitconfig || warn "Git configuration on userspace found, please merge them manually!"
+        [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/linux/ubuntu ~/.gitconfig || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
     fi
 }
 
@@ -244,7 +257,17 @@ installFilterRepo() {
 usage() {
    echo "Accepted bootstrap script arguments are:"
    echo "* --help|-d - Show this text."
-   echo "* --skip-dependency-install, -d - Skip inst"
+   echo "* --skip-dependency-install, -d - Skip installing dependencies"
+}
+
+customizeCloudShell() {
+  echoStageName "Adding customizations for Cloud Shell Environment"
+  if [ -f ~/.customize_environment ]; then
+    warn "Envirnment customization script found, deleting old one..."
+    rm -fv ~/.customize_environment
+  fi
+  
+  cp ~/.dotfiles/.config/devshell.env .customize_environment && chmod +x ~/.customize_environment
 }
 
 main() {
@@ -274,8 +297,11 @@ main() {
     # step 2: install needed tools
     installDeps
 
-    # step 3: then clone the repo
+    # step 3.1: then clone the repo
     cloneRepo
+    
+    # step 3.2: if we're in Cloud Shell, do this
+    [ $GOOGLE_CLOUD_SHELL == "true" ] && customizeCloudShell
 
     # step 4: install additional needed tools
     installAscinema
