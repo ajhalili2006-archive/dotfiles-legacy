@@ -55,7 +55,8 @@ success() {
 }
 
 checkOs() {
-
+    # This step is required for different actions, like installing deps from system-wide package managers
+    # among other sorts of shitfuckery
     if echo $OSTYPE | grep -qE "linux-android.*"; then
         export DOTFILES_OS_NAME=android-termux
     elif echo $OSTYPE | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; then
@@ -91,6 +92,16 @@ installDeps() {
        warn "Dependency installs are being skipped" 
     fi
     sleep 5
+}
+
+userspcaeBinDirCheck() {
+  echoStageName "checking if PREFIX/bin exists"
+  if [ ! -d $PREFIX/bin ]; then
+    warn "$PREFIX/bin doesn't exists, creating..."
+    mkdir -p $PREFIX/bin
+  else
+    success "Looks good!"
+  fi
 }
 
 cloneRepo() {
@@ -300,8 +311,9 @@ main() {
     # step 1: check the OS first
     checkOs
 
-    # step 2: install needed tools
+    # step 2: install needed tools and create ~/.local/bin
     installDeps
+    userspcaeBinDirCheck
 
     # step 3.1: then clone the repo
     cloneRepo
