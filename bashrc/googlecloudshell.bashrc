@@ -114,7 +114,8 @@ if ! shopt -oq posix; then
 fi
 
 # scripts in ~/.local/bin and ~/.dotfiles/bin
-export DOTFILES_HOME="$HOME/.dotfiles" DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin"
+export DOTFILES_HOME="$HOME/.dotfiles"
+export DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin"
 export PATH="$HOME/.local/bin:$DOTFILES_STUFF_BIN:$PATH"
 
 # custom aliases and functions I made
@@ -122,12 +123,20 @@ export PATH="$HOME/.local/bin:$DOTFILES_STUFF_BIN:$PATH"
 source "$DOTFILES_HOME/bashrc/chain-source"
 
 # TODO: Do checks if the GitHub CLI is installed later
-#eval "$(gh completion -s bash)"
+eval "$(gh completion -s bash)"
 
 # https://packaging.ubuntu.com/html/getting-set-up.html#configure-your-shell
 export DEBFULLNAME="Andrei Jiroh Halili"
 ## can't add this email to my Launchpad profile, probably because I'm using an free domain lol.
 export DEBEMAIL="andreijiroh@madebythepins.tk"
 
+# Summon our gpg-agent and ssh-agent
+eval $(gpg-agent --daemon --enable-ssh-support)
+# We still need this, just in case gpg-agent is being a dick
+source $DOTFILES_STUFF_BIN/source-ssh-agent
+export GPG_TTY=$(tty)
+
 # After all of these, initialize Google's devshell bashrc
-source /google/devshell/bashrc.google
+if [ -f "/google/devshell/bashrc.google" ]; then
+  source "/google/devshell/bashrc.google"
+fi
