@@ -152,3 +152,6 @@ test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/bre
 
 # Golang
 export PATH=/home/gildedguy/go/bin:$PATH GOPATH=/home/gildedguy/go
+
+# Use native builds when doing 'docker build' instead of 'docker buildx build'
+export DOCKER_BUILDKIT=1
