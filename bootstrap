@@ -4,7 +4,7 @@
 
 # if undefined, use $HOME/.local
 if [[ $PREFIX == "" ]]; then
-  export PREFIX=$HOME/.local/bin
+  export PREFIX=$HOME/.local
 fi
 
 # TODO: Make this better
@@ -15,24 +15,13 @@ banner() {
 }
 
 useColor() {
-  # Only use colors if connected to a terminal
-  if [ -t 1 ]; then
-    RED=$(printf '\033[31m')
-    GREEN=$(printf '\033[32m')
-    YELLOW=$(printf '\033[33m')
-    BLUE=$(printf '\033[34m')
-    MAGENTA=$(printf '\033[35m')
-    BOLD=$(printf '\033[1m')
-    RESET=$(printf '\033[m')
-  else
-    RED=""
-    GREEN=""
-    YELLOW=""
-    BLUE=""
-    MAGENTA=""
-    BOLD=""
-    RESET=""
-  fi
+  RED=$(printf '\033[31m')
+  GREEN=$(printf '\033[32m')
+  YELLOW=$(printf '\033[33m')
+  BLUE=$(printf '\033[34m')
+  MAGENTA=$(printf '\033[35m')
+  BOLD=$(printf '\033[1m')
+  RESET=$(printf '\033[m')
 }
 
 echoStageName() {
@@ -98,11 +87,11 @@ installDeps() {
 
 userspcaeBinDirCheck() {
   echoStageName "checking if PREFIX/bin exists"
-  if [ ! -d $PREFIX/bin ]; then
+  if [ ! -d "$PREFIX/bin" ]; then
     warn "$PREFIX/bin doesn't exists, creating..."
-    mkdir -p $PREFIX/bin
+    mkdir -p "$PREFIX/bin"
   else
-    success "Looks good!"
+    success "Looks good! $PREFIX/bin directory exists."
   fi
 }
 
@@ -145,7 +134,7 @@ cleanup() {
     # just add chaos to these secrets to avoid leaks
     export GITLAB_LOGIN=gildedguy
     export GITLAB_TOKEN=build-guid-sus-among-computers-moment
-    if echo $OSTYPE | grep -qE "linux-android.*"; then
+    if echo "$OSTYPE" | grep -qE "linux-android.*"; then
         rm -rfv ~/{shellcheck,flarectl,LICENSE,README.txt,README.md}
         pkg uninstall clang --yes && apt autoremove --yes
     else
@@ -162,14 +151,14 @@ cleanup() {
 copyKeysSSH() {
     echoStageName "Copying SSH keys"
     if [ ! -d "$HOME/.ssh" ]; then
-        mkdir -p $HOME/.ssh
-        cp $HOME/.dotfiles/secrets/ssh/launchpad ~/.ssh/launchpad
-        cp $HOME/.dotfiles/secrets/ssh/launchpad.pub ~/.ssh/launchpad.pub
-        chmod 600 ~/.ssh/launchpad
+        mkdir -p "$HOME/.ssh"
+        cp "$HOME/.dotfiles/secrets/ssh/launchpad" "~/.ssh/launchpad"
+        cp "$HOME/.dotfiles/secrets/ssh/launchpad.pub" "~/.ssh/launchpad.pub"
+        chmod 600 "~/.ssh/launchpad"
     else
-        cp $HOME/.dotfiles/secrets/ssh/launchpad ~/.ssh/launchpad
-        cp $HOME/.dotfiles/secrets/ssh/launchpad.pub ~/.ssh/launchpad.pub
-        chmod 600 ~/.ssh/launchpad
+        [ ! -f " ~/.ssh/launchpad" ] && cp "$HOME/.dotfiles/secrets/ssh/launchpad" "~/.ssh/launchpad"
+        [ ! -f " ~/.ssh/launchpad.pub" ] && "cp $HOME/.dotfiles/secrets/ssh/launchpad.pub" "~/.ssh/launchpad.pub"
+        chmod 600 "~/.ssh/launchpad"
     fi
 
     echoStageName "Linking config files"
@@ -203,18 +192,18 @@ copyBashrc() {
 copyGitConfig() {
     echoStageName "Symlinking Git config"
     if [[ $DOTFILES_OS_NAME == "android-termux" ]] && [[ $SKIP_CONFIG_LINKING == "" ]]; then
-        [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/gitconfig/termux ~/.gitconfig || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
+        [ ! -f "$HOME/.gitconfig" ] && ln -s "$HOME/.dotfiles/gitconfig/termux" ~/.gitconfig || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
     # TODO: Write checks if it's Ubuntu or Debian
     # See https://superuser.com/a/741610/1124908 for details
     # By default, we'll use the one-size-fits-all Linux config for Git
     elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]] && [[ $SKIP_CONFIG_LINKING == "" ]]; then
-        [ ! -f "$HOME/.gitconfig" ] && ln -s $HOME/.dotfiles/gitconfig/linux ~/.gitconfig || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
+        [ ! -f "$HOME/.gitconfig" ] && ln -s "$HOME/.dotfiles/gitconfig/linux ~/.gitconfig" || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
     fi
 }
 
 copyNanoConfig() {
     if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
-        [ "$SKIP_CONFIG_LINKING" == "" ] && ln -s $HOME/.dotfiles/nanorc/config/termux $HOME/.nanorc
+        [ "$SKIP_CONFIG_LINKING" == "" ] && ln -s "$HOME/.dotfiles/nanorc/config/termux" "$HOME/.nanorc"
     fi
 
 }
@@ -226,9 +215,9 @@ installShellCheck() {
       current_shellcheck_path=$(command -v shellcheck)
       isOwnedByUser=$(find $PREFIX/bin -user $USER -file shellcheck)
       current_path_dir=$(dirname $current_shellcheck_path)
-      wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv
+      wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv -C "$HOME"
       if [[ $current_shellcheck_path == "" ]]; then
-        cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
+        cp "shellcheck-${scversion}/shellcheck" "$PREFIX/bin"
       elif [[ $current_shellcheck_path == "$PREFIX/bin/shellcheck" ]]; then
         warn "Current ShellCheck install found in $PREFIX/bin, replacing with latest stable release..."
         if [[ $isOwnedByUser == "" ]]; then
@@ -237,34 +226,30 @@ installShellCheck() {
         else
           rm "${PREFIX}/bin/shellcheck"
         fi
-        cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
+        cp "shellcheck-${scversion}/shellcheck" "$PREFIX/bin"
       else
-        warn "Current ShellCheck install found in $current_shellcheck_bin, will be removed..."
+        warn "Current ShellCheck install found in $current_path_dir, will be removed..."
         if [[ $isOwnedByUser == "" ]]; then
           sudo rm "${PREFIX}/bin/shellcheck"
         else
           rm "${PREFIX}/bin/shellcheck"
         fi
-        cp "shellcheck-${scversion}/shellcheck" $PREFIX/bin
+        cp "shellcheck-${scversion}/shellcheck" "$PREFIX/bin"
       fi
     fi
 }
 
 installAscinema() {
-    if command -v python3 | grep -qE '^/usr/bin.*'; then
-       sudo "$(which python3)" -m pip install asciinema --upgrade
-    elif command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
-       $(which python3) -m pip install asciinema --upgrade
-    else
-       if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
-          pkg install asciinema --yes
-       else
-          sudo apt install asciinema --yes
-       fi
+    echoStageName "Installing Asciinema"
+    if [[ $DOTFILES_OS_NAME == "android-termux" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]] && [[ $USE_PIP3 == "" ]]; then
+      pkg install aciinema -y
+    elif [[ $SKIP_DEPENDENCY_INSTALL == "" ]] && [[ $USE_PIP3 != "" ]]; then
+      pip3 install asciinema --user --upgrade
     fi
 }
 
 installTF() {
+    echoStageName "Installing pip3:thefuck"
     if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
         pkg install clang -y && pip install thefuck --user --upgrade
     else
@@ -277,8 +262,9 @@ installTF() {
 }
 
 installFilterRepo() {
+    echoStageName "Installing git-filter-repo"
     if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
-        pip install git-filter-repo
+        pip install git-filter-repo --upgrade
     else
         if command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
             pip3 install git-filter-repo --upgrade
@@ -305,6 +291,15 @@ customizeCloudShell() {
   fi
   
   cp ~/.dotfiles/.config/devshell.env ~/.customize_environment && chmod +x ~/.customize_environment
+  if [ ! -d "$HOME/.cloudshell" ]; then
+    mkdir ~/.cloudshell
+  fi
+  if [ ! -f "$HOME/.cloudshell/no-apt-get-warning" ]; then
+    touch ~/.cloudshell/no-apt-get-warning
+  fi
+
+  echoStageName "Running ~/.customize_environment for you"
+  sudo $HOME/.customize_environment
 }
 
 main() {
@@ -345,6 +340,7 @@ main() {
     installAscinema
     installTF
     installFilterRepo
+    installShellCheck
 
     # step 5: copy and symlink files
     copyGitConfig
