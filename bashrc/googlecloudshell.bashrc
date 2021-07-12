@@ -64,14 +64,10 @@ else
 fi
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
+export PS1='\[\e]0;${DEVSHELL_PROJECT_ID:-Cloud Shell}\a\]'
+# Prompt that looks like `codr@cloudshell:~/google $`
+# or if the project is set `codr@cloudshell:~/google (cool-project) $`
+export PS1+='\u@cloudshell:\[\033[1;34m\]\w$([[ -n $DEVSHELL_PROJECT_ID ]] && printf " \[\033[1;33m\](%s)" ${DEVSHELL_PROJECT_ID} )\[\033[00m\]$ '
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -87,11 +83,6 @@ fi
 
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
-alias ll='ls -l'
-alias la='ls -A'
-alias l='ls -CF'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -113,14 +104,38 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# Issue: https://github.com/google-github-actions/setup-gcloud/issues/128
+# While we're in Cloud Shell and not in GitHub Actions, this should should fix the OpenSSL Not on
+# Path errors when using gcloud CLI.
+export LD_LIBRARY_PATH=/usr/local/lib
+
+# After all of these, source my customized Google Cloud Shell bahsrc.
+if [ -f "/google/devshell/bashrc.google" ]; then
+  source "$HOME/.dotfiles/bashrc/google.bashrc"
+fi
+
+# Instead of using Google Cloud Shell's preinstalled nvm, I manually installed it on my home directory.
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Make sure we can use Node.js latest LTS and warn me if it's not installed.
+# Should be called after sourcing Google Cloud Shell bashrc because Node Version Manager
+# is installed in a custom directory
+export LATEST_NODEJS_LTS_VERSION=v14.17.3
+if [ ! -d "$NVM_DIR/versions/node/$LATEST_NODEJS_LTS_VERSION" ]; then
+  echo "warning: Node.js $LATEST_NODEJS_LTS_VERSION isn't installed, please wait..."
+  nvm install $LATEST_NODEJS_LTS_VERSION --latest-npm
+fi
+
+# custom aliases and functions I made
 # scripts in ~/.local/bin and ~/.dotfiles/bin
 export DOTFILES_HOME="$HOME/.dotfiles"
 export DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin"
-export PATH="$HOME/.local/bin:$DOTFILES_STUFF_BIN:$PATH"
+export PATH="$DOTFILES_STUFF_BIN:$PATH"
 
-# custom aliases and functions I made
 # sorucing through the chain-source script
-source "$DOTFILES_HOME/bashrc/chain-source"
+source "$DOTFILES_HOME/bashrc/chain-source" >/dev/null
 
 # TODO: Do checks if the GitHub CLI is installed later
 eval "$(gh completion -s bash)"
@@ -131,12 +146,7 @@ export DEBFULLNAME="Andrei Jiroh Halili"
 export DEBEMAIL="andreijiroh@madebythepins.tk"
 
 # Summon our gpg-agent and ssh-agent
-eval $(gpg-agent --daemon --enable-ssh-support)
+eval $(gpg-agent --daemon) >> /dev/null 2>&1
 # We still need this, just in case gpg-agent is being a dick
 source $DOTFILES_STUFF_BIN/source-ssh-agent
 export GPG_TTY=$(tty)
-
-# After all of these, initialize Google's devshell bashrc
-if [ -f "/google/devshell/bashrc.google" ]; then
-  source "/google/devshell/bashrc.google"
-fi
