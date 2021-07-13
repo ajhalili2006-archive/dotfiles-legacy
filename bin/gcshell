@@ -1,0 +1,88 @@
+#!/bin/bash
+#shellcheck disable=SC2034,SC1091
+
+# Configuration variables
+if [ -f "$DOTFILES_HOME/.config/gcshell.env" ]; then
+  source "$DOTFILES_HOME/.config/gcshell.env"
+fi
+CLOUD_SHELL_SSH_KEY=${GCLOUD_CLOUD_SHELL_SSH_KEY:="$HOME/.ssh/google_compute_engine"}
+OVERWRITE_CLOUD_SHELL_KEY=${OVERWRITE_CLOUD_SHELL_KEy:=false}
+
+# Only use colors if connected to a terminal
+if [ -t 1 ]; then
+  RED=$(printf '\033[31m')
+  GREEN=$(printf '\033[32m')
+  YELLOW=$(printf '\033[33m')
+  BLUE=$(printf '\033[34m')
+  MAGENTA=$(printf '\033[35m')
+  BOLD=$(printf '\033[1m')
+  RESET=$(printf '\033[m')
+else
+  RED=""
+  GREEN=""
+  YELLOW=""
+  BLUE=""
+  MAGENTA=""
+  BOLD=""
+  RESET=""
+fi
+
+error() {
+  echo "${RED}error: $* ${RESET}"
+}
+
+warn() {
+  echo "${YELLOW}warning: $* ${RESET}"
+}
+
+if [[ $CLOUD_SHELL == "true" ]]; then
+  error "Sorry, but this command is only available outside Cloud Shell." && exit 1
+fi
+
+if [[ $1 == "" ]] || [[ $1 == "help" ]]; then
+  echo "gcshell - Wrapper script for accessing Cloud Shell"
+  echo "Usage: gcshell [connect,get-mount-config,setup-sshfs,transfer,debug]"
+  exit
+fi
+
+if [[ $1 == "debug" ]]; then
+  echo "===== CONFIG DEBUG ====="
+  echo "Cloud Shell/Compute Engine SSH key path: $CLOUD_SHELL_SSH_KEY [set \$CLOUD_SHELL_SSH_KEY to change path]"
+  if [ -f "$CLOUD_SHELL_SSH_KEY" ]; then
+    echo "Cloud Shell/Compute Engine Public Key: $(cat "$CLOUD_SHELL_SSH_KEY.pub")"
+  else
+    warn "Cloud Shell/Compute Engine Public key was Not Found"
+  fi
+  if [[ $OVERWRITE_CLOUD_SHELL_KEY == "true" ]]; then
+    echo "Overwrite SSH keys: enabled"
+  else
+    echo "Overwrite SSH keys: disabled"
+  fi
+  echo "===== CONFIG DEBUG ====="
+  exit
+fi
+
+# ="$CLOUD_SHELL_SSH_KEY"
+if [[ $1 == "connect" ]]; then
+  if [[ $OVERWRITE_CLOUD_SHELL_KEY == "true" ]]; then
+    gcloud cloud-shell ssh --authorize-session --force-key-file-overwrite
+  else
+    gcloud cloud-shell ssh --authorize-session
+  fi
+elif [[ $1 == "get-mount-config" ]]; then
+  if [[ $2 != "" ]]; then
+    gcloud cloud-shell get-mount-command $2
+  else
+    error "Mount directory is empty to generate sshfs mount command." && exit 1
+  fi
+elif [[ $1 == "get-mount-command" ]]; then
+  error "Did you mean the get-mount-config command?"
+  exit 1
+elif [[ $1 == "setup-sshfs" ]]; then
+  if [[ $2 != "" ]]; then
+    sshfs_command=$(gcloud cloud-shell get-mount-command $2)
+    exec $sshfs_command
+  else
+    error "Mount directory is empty to generate sshfs mount command." && exit 1
+  fi
+fi
