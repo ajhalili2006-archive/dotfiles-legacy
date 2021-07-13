@@ -1,3 +1,6 @@
 [submodule "bash-wakatime"]
 	path = bash-wakatime
 	url = https://github.com/gjsheep/bash-wakatime.git
+[submodule "golang-updater"]
+	path = update-golang
+	url = https://github.com/udhos/update-golang.git
