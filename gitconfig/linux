@@ -1,9 +1,21 @@
 [credential "https://github.com"]
 	helper = !gh auth git-credential
+
 [user]
 	email = andreijiroh@madebythepins.tk
 	name = Andrei Jiroh Eugenio Halili
 	signingkey = A30EBE40AD856D88
+  editor = code --wait
+
+[merge]
+    tool = vscode
+[mergetool "vscode"]
+    cmd = code --wait $MERGED
+[diff]
+    tool = vscode
+[difftool "vscode"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+
 [commit]
 	gpgsign = true
 

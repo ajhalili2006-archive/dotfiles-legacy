@@ -1,4 +1,5 @@
-#!/usr/bin/bash
+#!/bin/bash
+# shellcheck disable=SC2199,SC2068,SC1091,SC2086,SC2145
 
 # custom function management here
 # changes to the worthwhile-functions filepath requires
@@ -7,6 +8,7 @@
 disable-funcs () {
    echo "info: Unimplemented yet. Tell Andrei to add it to his todo."
 }
+
 edit-funcs-bashrc() {
    $(echo $EDITOR || command -v nano>>/dev/null && echo nano || echo vi) ~/.dotfiles/bashrc/worthwhile-functions
 }
@@ -17,26 +19,33 @@ list-debs-size () {
 
 edit-script-file () {
     # if you use other editor, please set $EDITOR.
-    $(echo $EDITOR || command -v nano>>/dev/null && echo nano || echo vi) $(command -v $1)
+    $(echo $EDITOR || command -v code>>/dev/null && echo code || command -v nano>>/dev/null && echo nano || echo vi) "$(command -v $1)"
 }
 
 # reloading stuff
 refresh-funcs() {
-   $DOTFILES_STUFF_BIN/reload-funcs-bashrc
+   "$DOTFILES_STUFF_BIN/reload-funcs-bashrc"
 }
 refresh-aliases() {
-   source $HOME/.dotfiles/bashrc/aliases
+   source "$HOME/.dotfiles/bashrc/aliases"
 }
 
 # https://commentedcode.org/blog/2020/09/21/changing-default-branch-of-git-init/
 function git() {
-  command git "$@"
-  if [[ $? -eq 0 && "$1" == "init" && "$@" != *"--help"* ]]; then
-    echo "Setting HEAD to branch main"
-    git symbolic-ref HEAD refs/heads/main
-  fi
+   # check command for some automation KEK
+   if [[ "$1" == "init" && "$@" != *"--help"* ]]; then
+     if ! command git init; then
+       echo "Setting HEAD to branch main"
+       command git symbolic-ref HEAD refs/heads/main
+     fi
+   elif [[ "$1" == "commit" && "$@" != *"--help"* && ( "$@" != *"--signoff"* && "$@" != *"-s"* ) ]]; then
+     [ $DEBUG != "" ] && echo "args: $@ --signoff" && sleep 3
+     command git "$@" --signoff
+   else
+     command git "$@"
+   fi
 }
 
 list-nodejs-scripts() {
-  cat package.json | jq .scripts || echo "No package.json found in current directory."
+  [[ -f "package.json" ]] && jq .scripts < package.json || echo "No package.json found in current directory."
 }
