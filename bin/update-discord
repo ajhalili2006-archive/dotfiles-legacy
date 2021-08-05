@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+wget "https://discord.com/api/download?platform=linux&format=deb" -O /tmp/discord-linux-amd64.deb
+sudo apt install /tmp/discord-linux-amd64.deb
