@@ -38,7 +38,7 @@ function git() {
        echo "Setting HEAD to branch main"
        command git symbolic-ref HEAD refs/heads/main
      fi
-   elif [[ "$1" == "commit" && "$@" != *"--help"* && ( "$@" != *"--signoff"* && "$@" != *"-s"* ) ]]; then
+   elif [[ "$1" == "commit" && "$@" != *"--help"* && ( "$@" != *"--signoff"* && "$@" != *"-s"* && $@ != *"--amend" ) ]]; then
      [ $DEBUG != "" ] && echo "args: $@ --signoff" && sleep 3
      command git "$@" --signoff
    else
