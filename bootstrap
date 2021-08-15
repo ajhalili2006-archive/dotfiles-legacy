@@ -302,6 +302,8 @@ customizeCloudShell() {
   sudo $HOME/.customize_environment
 }
 
+# TODO: Install VS Code here (or code-server)
+
 main() {
     # check if the help flag is here
     [[ $DEBUG != "" ]] && echo "flags: $*"
