@@ -5,6 +5,7 @@
 # if undefined, use $HOME/.local
 if [[ $PREFIX == "" ]]; then
   export PREFIX=$HOME/.local
+  mkdir $PREFIX/bin -p
 fi
 
 # TODO: Make this better
@@ -83,6 +84,11 @@ installDeps() {
        warn "Dependency installs are being skipped" 
     fi
     sleep 5
+}
+
+installNodeVerManager() {
+  $(command -v curl >>/dev/null && echo "curl -o-" || echo "wget -qO-") https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | NODE_VERSION=${NODE_VERSION:"lts/*"} NVM_DIR="$HOME/.nvm" PROFILE=/dev/null bash
+)
 }
 
 userspcaeBinDirCheck() {
@@ -302,7 +308,15 @@ customizeCloudShell() {
   sudo $HOME/.customize_environment
 }
 
-# TODO: Install VS Code here (or code-server)
+# Install VS Code here (or code-server)
+installCode() {
+  if [[ $USE_CODE_SERVER != "" ]]; then
+    # We'll use the officil script here, because why not? This may take longer on Termux if that's the case.
+    curl -fsSL https://code-server.dev/install.sh | sh
+  elif [[ $$XDG_CURRENT_DESKTOP != "" ]]; then
+    true # It's true for now
+  fi
+}
 
 main() {
     # check if the help flag is here
@@ -343,6 +357,8 @@ main() {
     installTF
     installFilterRepo
     installShellCheck
+    [[ $USE_NVM == "true" ]] && installNodeVerManager
+    installCode
 
     # step 5: copy and symlink files
     copyGitConfig
