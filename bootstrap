@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+{ # curybrackets is included to ensure everything is downloaded
+
 #set -e
 
 # if undefined, use $HOME/.local
@@ -89,7 +91,6 @@ installDeps() {
 installNodeVerManager() {
   echoStagName "Installing Node.js Version Manager"
   $(command -v curl >>/dev/null && echo "curl -o-" || echo "wget -qO-") https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | NODE_VERSION=${NODE_VERSION:"lts/*"} NVM_DIR="$HOME/.nvm" PROFILE=/dev/null bash
-)
 }
 
 userspcaeBinDirCheck() {
@@ -377,3 +378,5 @@ main() {
 }
 
 main "$@"
+
+} # curybrackets is included to ensure everything is downloaded
