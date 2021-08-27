@@ -76,8 +76,23 @@ installDeps() {
 
        if [[ $USE_PYENV != "" ]]; then
            # we'll use the pyenv stuff
-           echoStageName "Installing Pyenv with pyenv-installer"
-           curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+           PYENV_ROOT=${PYENV_ROOT:-"$HOME/.pyenv"}
+           if [[ ! -d "${HOME}/.pyenv" ]]; then
+             echoStageName "Installing Pyenv with pyenv-installer"
+             curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+           else
+             git -C "${PYENV_ROOT}" pull origin --verbose
+             git -C "${PYENV_ROOT}/plugins/pyenv-doctor" pull origin --verbose
+             git -C "${PYENV_ROOT}/plugins/pyenv-installer" pull origin --verbose
+             git -C "${PYENV_ROOT}/plugins/pyenv-update" pull origin --verbose
+             git -C "${PYENV_ROOT}/plugins/pyenv-virtualenv" pull origin --verbose
+             git -C "${PYENV_ROOT}/plugins/pyenv-which-ext" pull origin --verbose
+           fi
+           echoStageName "Installing build deps as needed by pyenv"
+           sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev -y
+           
+           echoStageName "Installing Python3 through Pyenv"
+           "${PYENV_ROOT}/bin/pyenv" install 3.9.6
        elif [[ $UPDATE_SYSTEM_PYTHON_INSTALL != "" ]]; then
            echoStageName "Updating Python install"
            sudo apt install python3 python3-pip --yes
