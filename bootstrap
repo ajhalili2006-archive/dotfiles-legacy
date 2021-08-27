@@ -5,7 +5,7 @@
 # if undefined, use $HOME/.local
 if [[ $PREFIX == "" ]]; then
   export PREFIX=$HOME/.local
-  mkdir $PREFIX/bin -p
+  [[ ! -d "$PREFIX/bin" ]] && mkdir $PREFIX/bin -p
 fi
 
 # TODO: Make this better
@@ -87,6 +87,7 @@ installDeps() {
 }
 
 installNodeVerManager() {
+  echoStagName "Installing Node.js Version Manager"
   $(command -v curl >>/dev/null && echo "curl -o-" || echo "wget -qO-") https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | NODE_VERSION=${NODE_VERSION:"lts/*"} NVM_DIR="$HOME/.nvm" PROFILE=/dev/null bash
 )
 }
@@ -247,10 +248,14 @@ installShellCheck() {
 
 installAscinema() {
     echoStageName "Installing Asciinema"
-    if [[ $DOTFILES_OS_NAME == "android-termux" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]] && [[ $USE_PIP3 == "" ]]; then
+    if [[ $DOTFILES_OS_NAME == "android-termux" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
       pkg install aciinema -y
-    elif [[ $SKIP_DEPENDENCY_INSTALL == "" ]] && [[ $USE_PIP3 != "" ]]; then
-      pip3 install asciinema --user --upgrade
+    elif [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
+      if command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
+          "$HOME/.pyenv/shims/pip3" install asciinema --user --upgrade
+      else
+          pip3 install thefuck --user --upgrade
+      fi
     fi
 }
 
@@ -260,7 +265,7 @@ installTF() {
         pkg install clang -y && pip install thefuck --user --upgrade
     else
         if command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
-            pip3 install thefuck --upgrade
+            "$HOME/.pyenv/shims/pip3" install thefuck --upgrade
         else
             pip3 install thefuck --user --upgrade
         fi
@@ -273,7 +278,7 @@ installFilterRepo() {
         pip install git-filter-repo --upgrade
     else
         if command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
-            pip3 install git-filter-repo --upgrade
+            "$HOME/.pyenv/shims/pip3" install git-filter-repo --upgrade
         else
             pip3 install git-filter-repo --user --upgrade
         fi
@@ -312,6 +317,7 @@ customizeCloudShell() {
 installCode() {
   if [[ $USE_CODE_SERVER != "" ]]; then
     # We'll use the officil script here, because why not? This may take longer on Termux if that's the case.
+    echoStageName "Installing Code Server"
     curl -fsSL https://code-server.dev/install.sh | sh
   elif [[ $$XDG_CURRENT_DESKTOP != "" ]]; then
     true # It's true for now
@@ -357,7 +363,7 @@ main() {
     installTF
     installFilterRepo
     installShellCheck
-    [[ $USE_NVM == "true" ]] && installNodeVerManager
+    [[ $USE_NVM != "" ]] && installNodeVerManager
     installCode
 
     # step 5: copy and symlink files
