@@ -7,7 +7,7 @@
 # if undefined, use $HOME/.local
 if [[ $PREFIX == "" ]]; then
   export PREFIX=$HOME/.local
-  [[ ! -d "$PREFIX/bin" ]] && mkdir $PREFIX/bin -p
+  [[ ! -d "$PREFIX/bin" ]] && "mkdir $PREFIX/bin" -p
 fi
 
 # TODO: Make this better
@@ -93,6 +93,7 @@ installDeps() {
            
            echoStageName "Installing Python3 through Pyenv"
            "${PYENV_ROOT}/bin/pyenv" install 3.9.6
+           "${PYENV_ROOT}/bin/pyenv" global 3.9.6
        elif [[ $UPDATE_SYSTEM_PYTHON_INSTALL != "" ]]; then
            echoStageName "Updating Python install"
            sudo apt install python3 python3-pip --yes
@@ -175,13 +176,13 @@ copyKeysSSH() {
     echoStageName "Copying SSH keys"
     if [ ! -d "$HOME/.ssh" ]; then
         mkdir -p "$HOME/.ssh"
-        cp "$HOME/.dotfiles/secrets/ssh/launchpad" "~/.ssh/launchpad"
-        cp "$HOME/.dotfiles/secrets/ssh/launchpad.pub" "~/.ssh/launchpad.pub"
+        cp "$HOME/.dotfiles/secrets/ssh/launchpad" "$HOME/.ssh/launchpad"
+        cp "$HOME/.dotfiles/secrets/ssh/launchpad.pub" "$HOME/.ssh/launchpad.pub"
         chmod 600 "~/.ssh/launchpad"
     else
-        [ ! -f "~/.ssh/launchpad" ] && cp "$HOME/.dotfiles/secrets/ssh/launchpad" "~/.ssh/launchpad"
-        [ ! -f "~/.ssh/launchpad.pub" ] && "cp $HOME/.dotfiles/secrets/ssh/launchpad.pub" "~/.ssh/launchpad.pub"
-        [ -f "~/.ssh/launchpad.pub" ] && chmod 600 "~/.ssh/launchpad"
+        [ ! -f "$HOME/.ssh/launchpad" ] && cp "$HOME/.dotfiles/secrets/ssh/launchpad" "$HOME/.ssh/launchpad"
+        [ ! -f "$HOME/.ssh/launchpad.pub" ] && "cp $HOME/.dotfiles/secrets/ssh/launchpad.pub" "$HOME/.ssh/launchpad.pub"
+        [ -f "$HOME/.ssh/launchpad.pub" ] && chmod 600 "$HOME/.ssh/launchpad"
     fi
 
     echoStageName "Linking config files"
@@ -190,7 +191,7 @@ copyKeysSSH() {
     # TODO: Write checks if it's Ubuntu or Debian
     # See https://superuser.com/a/741610/1124908 for details
     elif echo $OSTYPE | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; then
-        [ ! -f "$HOME/.ssh/config" ] && ln -s $HOME/.dotfiles/ssh-client/ubuntu ~/.ssh/config
+        [ ! -f "$HOME/.ssh/config" ] && ln -s "$HOME/.dotfiles/ssh-client/ubuntu" "$HOME/.ssh/config"
     fi
     sleep 5
 }
@@ -236,8 +237,8 @@ installShellCheck() {
     if [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
       scversion="stable" # or "v0.4.7", or "latest"
       current_shellcheck_path=$(command -v shellcheck)
-      isOwnedByUser=$(find $PREFIX/bin -user $USER -file shellcheck)
-      current_path_dir=$(dirname $current_shellcheck_path)
+      isOwnedByUser="$(find $PREFIX/bin -user $USER -file shellcheck)"
+      current_path_dir="$(dirname $current_shellcheck_path)"
       wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv -C "$HOME"
       if [[ $current_shellcheck_path == "" ]]; then
         cp "$HOME/shellcheck-${scversion}/shellcheck" "$PREFIX/bin"
@@ -319,14 +320,14 @@ customizeCloudShell() {
   
   cp ~/.dotfiles/.config/devshell.env ~/.customize_environment && chmod +x ~/.customize_environment
   if [ ! -d "$HOME/.cloudshell" ]; then
-    mkdir ~/.cloudshell
+    mkdir "$HOME/.cloudshell"
   fi
   if [ ! -f "$HOME/.cloudshell/no-apt-get-warning" ]; then
-    touch ~/.cloudshell/no-apt-get-warning
+    touch "$HOME/.cloudshell/no-apt-get-warning"
   fi
 
   echoStageName "Running ~/.customize_environment for you"
-  sudo $HOME/.customize_environment
+  sudo "$HOME/.customize_environment"
 }
 
 # Install VS Code here (or code-server)
