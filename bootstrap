@@ -144,13 +144,12 @@ cloneRepo() {
         git clone https://$GITLAB_LOGIN:$GITLAB_TOKEN@gitlab.com/ajhalili2006/dotfiles-secrets $HOME/.dotfiles/secrets
         [ $? != "0" ] && echo "error: That kinda sus, but either only Andrei Jiroh can proceed or maybe the PAT you used is invalid." && exit 1
         chmod 760 $HOME/.dotfiles/secrets
-        sleep 5
     else
         chmod 760 $HOME/.dotfiles/secrets
         git -C "$HOME/.dotfiles/secrets" fetch --all
         git -C "$HOME/.dotfiles/secrets" pull
-        sleep 5
     fi
+    sleep 5
 }
 
 cleanup() {
@@ -166,7 +165,7 @@ cleanup() {
         unset PREFIX
     fi
     success "Setting up a new Linux machine was succesfully executed. To ensure no secrets are leaked when logging utfrom shell session, please do 'history -c' to cleanup shell history."
-    [ $GOOGLE_CLOUD_SHELL == "true" ] && warn "Looks like you're on Google Cloud Shell, please restart your virtual machine for changes to take effect."
+    [[ $GOOGLE_CLOUD_SHELL == "true" ]] && warn "Looks like you're on Google Cloud Shell, please restart your virtual machine for changes to take effect."
     sleep 2
     unset DOTFILES_OS_NAME GOOGLE_CLOUD_SHELL
     exit
@@ -204,11 +203,14 @@ copyBashrc() {
            ln -s "$HOME/.dotfiles/ubuntu.bashrc" ~/.bashrc
         elif [[ $GOOGLE_CLOUD_SHELL == "true" ]] && [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "$HOME/.bashrc" ]; then
            rm "$HOME/.bashrc"
-           ln -s  "$HOME/.dotfiles/bashrc/googlecloudshell.bashrc" "$HOME/.bashrc"
+           ln -s "$HOME/.dotfiles/bashrc/googlecloudshell.bashrc" "$HOME/.bashrc"
         elif [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "$HOME/.bashrc" ]; then
-           warn "Existing bashrc found, renaming to ~/.bashrc.bak"
-           mv "$HOME/.bashrc" "$HOME/.bashrc.bak"
-           ln -s "$HOME/.dotfiles/ubuntu.bashrc" "$HOME/.bashrc"
+           if [[ -L "$HOME/.bashrc" ]]; then
+             warn "~/.bashrc is symlinked, skipping the linking process"
+           else
+             warn "Existing bashrc found, renaming to ~/.bashrc.bak"
+             mv "$HOME/.bashrc" "$HOME/.bashrc.bak"
+             ln -s "$HOME/.dotfiles/ubuntu.bashrc" "$HOME/.bashrc"
         fi
     fi
 }
@@ -216,12 +218,12 @@ copyBashrc() {
 copyGitConfig() {
     echoStageName "Symlinking Git config"
     if [[ $DOTFILES_OS_NAME == "android-termux" ]] && [[ $SKIP_CONFIG_LINKING == "" ]]; then
-        [ ! -f "$HOME/.gitconfig" ] && ln -s "$HOME/.dotfiles/gitconfig/termux" ~/.gitconfig || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
+        [ ! -L "$HOME/.gitconfig" ] && ln -s "$HOME/.dotfiles/gitconfig/termux" ~/.gitconfig || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
     # TODO: Write checks if it's Ubuntu or Debian
     # See https://superuser.com/a/741610/1124908 for details
     # By default, we'll use the one-size-fits-all Linux config for Git
     elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]] && [[ $SKIP_CONFIG_LINKING == "" ]]; then
-        [ ! -f "$HOME/.gitconfig" ] && ln -s "$HOME/.dotfiles/gitconfig/linux ~/.gitconfig" || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
+        [ ! -L "$HOME/.gitconfig" ] && ln -s "$HOME/.dotfiles/gitconfig/linux" "$HOME/.gitconfig" || warn "Git configuration on userspace found, please fix any conflicts or soft link them manually!"
     fi
 }
 
@@ -336,7 +338,7 @@ installCode() {
     # We'll use the officil script here, because why not? This may take longer on Termux if that's the case.
     echoStageName "Installing Code Server"
     curl -fsSL https://code-server.dev/install.sh | sh
-  elif [[ $$XDG_CURRENT_DESKTOP != "" ]]; then
+  elif [[ $XDG_CURRENT_DESKTOP != "" ]]; then
     true # It's true for now
   fi
 }
@@ -373,7 +375,7 @@ main() {
     cloneRepo
     
     # step 3.2: if we're in Cloud Shell, do this
-    [ $GOOGLE_CLOUD_SHELL == "true" ] && customizeCloudShell
+    [[ $GOOGLE_CLOUD_SHELL == "true" ]] && customizeCloudShell
 
     # step 4: install additional needed tools
     installAscinema
