@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 { # curybrackets is included to ensure everything is downloaded
 
@@ -6,7 +6,7 @@
 
 # if undefined, use $HOME/.local
 if [[ $PREFIX == "" ]]; then
-  export PREFIX=$HOME/.local
+  export PREFIX="$HOME/.local"
   [[ ! -d "$PREFIX/bin" ]] && "mkdir $PREFIX/bin" -p
 fi
 
@@ -178,7 +178,7 @@ copyKeysSSH() {
         mkdir -p "$HOME/.ssh"
         cp "$HOME/.dotfiles/secrets/ssh/launchpad" "$HOME/.ssh/launchpad"
         cp "$HOME/.dotfiles/secrets/ssh/launchpad.pub" "$HOME/.ssh/launchpad.pub"
-        chmod 600 "~/.ssh/launchpad"
+        chmod 600 "$HOME/.ssh/launchpad"
     else
         [ ! -f "$HOME/.ssh/launchpad" ] && cp "$HOME/.dotfiles/secrets/ssh/launchpad" "$HOME/.ssh/launchpad"
         [ ! -f "$HOME/.ssh/launchpad.pub" ] && "cp $HOME/.dotfiles/secrets/ssh/launchpad.pub" "$HOME/.ssh/launchpad.pub"
@@ -203,12 +203,12 @@ copyBashrc() {
         if [[ $SKIP_CONFIG_LINKING == "" ]] && [ ! -f "$HOME/.bashrc" ]; then
            ln -s "$HOME/.dotfiles/ubuntu.bashrc" ~/.bashrc
         elif [[ $GOOGLE_CLOUD_SHELL == "true" ]] && [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "$HOME/.bashrc" ]; then
-           rm ~/.bashrc
-           ln -s  "$HOME/.dotfiles/bashrc/googlecloudshell.bashrc" ~/.bashrc
+           rm "$HOME/.bashrc"
+           ln -s  "$HOME/.dotfiles/bashrc/googlecloudshell.bashrc" "$HOME/.bashrc"
         elif [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "$HOME/.bashrc" ]; then
            warn "Existing bashrc found, renaming to ~/.bashrc.bak"
-           mv ~/.bashrc ~/.bashrc.bak
-           ln -s "$HOME/.dotfiles/ubuntu.bashrc" ~/.bashrc
+           mv "$HOME/.bashrc" "$HOME/.bashrc.bak"
+           ln -s "$HOME/.dotfiles/ubuntu.bashrc" "$HOME/.bashrc"
         fi
     fi
 }
