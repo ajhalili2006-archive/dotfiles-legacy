@@ -211,6 +211,7 @@ copyBashrc() {
              warn "Existing bashrc found, renaming to ~/.bashrc.bak"
              mv "$HOME/.bashrc" "$HOME/.bashrc.bak"
              ln -s "$HOME/.dotfiles/ubuntu.bashrc" "$HOME/.bashrc"
+           fi
         fi
     fi
 }
