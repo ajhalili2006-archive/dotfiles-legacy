@@ -6,10 +6,10 @@
 # for examples
 
 # If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
+#case $- in
+#    *i*) ;;
+#      *) return;;
+#esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -133,10 +133,28 @@ export DOTFILES_HOME="$HOME/.dotfiles"
 export DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin" GOLANG_PATH=/usr/local/go/bin
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$GOLANG_PATH:$DOTFILES_STUFF_BIN:$PATH"
 
-# use nano instead of vi
+# use nano instead of vi by default when on SSH
 # for git, there's the option of firing up VS Code, if you prefered.
-export VISUAL="code --wait"
-export EDITOR=nano
+#export VISUAL="code --wait"
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+  export EDITOR=nano
+else
+  # We'll do some checks here btw, Currently I use GNOME and Xfce4 as my desktop environments
+  case $(ps -o comm= -p $PPID) in
+    sshd|*/sshd) export EDITOR="code --wait";;
+    xfce*) export EDITOR="$(which code >> /dev/null && echo code --wait || which gedit >> /dev/null && echo gedit || echo nano)";;
+    gnome*) export EDITOR="$(which code >> /dev/null && echo code --wait || which gedit >> /dev/null && echo gedit || echo nano)";;
+    *) export EDITOR="nano";;
+  esac
+fi
+
+# As long as possible, attempt to setup our GnuPG agent when
+# we're on an SSH session.
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]]; then
+  eval $(keychain --agents gpg,ssh --eval) && export GPG_TTY=$(tty)
+else
+  true
+fi
 
 # autocompletion for GitHub CLI
 eval "$(gh completion -s bash)"
@@ -161,3 +179,4 @@ export DOCKER_BUILDKIT=1
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
