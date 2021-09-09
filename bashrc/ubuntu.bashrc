@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-# shellcheck disable=SC1090,SC1091,SC2088
+# shellcheck disable=SC1090,SC1091,SC2088,SC2155,SC2046
 
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
@@ -136,24 +136,34 @@ export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$GOLANG_PATH:$DOTFILES_STUFF_BIN:
 # use nano instead of vi by default when on SSH
 # for git, there's the option of firing up VS Code, if you prefered.
 #export VISUAL="code --wait"
-if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-  export EDITOR=nano
+if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
+	export EDITOR=nano
 else
-  # We'll do some checks here btw, Currently I use GNOME and Xfce4 as my desktop environments
-  case $(ps -o comm= -p $PPID) in
-    sshd|*/sshd) export EDITOR="code --wait";;
-    xfce*) export EDITOR="$(which code >> /dev/null && echo code --wait || which gedit >> /dev/null && echo gedit || echo nano)";;
-    gnome*) export EDITOR="$(which code >> /dev/null && echo code --wait || which gedit >> /dev/null && echo gedit || echo nano)";;
-    *) export EDITOR="nano";;
-  esac
+	# We'll do some checks here btw, Currently I use GNOME and Xfce4 as my desktop environments, but
+	# I also consider adding KDE here in the future.
+	case $(ps -o comm= -p $PPID) in
+	sshd | */sshd) export EDITOR="code --wait" ;;
+	xfce*) export EDITOR="$(which code >>/dev/null && echo code --wait || which gedit >>/dev/null && echo gedit || echo nano)" ;;
+	gnome*) export EDITOR="$(which code >>/dev/null && echo code --wait || which gedit >>/dev/null && echo gedit || echo nano)" ;;
+	code) export EDITOR="code --wait";;
+	*) export EDITOR="nano" ;;
+	esac
 fi
 
 # As long as possible, attempt to setup our GnuPG agent when
 # we're on an SSH session.
-if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]]; then
-  eval $(keychain --agents gpg,ssh --eval) && export GPG_TTY=$(tty)
+if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
+	eval $(keychain --agents gpg,ssh --eval --nogui --noinherit)
+	export GPG_TTY=$(tty)
 else
-  true
+	# We'll do some checks here btw, Currently I use GNOME and Xfce4 as my desktop environments
+	case $(ps -o comm= -p $PPID) in
+	sshd | */sshd) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit);;
+	xfce*) eval $(keychain --agents gpg,ssh --eval);;
+	gnome*) eval $(keychain --agents gpg,ssh --eval);;
+	code) eval $(keychain --agents gpg,ssh --eval);;
+	*) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) ;;
+	esac
 fi
 
 # autocompletion for GitHub CLI
@@ -179,4 +189,3 @@ export DOCKER_BUILDKIT=1
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
-
