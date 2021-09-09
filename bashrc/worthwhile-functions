@@ -13,11 +13,11 @@ edit-funcs-bashrc() {
    $(echo $EDITOR || command -v nano>>/dev/null && echo nano || echo vi) ~/.dotfiles/bashrc/worthwhile-functions
 }
 
-list-debs-size () {
+list-debs-size() {
    dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | less
 }
 
-edit-script-file () {
+edit-script-file() {
     # if you use other editor, please set $EDITOR.
     $(echo $EDITOR || command -v code>>/dev/null && echo code || command -v nano>>/dev/null && echo nano || echo vi) "$(command -v $1)"
 }
@@ -32,7 +32,7 @@ refresh-aliases() {
 
 # https://commentedcode.org/blog/2020/09/21/changing-default-branch-of-git-init/
 git() {
-   # check command for some automation KEK
+   # check command for some automation KEK, especially i want to do DCO by default
    if [[ "$1" == "init" && "$@" != *"--help"* ]]; then
      [[ $DEBUG != "" ]] && echo "args: $@" && sleep 3
      if command git "$@"; then
@@ -41,6 +41,8 @@ git() {
      fi
    elif [[ "$1" == "commit" && "$@" != *"--help"* && ( "$@" != *"--signoff"* && "$@" != *"-s"* && $@ != *"--amend" ) ]]; then
      [ $DEBUG != "" ] && echo "args: $@ --signoff" && sleep 3
+     command git "$@" --signoff
+   elif [[ "$1" == "pull" && "$@" != *"--help"* && ( "$@" != *"--signoff"* && "$@" != *"-s"* ) ]]; then
      command git "$@" --signoff
    else
      command git "$@"
