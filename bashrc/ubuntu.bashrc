@@ -79,8 +79,8 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
@@ -150,19 +150,20 @@ else
 	esac
 fi
 
-# As long as possible, attempt to setup our GnuPG agent when
-# we're on an SSH session.
+# As long as possible, attempt to setup our GnuPG agent when we're on an SSH session.
 if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
 	eval $(keychain --agents gpg,ssh --eval --nogui --noinherit)
 	export GPG_TTY=$(tty)
 else
 	# We'll do some checks here btw, Currently I use GNOME and Xfce4 as my desktop environments
 	case $(ps -o comm= -p $PPID) in
-	sshd | */sshd) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit);;
-	xfce*) eval $(keychain --agents gpg,ssh --eval);;
-	gnome*) eval $(keychain --agents gpg,ssh --eval);;
-	code) eval $(keychain --agents gpg,ssh --eval);;
-	*) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) ;;
+        	# Sometimes, $SSH_CLIENT and/or $SSH_TTY doesn't exists so we'll pull what ps says
+		sshd | */sshd) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit);;
+		xfce*) eval $(keychain --agents gpg,ssh --eval);;
+		gnome*) eval $(keychain --agents gpg,ssh --eval);;
+		# Don't forget VS Code and code-server!
+		code) eval $(keychain --agents gpg,ssh --eval);;
+		*) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) ;;
 	esac
 fi
 
@@ -175,13 +176,14 @@ source "$HOME/.dotfiles/bashrc/chain-source"
 
 # https://packaging.ubuntu.com/html/getting-set-up.html#configure-your-shell
 export DEBFULLNAME="Andrei Jiroh Halili"
-## can't add this email to my Launchpad profile, probably because I'm using an free domain lol.
-export DEBEMAIL="andreijiroh@madebythepins.tk"
+# Temporary Gmail address for devel stuff, even through my longer email one is, well,
+# on my public GPG key btw, so YOLO it.
+export DEBEMAIL="ajhalili2006@gmail.com"
 
 # Homebrew
 test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
-# Golang
+# Golang, probably we need to tweak this btw
 export PATH=/home/gildedguy/go/bin:$PATH GOPATH=/home/gildedguy/go
 
 # Use native builds when doing 'docker build' instead of 'docker buildx build'
@@ -189,3 +191,6 @@ export DOCKER_BUILDKIT=1
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
+# direnv
+eval "$(direnv hook bash)"

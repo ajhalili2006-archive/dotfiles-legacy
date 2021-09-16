@@ -2,18 +2,18 @@
 	helper = !gh auth git-credential
 
 [user]
-	email = andreijiroh@madebythepins.tk
+	email = ajhalili2006@gmail.com
 	name = Andrei Jiroh Eugenio Halili
 	signingkey = A30EBE40AD856D88
         #editor = code --wait
-[merge]
-    tool = vscode
-[mergetool "vscode"]
-    cmd = code --wait $MERGED
-[diff]
-    tool = vscode
-[difftool "vscode"]
-    cmd = code --wait --diff $LOCAL $REMOTE
+#[merge]
+#    tool = vscode
+#[mergetool "vscode"]
+#    cmd = code --wait $MERGED
+#[diff]
+#    tool = vscode
+#[difftool "vscode"]
+#    cmd = code --wait --diff $LOCAL $REMOTE
 [commit]
 	gpgsign = true
 
@@ -26,6 +26,9 @@
 [url "git+ssh://ajhalili2006@git.launchpad.net/"]
   insteadof = lp:
   pushInsteadOf = lp:
+[url "git+ssh://git@gitlab.alpinelinux.org/"]
+  insteadof = alpine:
+  pushInsteadOf = alpine:
 [url "git@gitlab.com:"]
   insteadOf = https://gitlab.com/
   pushInsteadOf = https://gitlab.com/

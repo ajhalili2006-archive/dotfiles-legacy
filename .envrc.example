@@ -1,0 +1,3 @@
+# Doppler token for use in GitLab stuff, KEK
+# Do not leak this BS! Otherwise, we might be fucked.
+export DOPPLER_TOKEN=dp.st.mikedmoy.thisTokenIsFrickingBullshitDontLeakIt
