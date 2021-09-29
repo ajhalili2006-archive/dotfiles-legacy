@@ -10,15 +10,15 @@ working at The Pins Team, see [our dotfiles][df-gl].
 ### Using the bootstraper script without cloning
 
 ```sh
-## configure required variables
+# configure required variables
 export GITLAB_LOGIN=ajhalili2006
 export GITLAB_TOKEN=<my-gitlab1dotcom-PAT>
 
-## Run the bootstrap script
+# Run the bootstrap script
 $(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.githubusercontent.com/ajhalili2006/dotfiles/main/bootstrap | bash -
 
-## Done?
-unset GITLAB_TOKEN GITLAB_LOGIN
+# Done? Don't forget to cleanup as needed.
+unset GITLAB_TOKEN GITLAB_LOGIN && history -c
 ```
 
 ### With Cloning the Repo
@@ -28,12 +28,14 @@ unset GITLAB_TOKEN GITLAB_LOGIN
 git clone https://github.com/ajhalili2006/dotfiles $HOME/.dotfiles
 cd $HOME/.dotfiles
 
-# no need for exporting my PAT before running this
-./bootstrap --flags-over-here --and-this-one stuff
-
+# you may need to export the required variables before running the bootstrap script locally
 # you may optionally run the bootstrapper script if you want
 GITLAB_LOGIN=AndreiJirohHaliliDev2006 GITLAB_TOKEN=<my-gitlab-saas-pat> ./bootstrap --flags-over here
 ```
+
+### Documentation
+
+Available documentation for the on/offboarding processes I do + other tidbits of the bootstrap script can be accessible through [the `docs` directory](./docs).
 
 ## Want to fork me owo?
 
