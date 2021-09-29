@@ -261,7 +261,7 @@ installShellCheck() {
     scversion="stable" # or "v0.4.7", or "latest"
     SHELLCHECK_ARCHIVE_URL="https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" # TODO: Also detect other arches, especially on i386
 
-    if [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
+    if [[ $LSKIP_DEPENDENCY_INSTAL == "" ]]; then
       current_shellcheck_path=$(command -v shellcheck)
       isOwnedByUser="$(find $PREFIX/bin -user $USER -name shellcheck)"
       current_path_dir="$(dirname $current_shellcheck_path)"
@@ -414,10 +414,12 @@ main() {
     installCode
 
     # step 5: copy and symlink files
-    cloneSecretsRepo # Run this before we even copy the ssh keys!
     copyGitConfig
     copyNanoConfig
     copyBashrc
+
+    # step 5.2: copy our secrets btw
+    cloneSecretsRepo # Run this before we even copy the ssh keys!
     copyKeysSSH
 
     # step 6: finally clean up bullshit
