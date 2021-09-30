@@ -5,7 +5,7 @@ This onboarding page documents how do I bootstrap stuff for an new Linux machine
 ## Prerequisites
 
 * Access to my Bitwarden vault for GitLab PAT on an Vaultwarden instance at Railway. Once email has been fixed, probably my phone with 2FA number used for Google OR Authy app and Telegram client of choice.
-* An working browser, preferrly Chrome or Firefox.
+* An working browser, preferrly Firefox.
 * An desktop environment preinstalled, in case of Alpine/Arch/Gentoo-based distros, proceed with Xfce4. Unless has atleast 4 GBs of memory on an amd64 machine, install GNOME or KDE instead.
 
 ### Pre-flight Check
@@ -15,14 +15,22 @@ This onboarding page documents how do I bootstrap stuff for an new Linux machine
 * Check if Bash and/or Git is preinstalled while in live environment.
 * Remember to note down the root password! You may also need to take down notes of your regular account password too, if sudo is configured.
 * If you're trying an new distro (Arch, Gentoo, RHEL) or got an ChromeOS preinstalled and enabled devmode and Linux stuff, please install the tools one by one and note it down here in this document.
+* Check if that distro either has GitHub CLI from the official package repos (or atleast community maintained ones). Otherwise, maybe opt to building from source or use prebuilt binaries from GitHub Releases.
 
 ## Termux
 
-TODO
+> **:warning: Termux is only available for Android 7 to 9 on F-roid due to compatibility reasons!** Things start to blur once you upgrade to Android 10 or above, as more restrictions have been implemented, see ISSUE-TODO-LINK.
 
 ## Debian, Ubuntu and friends
 
-TODO
+Bash, GNU coreutils and curl/wget is pre-installed, but you may need to manually upgrade to their latest versions from the backports, especially if they're too far from the latest release.
+
+As an final check before proceeding, install gnupg and friends before running the bootstrap script:
+
+```sh
+# they'll be also installed if you don't do this
+sudo apt install gnupg gnupg-agent dirmgr --yes
+```
 
 ## Alpine Linux
 
@@ -48,11 +56,7 @@ http://dl-cdn.alpinelinux.org/alpine/edge/community
 
 Now, run `apk update` followed by `apk upgrade` to update all packages to their latest versions in the `edge` branch.
 
-Finally, follow the bootstrapping process of the dotfiles in the root README, which, as usual:
-
-* export both the GitLab SaaS username and password with `export GITLAB_LOGIN=ajhalili2006 GITLAB_TOKEN=pat-from-bw-vault`
-* run the main script with `curl -fsSL https://ajhalili2006.gitlab.io/linux-bootstrap.sh | bash -`
-* optionally run the post-setup script to add my package signing key for Alpine, GPG keys, and probably my KeexPass stuff with `./tools/post-setup/alpine.sh`
+Finally, follow the bootstrapping process of the dotfiles as mentioned in the root README.
 
 ## Gitpod?
 
