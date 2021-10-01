@@ -162,7 +162,7 @@ test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/bre
 
 # Golang, probably we need to tweak this btw
 export GOPATH="$HOME/gopath"
-export PATh="$GOPATH:$PATH"
+export PATH="$GOPATH:$PATH"
 
 # Use native builds when doing 'docker build' instead of 'docker buildx build'
 export DOCKER_BUILDKIT=1
@@ -172,3 +172,9 @@ export DOCKER_BUILDKIT=1
 
 # direnv
 [ "$(which direnv)" != "" ] && eval "$(direnv hook bash)"
+
+# Pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+[ -d "$PYENV_ROOT" ] && export PATH="$PYENV_ROOT/bin:$PATH" \
+  && eval "$(pyenv init -)" \
+  && eval "$(pyenv init --path)"
