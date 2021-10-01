@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck shell=bash
 
 { # curybrackets is included to ensure everything is downloaded
 
@@ -7,7 +8,7 @@
 # if undefined, use $HOME/.local
 if [[ $PREFIX == "" ]]; then
   export PREFIX="$HOME/.local"
-  [[ ! -d "$PREFIX/bin" ]] && "mkdir $PREFIX/bin" -p
+  [[ ! -d "$PREFIX/bin" ]] && mkdir "$PREFIX/bin" -p
 fi
 
 # TODO: Make this better
@@ -60,7 +61,7 @@ checkOs() {
         if  [ -d '/google/devshell' ] && [ -f '/google/devshell/bashrc.google' ]; then
            export GOOGLE_CLOUD_SHELL=true
         fi
-    # TODO: Write stuff for Arch users and macOS. For WSL, that's also planned.
+    # TODO: Write stuff for Arch users and macOS. In case of WSL, the existence of /wsl.conf may be included in the future.
     else
         error "Script unsupported for this machine. See the online README for guide on manual bootstrapping." && exit 1
     fi
