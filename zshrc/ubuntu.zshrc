@@ -57,14 +57,18 @@ HIST_STAMPS="mm/dd/yyyy"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git command-not-found git-flow git-prompt nvm)
+plugins=(
+  git
+  command-not-found
+  git-flow
+  git-prompt
+  nvm
+  zsh_reload
+)
 
 source $ZSH/oh-my-zsh.sh
 
 ### Oh My ZSH configuration ends here ###
-
-# You may need to manually set your language environment
-export LANG=en_US.UTF-8
 
 # for WSL stuff only, see https://github.com/microsoft/WSL/issues/4029
 # and https://unix.stackexchange.com/questions/257061/gentoo-linux-gpg-encrypts-properly-a-file-passed-through-parameter-but-throws-i/257065#257065
@@ -178,3 +182,6 @@ export PYENV_ROOT="$HOME/.pyenv"
 [ -d "$PYENV_ROOT" ] && export PATH="$PYENV_ROOT/bin:$PATH" \
   && eval "$(pyenv init -)" \
   && eval "$(pyenv init --path)"
+
+# Don't install gems globally, that would be chaos for file permissions
+export GEM_HOME="$HOME/.gems" PATH="$HOME/.gems/bin:$PATH"

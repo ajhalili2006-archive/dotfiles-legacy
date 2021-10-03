@@ -1,4 +1,4 @@
-# My VMs
+# My VMs, through Virtualbox
 Host ubuntu-vm
     Hostname localhost
     Port 1222
@@ -10,10 +10,14 @@ Host bshq
     User shitfuckery
     IdentityFile ~/.ssh/github-personal
 
+# Git hosts, as usual
 Host gitlab.com
     User git
     IdentityFile ~/.ssh/launchpad
 Host github.com
+    User git
+    IdentityFile ~/.ssh/launchpad
+Host gitlab.alpinelinux.org
     User git
     IdentityFile ~/.ssh/launchpad
 
@@ -32,3 +36,4 @@ Host ghost-localhost
     Hostname 10.29.113.229
     User ubuntu
     IdentityFile ~/.ssh/github-personal
+

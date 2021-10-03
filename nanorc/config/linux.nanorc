@@ -7,3 +7,6 @@ include /usr/share/nano/extra/*.nanorc
 
 # enable multibuffer stuff
 set multibuffer
+
+# enable soft line wrap, because I don't want to zoom all way out
+set softwrap

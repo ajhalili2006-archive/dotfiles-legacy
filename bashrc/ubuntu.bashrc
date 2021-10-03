@@ -194,3 +194,6 @@ export DOCKER_BUILDKIT=1
 
 # direnv
 eval "$(direnv hook bash)"
+
+# Don't install gems globally, that would be chaos for file permissions
+export GEM_HOME="$HOME/.gems" PATH="$HOME/.gems/bin:$PATH"

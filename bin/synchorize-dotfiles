@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -exu # WARNING: Chaos ahead!
+
+DOTFILES_HOME=${DOTFILES_HOME:-"$HOME/.dotfiles"}
+DOTFILES_SYNC_COMMIT_MSG="Synchorized userland configuration to personal GitHub dotfiles repo"
+
+if [[ $SKIP_REBASE_STEP == "" ]]; then
+  git -C "$DOTFILES_HOME" pull --rebase --progress --verbose # Attempt to rebase from upstream remote.
+fi
+
+git -C "$DOTFILES_HOME" add . --verbose # Add everything
+git -C "$DOTFILES_HOME" commit --verbose --signoff --gpg-sign -m "$DOTFILES_SYNC_COMMIT_MSG" # Use an predefined commit message btw.
+git -C "$DOTFILES_HOME" push --verbose --progress # ..and push to prod!
