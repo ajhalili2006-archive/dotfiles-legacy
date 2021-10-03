@@ -37,3 +37,16 @@ Host ghost-localhost
     User ubuntu
     IdentityFile ~/.ssh/github-personal
 
+# Even fucking physicial computers!
+# TODO: Find that StackExchange ref!
+Host winblows.bullshit.hq
+   Hostname 192.168.254.161
+   User cursed-remote-user
+   IdentityFile ~/.ssh/launchpad
+# There's no such thing as guilded.gg/guildedguy as there will be only
+# discord.gg/gildedguy if you're looking for an place to discuss the lore
+# or possibly want to find some fan art as your desktop wallpaper.
+Host guildedguy
+   Hostname 192.168.254.142
+   User gildedguy
+   IdentityFile ~/.ssh/launchpad

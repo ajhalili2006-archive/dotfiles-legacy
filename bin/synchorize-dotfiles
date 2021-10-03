@@ -1,12 +1,14 @@
 #!/bin/bash
 
-set -exu # WARNING: Chaos ahead!
+set -ex # WARNING: Chaos ahead!
 
 DOTFILES_HOME=${DOTFILES_HOME:-"$HOME/.dotfiles"}
 DOTFILES_SYNC_COMMIT_MSG="Synchorized userland configuration to personal GitHub dotfiles repo"
 
 if [[ $SKIP_REBASE_STEP == "" ]]; then
   git -C "$DOTFILES_HOME" pull --rebase --progress --verbose # Attempt to rebase from upstream remote.
+else
+  git -C "$DOTFILES_HOME" pull --progress --verbose # otherwise just pull stuff if rebase is being skipped
 fi
 
 git -C "$DOTFILES_HOME" add . --verbose # Add everything
