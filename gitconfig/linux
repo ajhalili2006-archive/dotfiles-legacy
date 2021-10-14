@@ -36,11 +36,13 @@
   insteadOf = https://bitbucket.org/
 [init]
   defaultBranch = main
+# TODO: Set up aliases for ther Git hosts, like in Launchpad.net
 
 # aliases
 [alias]
     #change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f"
     signoff = "commit --signoff"
+    ammend = "commit --amend"
     stage = "add"
     unstage = "restore --staged"
     stats = "status"
@@ -49,3 +51,5 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[pull]
+	rebase = true
