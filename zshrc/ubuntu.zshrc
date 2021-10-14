@@ -63,7 +63,16 @@ plugins=(
   git-flow
   git-prompt
   nvm
-  zsh_reload
+  #zsh_reload // deprecated in ohmyzsh:be4a952; may be removed soon
+  yarn
+  thefuck
+  git-auto-fetch
+  git-escape-magic
+  git-extras
+  gitfast
+  github
+  gitignore
+  git-lfs
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -156,7 +165,7 @@ eval "$(gh completion -s zsh)"
 source "$HOME/.dotfiles/bashrc/chain-source"
 
 # https://packaging.ubuntu.com/html/getting-set-up.html#configure-your-shell
-export DEBFULLNAME="Andrei Jiroh Halili"
+export DEBFULLNAME="Andrei Jiroh Eugenio Halili"
 # Temporary Gmail address for devel stuff, even through my longer email one is, well,
 # on my public GPG key btw, so YOLO it.
 export DEBEMAIL="ajhalili2006@gmail.com"
@@ -175,7 +184,7 @@ export DOCKER_BUILDKIT=1
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 # direnv
-[ "$(which direnv)" != "" ] && eval "$(direnv hook bash)"
+[ "$(which direnv)" != "" ] && eval "$(direnv hook zsh)"
 
 # Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
