@@ -1,5 +1,5 @@
 #!/usr/bin/zsh
-# shellcheck disable=SC1090,SC1091,SC2088,SC2155,SC2046
+# shellcheck disable=SC1090,SC1091,SC2088,SC2155,SC2046,SC2034,SC3010,SC3030 shell=bash
 
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
@@ -15,16 +15,12 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-### Oh My ZSH configuration starts below ###
-
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
-
+### Oh My ZSH Config ###
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="cloud"
+ZSH_THEME="dst"
 
 # Uncomment the following line to use hyphen-insensitive completion.
 # Case-sensitive completion must be off. _ and - will be interchangeable.
@@ -74,10 +70,6 @@ plugins=(
   gitignore
   git-lfs
 )
-
-source $ZSH/oh-my-zsh.sh
-
-### Oh My ZSH configuration ends here ###
 
 # for WSL stuff only, see https://github.com/microsoft/WSL/issues/4029
 # and https://unix.stackexchange.com/questions/257061/gentoo-linux-gpg-encrypts-properly-a-file-passed-through-parameter-but-throws-i/257065#257065
@@ -132,10 +124,10 @@ else
 	# We'll do some checks here btw, Currently I use GNOME and Xfce4 as my desktop environments, but
 	# I also consider adding KDE here in the future.
 	case $(ps -o comm= -p $PPID) in
-	sshd | */sshd) export EDITOR="code --wait" ;;
+	sshd | */sshd) export EDITOR="nano" ;;
 	xfce*) export EDITOR="$(which code >>/dev/null && echo code --wait || which gedit >>/dev/null && echo gedit || echo nano)" ;;
 	gnome*) export EDITOR="$(which code >>/dev/null && echo code --wait || which gedit >>/dev/null && echo gedit || echo nano)" ;;
-	code) export EDITOR="code --wait";;
+	node*) [[ "$TERM_PROGRAM" == "vscode" ]] && export EDITOR="code --wait" || export EDITOR="$(echo nano)";;
 	*) export EDITOR="nano" ;;
 	esac
 fi
@@ -194,3 +186,18 @@ export PYENV_ROOT="$HOME/.pyenv"
 
 # Don't install gems globally, that would be chaos for file permissions
 export GEM_HOME="$HOME/.gems" PATH="$HOME/.gems/bin:$PATH"
+
+# Finally switch to Podman, yay! Probably needs some fixes :)
+#export DOCKER_HOST="/tmp/podman-run-$(id -u)/podman/podman.sock"
+
+### Bashrc ports goes above this line! ###
+
+### Oh My ZSH init starts below ###
+
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+source $ZSH/oh-my-zsh.sh
+
+### Oh My ZSH init stuff ends here ###
+
