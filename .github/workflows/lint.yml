@@ -1,0 +1,33 @@
+# This is a basic workflow that is manually triggered
+
+name: Lint CI
+
+on:
+  push:
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          scripts:
+            - 'bin/**'
+            - 'bootstrap'
+            - bashrc/**
+            - zshrc/**
+          manual:
+            - .github/workflows/lint.yml
+    - name: ShellCheck
+      if: steps.changes.outputs.scripts == 'true'
+      uses: ludeeus/action-shellcheck@1.1.0
+      with:
+        check_together: 'yes'
+        severity: error
+        format: tty
+      env:
+        SHELLCHECK_OPTS: -s bash
