@@ -53,3 +53,5 @@
 	required = true
 [pull]
 	rebase = true
+[credential "https://gitlab.alpinelinux.org"]
+	helper = !/usr/bin/glab auth git-credential
