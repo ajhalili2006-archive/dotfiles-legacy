@@ -122,11 +122,12 @@ if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
 	export EDITOR=nano
 else
 	# We'll do some checks here btw, Currently I use GNOME and Xfce4 as my desktop environments, but
-	# I also consider adding KDE here in the future.
+	# sometimes, I'm on KDE Plasma.
 	case $(ps -o comm= -p $PPID) in
 	sshd | */sshd) export EDITOR="nano" ;;
 	xfce*) export EDITOR="$(which code >>/dev/null && echo code --wait || which gedit >>/dev/null && echo gedit || echo nano)" ;;
 	gnome*) export EDITOR="$(which code >>/dev/null && echo code --wait || which gedit >>/dev/null && echo gedit || echo nano)" ;;
+        konsole*) export EDITOR="$(which code >>/dev/null && echo code --wait || which gedit >>/dev/null && echo gedit || echo nano)" ;;
 	node*) [[ "$TERM_PROGRAM" == "vscode" ]] && export EDITOR="code --wait" || export EDITOR="$(echo nano)";;
 	*) export EDITOR="nano" ;;
 	esac
@@ -143,6 +144,7 @@ else
 		sshd | */sshd) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit);;
 		xfce*) eval $(keychain --agents gpg,ssh --eval);;
 		gnome*) eval $(keychain --agents gpg,ssh --eval);;
+                konsole*)  eval $(keychain --agents gpg,ssh --eval);;
 		# Don't forget VS Code and code-server!
 		code* | node*) eval $(keychain --agents gpg,ssh --eval);;
 		*) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) ;;

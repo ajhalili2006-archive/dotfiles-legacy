@@ -88,3 +88,6 @@ alias edit-script="edit-script-file"
 
 # add a bit of test here
 alias guild-test="echo successfully imported owo"
+
+# shortcuts for rdp stuff
+alias bshq-cursed='rdesktop --user cursed-remote-user -r audio:local -x lan -r clipboard:PRIMARYCLIPBOARD -n guildedguy bullshit.hq'
