@@ -1,6 +1,15 @@
+# Git Credential handlers with GitHub/GLab CLI
 [credential "https://github.com"]
 	helper = !gh auth git-credential
+[credential "https://gitlab.com"]
+	helper = !/usr/bin/glab auth git-credential
+[credential "https://gitlab.alpinelinux.org"]
+	helper = !/usr/bin/glab auth git-credential
+[credential "https://salsa.debian.org"]
+	helper = 
+	helper = !/usr/bin/glab auth git-credential
 
+# User config
 [user]
 	email = ajhalili2006@gmail.com
 	name = Andrei Jiroh Eugenio Halili
@@ -14,6 +23,8 @@
 #    tool = vscode
 #[difftool "vscode"]
 #    cmd = code --wait --diff $LOCAL $REMOTE
+
+# Commit settings
 [commit]
 	gpgsign = true
 
@@ -26,12 +37,13 @@
 [url "git+ssh://ajhalili2006@git.launchpad.net/"]
   insteadof = lp:
   pushInsteadOf = lp:
-[url "git+ssh://git@gitlab.alpinelinux.org/"]
-  insteadof = alpine:
-  pushInsteadOf = alpine:
-[url "git@gitlab.com:"]
-  insteadOf = https://gitlab.com/
-  pushInsteadOf = https://gitlab.com/
+# Same case because we have GLab CLI.
+#[url "git+ssh://git@gitlab.alpinelinux.org/"]
+#  insteadof = alpine:
+#  pushInsteadOf = alpine:
+#[url "git@gitlab.com:"]
+#  insteadOf = https://gitlab.com/
+#  pushInsteadOf = https://gitlab.com/
 [url "git@bitbucket.org:"]
   insteadOf = https://bitbucket.org/
 [init]
@@ -46,12 +58,19 @@
     stage = "add"
     unstage = "restore --staged"
     stats = "status"
+	sdiff = !git diff && git submodule foreach 'git diff'
+	spush = push --recurse-submodules=on-demand
+	supdate = submodule update --remote --merge
+
+# LFS
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+
+# pull
 [pull]
 	rebase = true
-[credential "https://gitlab.alpinelinux.org"]
-	helper = !/usr/bin/glab auth git-credential
+[push]
+	recurseSubmodules = check
