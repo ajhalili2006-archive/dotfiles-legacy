@@ -4,3 +4,6 @@
 [submodule "golang-updater"]
 	path = update-golang
 	url = https://github.com/udhos/update-golang.git
+[submodule "nixos"]
+	path = nixos
+	url = https://gitlab.com/ajhalili2006-experiments/nixos-config-hub
