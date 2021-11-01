@@ -132,6 +132,7 @@ else
 	*) export EDITOR="nano" ;;
 	esac
 fi
+#export GIT_EDITOR=$EDITOR
 
 # As long as possible, attempt to setup our GnuPG agent when we're on an SSH session.
 if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
