@@ -2,13 +2,13 @@
 [credential "https://github.com"]
 	helper = !gh auth git-credential
 [credential "https://gitlab.com"]
-	helper = !/usr/bin/glab auth git-credential
+	helper = !glab auth git-credential
 [credential "https://gitlab.alpinelinux.org"]
-	helper = !/usr/bin/glab auth git-credential
+	helper = !glab auth git-credential
 [credential "https://salsa.debian.org"]
-	helper = 
-	helper = !/usr/bin/glab auth git-credential
-
+	helper = !glab auth git-credential
+[credential "https://mau.dev"]
+	helper = !glab auth git-credential
 # User config
 [user]
 	email = ajhalili2006@gmail.com

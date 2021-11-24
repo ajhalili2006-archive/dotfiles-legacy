@@ -43,6 +43,11 @@ Host stellapent
    Hostname stellapent.tailnet
    User cursed-remote-user
    IdentityFile ~/.ssh/launchpad
+   # Use SSH port forwarding for that. :)
+   # But chaos may come on da logs
+   #LocalForward 3380 localhost:3389
+   # Also for our WSL setup too
+   LocalForward 3381 172.26.89.201:3381
 # There's no such thing as guilded.gg/guildedguy as there will be only
 # discord.gg/gildedguy if you're looking for an place to discuss the lore
 # or possibly want to find some fan art as your desktop wallpaper.
@@ -54,3 +59,4 @@ Host guildedguy
 Host stellapent.local
    User cursed-remote-user
    IdentityFile ~/.ssh/launchpad
+   LocalForward 3380 localhost:3389
