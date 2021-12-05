@@ -1,0 +1,10 @@
+ci: pipeline ci
+co: mr checkout
+clone: repo clone
+new-repo: repo create
+nuke-repo: repo delete
+search: repo search
+fork: repo fork
+pr: mr
+pr list: mr list
+pr create: mr create

@@ -37,13 +37,6 @@
 [url "git+ssh://ajhalili2006@git.launchpad.net/"]
   insteadof = lp:
   pushInsteadOf = lp:
-# Same case because we have GLab CLI.
-#[url "git+ssh://git@gitlab.alpinelinux.org/"]
-#  insteadof = alpine:
-#  pushInsteadOf = alpine:
-#[url "git@gitlab.com:"]
-#  insteadOf = https://gitlab.com/
-#  pushInsteadOf = https://gitlab.com/
 [url "git@bitbucket.org:"]
   insteadOf = https://bitbucket.org/
 [init]
@@ -58,9 +51,11 @@
     stage = "add"
     unstage = "restore --staged"
     stats = "status"
-	sdiff = !git diff && git submodule foreach 'git diff'
-	spush = push --recurse-submodules=on-demand
-	supdate = submodule update --remote --merge
+    sdiff = !git diff && git submodule foreach 'git diff'
+    spush = push --recurse-submodules=on-demand
+    supdate = submodule update --remote --merge
+    skipCi = push -o ci.skip
+    root = rev-parse --show-toplevel
 
 # LFS
 [filter "lfs"]
