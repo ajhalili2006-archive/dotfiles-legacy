@@ -135,19 +135,19 @@ fi
 
 # As long as possible, attempt to setup our GnuPG agent when we're on an SSH session.
 if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
-	eval $(keychain --agents gpg,ssh --eval --nogui --noinherit)
+	eval $(keychain --agents gpg,ssh --eval --nogui)
 	export GPG_TTY=$(tty)
 else
 	# We'll do some checks here btw, Currently I use GNOME and Xfce4 as my desktop environments
 	case $(ps -o comm= -p $PPID) in
         	# Sometimes, $SSH_CLIENT and/or $SSH_TTY doesn't exists so we'll pull what ps says
-		sshd | */sshd) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit);;
+		sshd | */sshd) eval $(keychain --agents gpg,ssh --eval --nogui);;
 		xfce*) eval $(keychain --agents gpg,ssh --eval);;
 		gnome*) eval $(keychain --agents gpg,ssh --eval);;
                 konsole*)  eval $(keychain --agents gpg,ssh --eval);;
 		# Don't forget VS Code and code-server!
 		code* | node*) eval $(keychain --agents gpg,ssh --eval);;
-		*) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) ;;
+		*) eval $(keychain --agents gpg,ssh --eval --nogui) ;;
 	esac
 fi
 
@@ -178,7 +178,7 @@ export DOCKER_BUILDKIT=1
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 # direnv
-[ "$(which direnv)" != "" ] && eval "$(direnv hook zsh)"
+[ "$(command -v direnv)" != "" ] && eval "$(direnv hook zsh)"
 
 # Pyenv
 export PYENV_ROOT="$HOME/.pyenv"

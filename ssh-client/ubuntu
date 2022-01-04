@@ -60,3 +60,9 @@ Host stellapent.local
    User cursed-remote-user
    IdentityFile ~/.ssh/launchpad
    LocalForward 3380 localhost:3389
+
+# SourceForge
+Host sourceforge
+   User ajhalili2006
+   Hostname shell.sourceforge.net
+   IdentityFile ~/.ssh/launchpad

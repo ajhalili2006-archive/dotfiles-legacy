@@ -1,0 +1,36 @@
+#!/usr/bin/bash
+
+# Chroot command is optional and assume login binary
+CHROOT_COMMAND=${2:-"/usr/bin/login"}
+TARGET_DIR=$1
+
+if [[ $TARGET_DIR == "" ]]; then
+  echo "Usage: $0 TARGET_DIR [CHROOT_COMMAND]"
+  exit 1
+fi
+
+if [ $EUID != "0" ]; then
+  echo "error: Must be root to proceed!"
+  exit 1
+fi
+
+echo "===> Mounting required parts for chroot operation..."
+mount -o bind /dev "$TARGET_DIR/dev"
+mount -t proc none "$TARGET_DIR/proc"
+mount -o bind /sys "$TARGET_DIR/sys"
+echo "     Kernel and device mount setup done!"
+sleep 3
+
+if [[ -f "$TARGET_DIR/setup-chroot-env.sh" ]]; then
+   echo "===> Preparing chroot environment..."
+  if ! bash "$TARGET_DIR/setup-chroot-env.sh"; then
+     echo "!    Chroot env setup failed, please proceed at your own risk."
+  else
+     echo "     Setup done!"
+  fi
+  sleep 3
+fi
+
+echo "===> Teleporting to the chroot environment in 3 seconds..."
+sleep 3
+exec chroot "$TARGET_DIR" ${CHROOT_COMMAND}

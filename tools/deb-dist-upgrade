@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+echo "===> Updating local index..."
+apt update
+echo
+sleep 3
+
+echo "===> Doing distro upgrade..."
+apt-get dist-upgrade --yes
+echo
+sleep 3
+
+echo "info: Please reboot to proceed by typing /sbin/reboot!"

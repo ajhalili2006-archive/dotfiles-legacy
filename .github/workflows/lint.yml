@@ -20,6 +20,7 @@ jobs:
             - 'bootstrap'
             - bashrc/**
             - zshrc/**
+            - tools/**
           manual:
             - .github/workflows/lint.yml
     - name: ShellCheck
