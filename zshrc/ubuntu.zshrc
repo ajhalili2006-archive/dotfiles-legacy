@@ -131,7 +131,7 @@ else
 	*) export EDITOR="nano" ;;
 	esac
 fi
-#export GIT_EDITOR=$EDITOR
+export GIT_EDITOR="nano" # why not?
 
 # As long as possible, attempt to setup our GnuPG agent when we're on an SSH session.
 if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
@@ -203,3 +203,4 @@ source $ZSH/oh-my-zsh.sh
 
 ### Oh My ZSH init stuff ends here ###
 
+source "/home/gildedguy/.bashbox/env";
