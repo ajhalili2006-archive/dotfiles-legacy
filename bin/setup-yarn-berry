@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Step 1: Ensure we're on berry on per-project basis.
+yarn set version berry
+
+# Step 2: Copy our gitignore file for Berry
+
