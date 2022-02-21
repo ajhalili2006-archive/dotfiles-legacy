@@ -4,10 +4,10 @@
 # for examples
 
 # If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
+#case $- in
+#    *i*) ;;
+#      *) return;;
+#esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -110,9 +110,9 @@ fi
 export LD_LIBRARY_PATH=/usr/local/lib
 
 # After all of these, source my customized Google Cloud Shell bahsrc.
-if [ -f "/google/devshell/bashrc.google" ]; then
-  source "$HOME/.dotfiles/bashrc/google.bashrc"
-fi
+#if [ -f "/google/devshell/bashrc.google" ]; then
+#  source "$HOME/.dotfiles/bashrc/google.bashrc"
+#fi
 
 # Instead of using Google Cloud Shell's preinstalled nvm, I manually installed it on my home directory.
 export NVM_DIR="$HOME/.nvm"
@@ -150,3 +150,4 @@ eval $(gpg-agent --daemon) >> /dev/null 2>&1
 # We still need this, just in case gpg-agent is being a dick
 source $DOTFILES_STUFF_BIN/source-ssh-agent
 export GPG_TTY=$(tty)
+eval "$(direnv hook bash)"

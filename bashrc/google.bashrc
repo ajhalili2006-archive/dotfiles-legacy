@@ -16,9 +16,9 @@
 
 # Avoid sourcing bashrc.google more than once for a session as some of
 # the commands below are not reentrant.
-if [[ -n "${GOOGLE_BASHRC_SOURCED}" ]]; then
-  return
-fi
+#if [[ -n "${GOOGLE_BASHRC_SOURCED}" ]]; then
+#  return
+#fi
 GOOGLE_BASHRC_SOURCED=1
 
 START_TIME=$(date +%s%3N)
