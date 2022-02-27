@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [[ $GOOGLE_CLOUD_SHELL = "" ]]; then
+   nohup sudo tailscaled --statedir=~/.config/tailscaled >/dev/null &
+else
+   nohup sudo tailscaled --tun=userspace-networking --socks5-server=localhost:1088 >/dev/null &
+fi

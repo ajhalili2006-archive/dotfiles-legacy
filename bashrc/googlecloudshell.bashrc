@@ -148,6 +148,13 @@ export DEBEMAIL="andreijiroh@madebythepins.tk"
 # Summon our gpg-agent and ssh-agent
 eval $(gpg-agent --daemon) >> /dev/null 2>&1
 # We still need this, just in case gpg-agent is being a dick
-source $DOTFILES_STUFF_BIN/source-ssh-agent
+#source $DOTFILES_STUFF_BIN/source-ssh-agent
 export GPG_TTY=$(tty)
 eval "$(direnv hook bash)"
+
+# Setup stuff then for Tailscale
+if command -v tailscaled >/dev/null; then
+  ~/.dotfiles/bin/tailscaled-docker
+else
+  echo "Tailscale isn't yet installed! Try again!"
+fi
