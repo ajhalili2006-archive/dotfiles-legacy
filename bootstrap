@@ -350,7 +350,7 @@ customizeCloudShell() {
     rm -fv ~/.customize_environment
   fi
 
-  cp ~/.dotfiles/.config/devshell.env ~/.customize_environment && chmod +x ~/.customize_environment
+  ln -s ~/.dotfiles/.config/devshell.env ~/.customize_environment && chmod +x ~/.customize_environment
   if [ ! -d "$HOME/.cloudshell" ]; then
     mkdir "$HOME/.cloudshell"
   fi
