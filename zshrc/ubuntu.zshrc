@@ -1,10 +1,12 @@
 #!/usr/bin/zsh
 # shellcheck disable=SC1090,SC1091,SC2088,SC2155,SC2046,SC2034,SC3010,SC3030 shell=bash
 
+#eval $(export $(tmux show-env -g| xargs)) || true
+
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=100000
+SAVEHIST=100000
 setopt beep
 bindkey -e
 # End of lines configured by zsh-newuser-install
@@ -142,6 +144,7 @@ else
 	case $(ps -o comm= -p $PPID) in
         	# Sometimes, $SSH_CLIENT and/or $SSH_TTY doesn't exists so we'll pull what ps says
 		sshd | */sshd) eval $(keychain --agents gpg,ssh --eval --nogui);;
+                tmux* | screen*) eval $(keychain --agents gpg,ssh --eval);;
 		xfce*) eval $(keychain --agents gpg,ssh --eval);;
 		gnome*) eval $(keychain --agents gpg,ssh --eval);;
                 konsole*)  eval $(keychain --agents gpg,ssh --eval);;
@@ -169,7 +172,7 @@ test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/bre
 
 # Golang, probably we need to tweak this btw
 export GOPATH="$HOME/gopath"
-export PATH="$GOPATH:$PATH"
+export PATH="$GOPATH/bin:$PATH"
 
 # Use native builds when doing 'docker build' instead of 'docker buildx build'
 export DOCKER_BUILDKIT=1
@@ -203,4 +206,13 @@ source $ZSH/oh-my-zsh.sh
 
 ### Oh My ZSH init stuff ends here ###
 
-source "/home/gildedguy/.bashbox/env";
+source "$HOME/.bashbox/env";
+
+# Allow launching byobu behind the scenes
+#_byobu_sourced=1 . /usr/bin/byobu-launch 2>/dev/null || true
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/path.zsh.inc"; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
