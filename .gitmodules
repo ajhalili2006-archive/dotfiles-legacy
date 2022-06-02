@@ -7,3 +7,6 @@
 [submodule "nixos"]
 	path = nixos
 	url = https://gitlab.com/ajhalili2006-experiments/nixos-config-hub
+[submodule "nanorc-highlighting-improvements"]
+	path = nanorc/highlighting
+	url = https://github.com/scopatz/nanorc

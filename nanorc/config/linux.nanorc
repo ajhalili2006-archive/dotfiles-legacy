@@ -1,9 +1,5 @@
-# import package defaults first
-include /usr/share/nano/*.nanorc
-include /usr/share/nano/extra/*.nanorc
-
-# then import ours, but trust our distro packages
-#include ~/.dotfiles/nanorc/highlighting/*.nanorc
+# Don't use distro's defaults, use what's shipped from github:scopatz/nanorc
+include ~/.dotfiles/nanorc/highlighting/*.nanorc
 
 # enable multibuffer stuff
 set multibuffer

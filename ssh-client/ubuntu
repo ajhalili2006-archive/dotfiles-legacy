@@ -87,3 +87,9 @@ Host sourceforge
    Hostname shell.sourceforge.net
    IdentityFile ~/.ssh/launchpad
 
+# hax.co.id
+Host write.ajhalili2006.dev
+   Hostname 91.134.238.133
+   User ajhalili2006
+   Port 4830
+   IdentityFile ~/.ssh/launchpad
