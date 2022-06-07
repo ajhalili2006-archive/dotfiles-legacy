@@ -19,7 +19,7 @@ list-debs-size() {
 
 edit-script-file() {
     # if you use other editor, please set $EDITOR.
-    $(command -v code>>/dev/null && echo code || command -v nano>>/dev/null && echo nano || echo vi) "$(command -v $1)"
+    $EDITOR "$(command -v $1)"
 }
 
 # reloading stuff
