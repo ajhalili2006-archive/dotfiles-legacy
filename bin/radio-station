@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+URLPREFIX="https://radio-station-redirects.deno.dev/feeds"
+CMDPREFIX="mplayer -nocache -afm ffmpeg" # https://linuxconfig.org/listen-to-your-favorite-radio-station-with-a-single-command-on-linux
+
+if ! command -v mplayer >> /dev/null; then
+  echo "error: mplayer isn't installed on your system."
+  exit 1
+fi
+
+if [[ $1 == "monstercat-dash" ]]; then
+  exec $CMDPREFIX -playlist http://ice55.securenetsystems.net/DASH63.m3u
+elif [[ $1 == "republika-fm1-ph" ]]; then
+  exec $CMDPREFIX http://122.53.138.32:8000/dzrm.mp3
+elif [[ $1 == "monsterrx" ]]; then
+  exec $CMDPREFIX -playlist https://ph-icecast-win.eradioportal.com:8443/monsterrx
+else
+  echo "error: That station isn't yet added to the index. Currently supported stations are lised below:"
+  echo "error:    monstercat-dash republika-fm1-ph monsterrx"
+  exit 1
+fi
