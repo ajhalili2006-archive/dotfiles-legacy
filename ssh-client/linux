@@ -1,0 +1,100 @@
+# Include Gitpod and GitHub Codespaces SSH config
+Include gp-config
+Include codespaces
+
+# My VMs, through Virtualbox
+Host ubuntu-vm
+    Hostname localhost
+    Port 1222
+    User thepinsteam
+    IdentityFile ~/.ssh/github-personal
+Host bshq
+    Hostname localhost
+    Port 3055
+    User shitfuckery
+    IdentityFile ~/.ssh/github-personal
+
+# Git hosts, as usual
+Host gitlab.com
+    User git
+    IdentityFile ~/.ssh/launchpad
+Host github.com
+    User git
+    IdentityFile ~/.ssh/launchpad
+Host gitlab.alpinelinux.org
+    User git
+    IdentityFile ~/.ssh/launchpad
+
+# Launchpad.net SSH keys for mirroring some repos manually,
+# partularly the gitlab.com:termux-package-android5x/src.git repo
+# among any sort of shits and giggles.
+Host git.launchpad.net
+    IdentityFile  ~/.ssh/launchpad
+    User ajhalili2006
+Host bazar.launchpad.net
+    IdentityFile ~/.ssh/launchpad
+    User ajhalili2006
+
+# LXC containers, please append as possible
+Host ghost-localhost
+    Hostname 10.29.113.229
+    User ubuntu
+    IdentityFile ~/.ssh/github-personal
+
+# Even fucking physicial computers thrugh Tailscale!
+# TODO: Find that StackExchange ref!
+Host stellapent
+   Hostname stellapent.tailnet
+   User cursed-remote-user
+   IdentityFile ~/.ssh/launchpad
+   # Use SSH port forwarding for that. :)
+   # But chaos may come on da logs
+   #LocalForward 3380 localhost:3389
+   # Also for our WSL setup too
+   #LocalForward 3381 172.26.89.201:3381
+   RemoteForward 63100 localhost:63100
+   # SSH to our Ubuntu WSL instance
+   LocalForward 2280 localhost:2222
+# There's no such thing as guilded.gg/guildedguy as there will be only
+# discord.gg/gildedguy if you're looking for an place to discuss the lore
+# or possibly want to find some fan art as your desktop wallpaper.
+Host guildedguy
+   Hostname gildedguy.tailnet
+   User gildedguy
+   IdentityFile ~/.ssh/launchpad
+Host wsl.stellapent
+   Hostname ubuntu.wsl.stellapent.tailnet
+   User mikedmoy
+   IdentityFile ~/.ssh/launchpad
+   Port 2222
+Host devshell.tailnet
+   User abc
+   Hostname 100.76.127.93
+   RemoteForward 63100 localhost:63100
+# in case the mesh network went fucked-up by ISP d**kheads
+Host stellapent.local
+   User cursed-remote-user
+   IdentityFile ~/.ssh/launchpad
+   LocalForward 3380 localhost:3389
+   RemoteForward 63100 localhost:63100
+Host wsl.stellapent.local
+   User mikedmoy
+   Hostname stellapent.local
+   Port 2222
+# SourceForge
+Host sourceforge
+   User ajhalili2006
+   Hostname shell.sourceforge.net
+   IdentityFile ~/.ssh/launchpad
+
+# hax.co.id
+Host write.ajhalili2006.dev
+   Hostname 91.134.238.133
+   User ajhalili2006
+   Port 4830
+   IdentityFile ~/.ssh/launchpad
+Host sandbox.ajhalili2006.dev
+   Hostname 148.251.50.26
+   Port 12411
+   User root
+   IdentityFile ~/.ssh/launchpad
