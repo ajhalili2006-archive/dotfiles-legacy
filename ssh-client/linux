@@ -88,13 +88,20 @@ Host sourceforge
    IdentityFile ~/.ssh/launchpad
 
 # hax.co.id
-Host write.ajhalili2006.dev
-   Hostname 91.134.238.133
-   User ajhalili2006
-   Port 4830
-   IdentityFile ~/.ssh/launchpad
+# Technically RIP due to nonrenewal #
+#Host write.ajhalili2006.dev
+#   Hostname 91.134.238.133
+#   User ajhalili2006
+#   Port 4830
+#   IdentityFile ~/.ssh/launchpad
+
 Host sandbox.ajhalili2006.dev
    Hostname 148.251.50.26
    Port 12411
-   User root
+   User ajhalili2006
    IdentityFile ~/.ssh/launchpad
+Host mau-dev-mirrors-haxserver.runners.recaptime.dev
+   Hostname
+   User
+   Port
+   IdentityFile ~/.ssh/ajhalili2006.recaptime.dev

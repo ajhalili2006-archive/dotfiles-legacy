@@ -56,7 +56,7 @@ USER gildedguy
 
 # use sudo so that we don't get sudo usage info on (the first) login
 # also I misspelled Gildedguy's name for memes lol
-RUN sudo echo "Running 'sudo' for Guildedguy: success
+RUN sudo echo "Running 'sudo' for Guildedguy: success"
 
 # configure git-lfs
 RUN sudo git lfs install --system
