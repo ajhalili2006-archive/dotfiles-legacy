@@ -11,9 +11,25 @@ if [[ $PREFIX == "" ]]; then
   [[ ! -d "$PREFIX/bin" ]] && mkdir "$PREFIX/bin" -p
 fi
 
-# TODO: Make this better
+# Check if we're on Gitpod OR GitHub Codespaces before running the main script
+# Note that I can't cover literally everything on automated tests and manual
+# runs. You don't want to abuse CI services for the sake of validating every
+# single edge case in the script.
+if [[ $CODESPACES == "true" ]]; then
+  DOTFILES_PATH="/workspaces/.codespaces/.persistedshare/dotfiles"
+  PASSWORD_STORE_DIR="/workspaces/.codespaces/.presistedshare/password-store"
+else
+  DOTFILES_PATH=${DOTFILES_HOME:-"$HOME/.dotfiles"}
+  PASSWORD_STORE_DIR=${PASSWORD_STORE_DIR:-"/$HOME/.password-store"}
+fi
+
+writeConfig() {
+  printf "DOTFILES_PATH=$DOTFILES_PATH\nPASSWORD_STORE_DIR=$PASSWORD_STORE_DIR"
+}
+
+# TODO: Make this better, possibly using some magic that uses FTG installer script
 banner() {
-  echoStageNameAdd "Dotfiles Bootstrap Script by Andrei Jiroh"
+  echoStageNameAdd "Dotfiles Bootstrap Script by @ajhalili2006, licensed under MIT"
   echoStageName "Linux machine bootstrapper starts in 3 seconds..."
   sleep 3
 }
@@ -49,65 +65,80 @@ success() {
     echo "${GREEN}success: $* ${RESET}"
 }
 
+info() {
+  echo "info: $*"
+}
+
 checkOs() {
     # This step is required for different actions, like installing deps from system-wide package managers
-    # among other sorts of shitfuckery
-    if echo $OSTYPE | grep -qE "linux-android.*"; then
+    # among other sorts of shitfuckery. We may need to also run tests through the CI to ensure nothing breaks.
+    if echo "$OSTYPE" | grep -qE "linux-android.*"; then
         export DOTFILES_OS_NAME=android-termux
-    elif echo $OSTYPE | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; then
-        # Since Ubuntu is an major Debian fork, they're both LSB-complaint, so
-        # we might need to just use grep for this one in the future.
-        export DOTFILES_OS_NAME=debian-ubuntu
+    elif echo "$OSTYPE" | grep -qE '^linux-gnu.*' && [ "$(lsh_release -is)" == "Debian" ]; then
+        export DOTFILES_OS_NAME=debian
         if  [ -d '/google/devshell' ] && [ -f '/google/devshell/bashrc.google' ]; then
            export GOOGLE_CLOUD_SHELL=true
         fi
-    # TODO: Write stuff for Arch users and macOS. In case of WSL, the existence of /wsl.conf may be included in the future.
+    elif $OSTYPE | grep -qE '^linux-gnu.*' && [ "$(lsh_release -is)" == "Ubuntu" ]; then
+        export DOTFILES_OS_NAME=ubuntu
     else
-        error "Script unsupported for this machine. See the online README for guide on manual bootstrapping." && exit 1
+        error "Script unsupported for this specific distro. If this was an downstream fork of another repo, you could override"
+        error "the DOTFILES_OS_NAME variable"
     fi
 }
 
-installDeps() {
+setupSysPkgs() {
     echoStageName "Installating essiential dependencies"
     if [[ $DOTFILES_OS_NAME == "android-termux" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
-       pkg install -y man git nano gnupg openssh proot resolv-conf asciinema openssl-tool
-       echo "info: Essientials are installed, if you need Node.js just do 'pkg install nodejs' (we recommend installing the LTS one for stability) anytime"
-    elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
-       sudo apt install gnupg git nano -y
-
-       if [[ $USE_PYENV != "" ]]; then
-           # we'll use the pyenv stuff
-           PYENV_ROOT=${PYENV_ROOT:-"$HOME/.pyenv"}
-           if [[ ! -d "${HOME}/.pyenv" ]]; then
-             echoStageName "Installing Pyenv with pyenv-installer"
-             curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-           else
-             git -C "${PYENV_ROOT}" pull origin --verbose
-             git -C "${PYENV_ROOT}/plugins/pyenv-doctor" pull origin --verbose
-             git -C "${PYENV_ROOT}/plugins/pyenv-installer" pull origin --verbose
-             git -C "${PYENV_ROOT}/plugins/pyenv-update" pull origin --verbose
-             git -C "${PYENV_ROOT}/plugins/pyenv-virtualenv" pull origin --verbose
-             git -C "${PYENV_ROOT}/plugins/pyenv-which-ext" pull origin --verbose
-           fi
-           echoStageName "Installing build deps as needed by pyenv"
-           sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev -y
-
-           echoStageName "Installing Python3 through Pyenv"
-           "${PYENV_ROOT}/bin/pyenv" install 3.9.6
-           "${PYENV_ROOT}/bin/pyenv" global 3.9.6
-       elif [[ $UPDATE_SYSTEM_PYTHON_INSTALL != "" ]]; then
-           echoStageName "Updating Python install"
-           sudo apt install python3 python3-pip --yes
-       fi
+       pkg install -y man git nano gnupg openssh proot resolv-conf asciinema openssl-tool pass
+       setupGhCli
+       setupGLabCli
+    elif [[ $DOTFILES_OS_NAME == "debian" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
+       sudo apt install gnupg git nano pass openssh-client -y
+    elif [[ $DOTFILES_OS_NAME == "ubuntu" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
+       sudo apt install gnupg nano pass openssh-client -y
     else
        warn "Dependency installs are being skipped"
     fi
     sleep 5
 }
 
-installNodeVerManager() {
-  echoStagName "Installing Node.js Version Manager"
-  $(command -v curl >>/dev/null && echo "curl -o-" || echo "wget -qO-") https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | NODE_VERSION=${NODE_VERSION:"lts/*"} NVM_DIR="$HOME/.nvm" PROFILE=/dev/null bash
+setupAsdf() {
+  warn WIP
+}
+
+setupNode() {
+  if [[ $USE_NVM == "1" ]]; then
+      echoStagName "Installing Node.js Version Manager"
+      $(command -v curl >>/dev/null && echo "curl -o-" || echo "wget -qO-") https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | NODE_VERSION=${NODE_VERSION:"lts/*"} NVM_DIR="$HOME/.nvm" PROFILE=/dev/null bash
+  fi
+}
+
+setupPython() {
+  if [[ $USE_PYENV == "1" ]]; then
+    PYENV_ROOT=${PYENV_ROOT:-"$HOME/.pyenv"}
+    if [[ ! -d "${HOME}/.pyenv" ]]; then
+       echoStageName "Installing Pyenv with pyenv-installer"
+       curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+    else
+       git -C "${PYENV_ROOT}" pull origin --verbose
+       git -C "${PYENV_ROOT}/plugins/pyenv-doctor" pull origin --verbose
+       git -C "${PYENV_ROOT}/plugins/pyenv-installer" pull origin --verbose
+       git -C "${PYENV_ROOT}/plugins/pyenv-update" pull origin --verbose
+       git -C "${PYENV_ROOT}/plugins/pyenv-virtualenv" pull origin --verbose
+       git -C "${PYENV_ROOT}/plugins/pyenv-which-ext" pull origin --verbose
+    fi
+    echoStageName "Installing build deps as needed by pyenv"
+    if [[ $DOTFILES_OS_NAME == "debian" ]] || [[ $DOTFILES_OS_NAME == "ubuntu" ]]; then
+       sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev -y
+    fi
+    echoStageName "Installing Python3 through Pyenv"
+    "${PYENV_ROOT}/bin/pyenv" install 3.9.6
+    "${PYENV_ROOT}/bin/pyenv" global 3.9.6
+  elif [[ $UPDATE_SYSTEM_PYTHON_INSTALL != "" ]]; then
+    echoStageName "Updating Python install"
+    sudo apt install python3 python3-pip --yes
+  fi
 }
 
 userspcaeBinDirCheck() {
@@ -121,52 +152,65 @@ userspcaeBinDirCheck() {
 }
 
 cloneRepo() {
-    if [ ! -d "$HOME/.dotfiles" ]; then
+    if [ ! -d "$DOTFILES_PATH" ]; then
         echoStageName "Cloning the dotfiles repo"
-        git clone https://github.com/ajhalili2006/dotfiles.git $HOME/.dotfiles
+        git clone https://github.com/ajhalili2006/dotfiles.git $DOTFILES_PATH
     else
         echoStageName "Dotfiles repo found, pulling remote changes instead"
-        git -C "$HOME/.dotfiles" fetch --all
-        git -C "$HOME/.dotfiles" pull origin
+        git -C "$DOTFILES_PATH" fetch --all
+        git -C "$DOTFILES_PATH" pull origin
     fi
     sleep 5
 }
 
 # Decouple secrets repo cloning process from the main
 cloneSecretsRepo() {
+    case $FF_UNENCRYPTED_SECRETS_REPO in
+        "true") ;;
+        *) 
+          warn "Cloning your unencrypted secrets repo to $DOTFILES_PATH/secrets is no longer supported. Please set FF_UNENCRYPTED_SECRETS_REPO"
+          warn "variable or migrate your secrets to PasswordStore to avoid disruptions. In meanwhile, this script will setup GPG for you"
+          return
+          ;;
+    esac
+
     # Since I also have an GitHub mirror of that private repo, maybe we can set an variable for that
     if [[ $USE_GH_SECRETS_MIRROR != "" ]]; then
        true # just an bypass command to avoid these steps below
-    elif [[ $GITLAB_TOKEN == "" ]] && [[ $GITLAB_LOGIN == "" ]] && [ ! -d "$HOME/.dotfiles/secrets" ]; then
-        error "GitLab login and token can't be blank!" && exit 1
+    elif [[ $GITLAB_TOKEN == "" ]] && [[ $GITLAB_LOGIN == "" ]] && [ ! -d "$DOTFILES_PATH/secrets" ]; then
+        warn "GitLab login and token is blank, skipping..." && true
     # Probably change my GitLab SaaS username with yours
-    elif [[ $GITLAB_LOGIN != "ajhalili2006" ]] && [ ! -d "$HOME/.dotfiles/secrets" ]; then
-        error "Only Andrei Jiroh can do this!" && exit 1
-    elif [[ $GITLAB_LOGIN == "ajhalili2006" ]] && [[ $GITLAB_TOKEN == "" ]] && [ ! -d "$HOME/.dotfiles/secrets" ]; then
-        error "Missing GitLab SaaS PAT! Check your Bitwarden vault for that PAT with atleast read_repository scope, or use GitHub mirror instead." && exit 1
-    fi
-
-    if [ ! -d "$HOME/.dotfiles/secrets" ]; then
-        echoStageName "Cloning secrets repo"
-
-        if [[ $USE_GH_SECRETS_MIRROR != "" ]]; then
-          gh repo clone ajhalili2006/dotfiles-secrets
-        elif ! git clone https://$GITLAB_LOGIN:$GITLAB_TOKEN@gitlab.com/ajhalili2006/dotfiles-secrets $HOME/.dotfiles/secrets; then
-          echo "error: That kinda sus, but either only Andrei Jiroh can proceed or maybe the PAT you used is invalid. Probably try to use GitHub mirror instead" && exit 1
-        fi
-        chmod 760 $HOME/.dotfiles/secrets
-        git -C "$HOME/.dotfiles/secrets" remote set-url origin git@gitlab.com:ajhalili2006/dotfiles-secrets
+    elif [[ $GITLAB_LOGIN != "ajhalili2006" ]] && [ ! -d "$DOTFILES_PATH/secrets" ]; then
+        warn "Only Andrei Jiroh can do this!" && true
+    elif [[ $GITLAB_LOGIN == "ajhalili2006" ]] && [[ $GITLAB_TOKEN == "" ]] && [ ! -d "$DOTFILES_PATH/secrets" ]; then
+        warn "Missing GitLab SaaS PAT! Check your Bitwarden vault for that PAT with atleast read_repository scope, or use GitHub mirror instead."
     else
-        chmod 760 $HOME/.dotfiles/secrets
-        git -C "$HOME/.dotfiles/secrets" fetch --all
-        git -C "$HOME/.dotfiles/secrets" pull
+      if [ ! -d "$DOTFILES_PATH/secrets" ]; then
+         echoStageName "Cloning secrets repo" "$DOTFILES_PATH/secrets"
+         warn "The unencrypted secrets repo is currently deprecated and may be removed from the bootstrapping process. Please migrate to"
+         warn "Pass"
+         if [[ $USE_GH_SECRETS_MIRROR != "" ]]; then
+            gh repo clone ajhalili2006/dotfiles-secrets "$DOTFILES_PATH/secrets"
+         elif ! glab repo clone $HOME/.dotfiles/secrets; then
+            warn "There was an problem while cloning the repo, please check the credentials and try again"
+            warn "gracefully skipping this step"
+         fi
+         chmod 760 "$DOTFILES_PATH/secrets"
+         #git -C "$DOTFILES_PATH/secrets" remote set-url origin git@gitlab.com:ajhalili2006/dotfiles-secrets
+      elif [[ -d "$DOTFILES_PATH/secrets" ]] ; then
+        chmod 760 "$DOTFILES_PATH/secrets"
+        git -C "$DOTFILES_PATH/secrets" fetch --all
+        git -C "$DOTFILES_PATH/secrets" pull
+      fi
     fi
-    sleep 5
+    sleep 5  
 }
 
 # Install GitHub CLI if we're gonna use that GitHub mirror
-ghCli() {
-  if [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]] && [[ "$(command -v gh)" == "" ]]; then
+setupGhCli() {
+  if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
+     pkg install gh # TODO: check Linux install docs in cli/cli
+  elif [[ $DOTFILES_OS_NAME == "debian" || $DOTFILES_OS_NAME == "ubuntu" ]] && ! command -v gh >> /dev/null; then
      curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
      sudo apt update && sudo apt install gh
@@ -192,26 +236,14 @@ cleanup() {
     exit
 }
 
-copyKeysSSH() {
-    echoStageName "Copying SSH keys"
-    if [ ! -d "$HOME/.ssh" ]; then
-        mkdir -p "$HOME/.ssh"
-        cp "$HOME/.dotfiles/secrets/ssh/launchpad" "$HOME/.ssh/launchpad"
-        cp "$HOME/.dotfiles/secrets/ssh/launchpad.pub" "$HOME/.ssh/launchpad.pub"
-        chmod 600 "$HOME/.ssh/launchpad"
-    else
-        [ ! -f "$HOME/.ssh/launchpad" ] && cp "$HOME/.dotfiles/secrets/ssh/launchpad" "$HOME/.ssh/launchpad"
-        [ ! -f "$HOME/.ssh/launchpad.pub" ] && "cp $HOME/.dotfiles/secrets/ssh/launchpad.pub" "$HOME/.ssh/launchpad.pub"
-        [ -f "$HOME/.ssh/launchpad.pub" ] && chmod 600 "$HOME/.ssh/launchpad"
-    fi
-
+setupSshConfig() {
     echoStageName "Linking config files"
     if echo $OSTYPE | grep -qE "linux-android.*"; then
         [ ! -f "$HOME/.ssh/config" ] && ln -s $HOME/.dotfiles/ssh-client/termux ~/.ssh/config
     # TODO: Write checks if it's Ubuntu or Debian
     # See https://superuser.com/a/741610/1124908 for details
-    elif echo $OSTYPE | grep -qE '^linux-gnu.*' && [ -f '/etc/debian_version' ]; then
-        [ ! -f "$HOME/.ssh/config" ] && ln -s "$HOME/.dotfiles/ssh-client/ubuntu" "$HOME/.ssh/config"
+    elif echo $OSTYPE | grep -qE '^linux-gnu.*'; then
+      [ ! -f "$HOME/.ssh/config" ] && ln -s "$HOME/.dotfiles/ssh-client/linux" "$HOME/.ssh/config"
     fi
     sleep 5
 }
@@ -259,13 +291,16 @@ copyNanoConfig() {
 
 }
 
-installShellCheck() {
+setupSC() {
     echoStageName "Installing Shellcheck"
 
-    scversion="stable" # or "v0.4.7", or "latest"
-    SHELLCHECK_ARCHIVE_URL="https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" # TODO: Also detect other arches, especially on i386
-
-    if [[ $LSKIP_DEPENDENCY_INSTAL == "" ]]; then
+    scversion="stable"
+    case $(uname -m) in
+       amd64) SHELLCHECK_ARCHIVE_URL="https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz";;
+       aarch64) SHELLCHECK_ARCHIVE_URL="https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.aarch64.tar.xz";;
+       *) warn "ShellCheck release binaries from GitHub is probably unsupported, try using your system package manager instead." && return;;
+    esac
+    if [[ $SKIP_DEPENDENCY_INSTAL == "" ]]; then
       current_shellcheck_path=$(command -v shellcheck)
       isOwnedByUser="$(find $PREFIX/bin -user $USER -name shellcheck)"
       current_path_dir="$(dirname $current_shellcheck_path)"
@@ -295,7 +330,7 @@ installShellCheck() {
     fi
 }
 
-installAscinema() {
+setupAscinema() {
     echoStageName "Installing Asciinema"
     if [[ $DOTFILES_OS_NAME == "android-termux" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
       pkg install aciinema -y
@@ -308,11 +343,12 @@ installAscinema() {
     fi
 }
 
-installTF() {
+setupTF() {
     echoStageName "Installing pip3:thefuck"
     if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
         pkg install clang -y && pip install thefuck --user --upgrade
     else
+        # TODO: Also handle asdf shims
         if command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
             "$HOME/.pyenv/shims/pip3" install thefuck --upgrade
         else
@@ -321,11 +357,12 @@ installTF() {
     fi
 }
 
-installFilterRepo() {
-    echoStageName "Installing git-filter-repo"
+setupFilterRepo() {
+    echoStageName "Installing pip3:git-filter-repo"
     if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
         pip install git-filter-repo --upgrade
     else
+        # TODO: handle asdf shims and other version mgnrs for Python
         if command -v python3>>/dev/null && [ -f "$HOME/.pyenv/shims/python3" ]; then
             "$HOME/.pyenv/shims/pip3" install git-filter-repo --upgrade
         else
@@ -337,10 +374,12 @@ installFilterRepo() {
 # usage stuff
 usage() {
    echo "Accepted bootstrap script arguments are:"
-   echo "* --help|-h - Show this text."
-   echo "* -i - Skip installing different dependencies and packages"
-   echo "* -d - Enable debugging"
-   echo "* -l - Skip symlinking config files (nanorc, bashrc, etc.)"
+   echo "  * --help|-h - Show this text."
+   echo "  * -i|--skip-install-packages - Skip installing different dependencies and packages"
+   echo "  * -d|--debug - Enable debugging"
+   echo "  * -l|--config-symlink - Skip symlinking config files (nanorc, bashrc, etc.)"
+   echo "  * --deprecated-secrets-repo - Clone also deprecated dotfiles-secrets repo, alongside the"
+   echo "                                 experimential personal PasswordStore git repo"
 }
 
 customizeCloudShell() {
@@ -368,8 +407,40 @@ installCode() {
     # We'll use the officil script here, because why not? This may take longer on Termux if that's the case.
     echoStageName "Installing Code Server"
     curl -fsSL https://code-server.dev/install.sh | sh
-  elif [[ $XDG_CURRENT_DESKTOP != "" ]]; then
+  fi
+  if [[ $XDG_CURRENT_DESKTOP != "" ]]; then
     true # It's true for now
+    #echo "Installing VS Code from Microsoft"
+    # TODO
+  fi
+}
+
+importGpgKeys() {
+  if [[ $STORJ_ACCESS_GRANT == "" ]]; then
+    warn "Storj DCS access grant is missing, skipping gpg keys import"
+    return
+  fi
+  
+  BASE_URL="https://link.eu1.storjshare.io/s"
+  BUCKET_PATH="ajhalili2006-files-private/gpg-key-backups"
+  PERSONAL_KEY_URL="$BASE_URL/$STORJ_ACCESS_GRANT/$BUCKET_PATH/personal-main-backup.gpg?download=1"
+  PASSWORD_STORE_KEY_URL="$BASE_URL/$STORJ_ACCESS_GRANT/$BUCKET_PATH/personal-passwordstore-backup.gpg?download=1"
+  OSS_RELEASES_PERSONAL_KEY_URL="$BASE_URL/$STORJ_ACCESS_GRANT/$BUCKET_PATH/personal-releases-backup.gpg?download=1"
+  mkdir -p /tmp/keys-import-tmp # TODO: check if /dev/shm is usuable and use that dir instead for security reasons
+  wget $PERSONAL_KEY_URL -O /tmp/keys-import-tmp/personal
+  wget $PASSWORD_STORE_KEY_URL -O /tmp/keys-import-tmp/password-store
+  wget $OSS_RELEASES_PERSONAL_KEY_URL -O /tmp/keys-import-tmp/releases-key
+  gpg --batch --no-tty --yes --import /tmp/keys-import-tmp/personal
+  gpg --batch --no-tty --yes --import /tmp/keys-import-tmp/password-store
+  gpg --batch --no-tty --yes --import /tmp/keys-import-tmp/releases-key
+}
+
+importSshKeys() {
+  if [[ -d "$DOTFILES_PATH/secrets" ]]; then
+    true
+  elif [[ -d "$PASSWORD_STORE_DIR" ]]; then
+    pass show keys/ssh/personal | tee ~/.ssh/personal >>/dev/null
+    pass show keys/ssh/recaptime.dev | tee ~/.ssh/ajhalili2006.recaptime.dev >> /dev/null
   fi
 }
 
@@ -398,12 +469,8 @@ main() {
     checkOs
 
     # step 2: install needed tools and create ~/.local/bin
-    installDeps
+    setupSysPkg
     userspcaeBinDirCheck
-    [[ $USE_GH_SECRETS_MIRROR != "" ]] && ghCli
-
-    # Possibly interactively sign in to the CLI if GITHUB_TOKEN isn't provided
-    [[ $GITHUB_TOKEN == "" && $USE_GH_SECRETS_MIRROR == "" ]] && gh auth login
 
     # step 3.1: then clone the repo
     cloneRepo
@@ -412,23 +479,25 @@ main() {
     [[ $GOOGLE_CLOUD_SHELL == "true" ]] && customizeCloudShell
 
     # step 4: install additional needed tools
-    installAscinema
-    installTF
-    installFilterRepo
-    installShellCheck
-    [[ $USE_NVM != "" ]] && installNodeVerManager
+    setupAscinema
+    setupTF
+    setupFilterRepo
+    setupSC
+    setupNodejs
     installCode
 
     # step 5: copy and symlink files
     copyGitConfig
     copyNanoConfig
     copyBashrc
+    setupSshConfig
 
     # step 5.2: copy our secrets btw
     cloneSecretsRepo # Run this before we even copy the ssh keys!
-    copyKeysSSH
+    importGpgKeys
+    importSshKeys
 
-    # step 6: finally clean up bullshit
+    # step 6: finally clean up BS ScoMo from marketing did
     cleanup
 }
 
