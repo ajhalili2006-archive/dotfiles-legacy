@@ -101,7 +101,7 @@ Host sandbox.ajhalili2006.dev
    User ajhalili2006
    IdentityFile ~/.ssh/launchpad
 Host mau-dev-mirrors-haxserver.runners.recaptime.dev
-   Hostname
-   User
-   Port
+   Hostname todo.recaptime.app
+   User ajhalili2006
+   Port 6666
    IdentityFile ~/.ssh/ajhalili2006.recaptime.dev
