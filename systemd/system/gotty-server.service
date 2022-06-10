@@ -1,0 +1,13 @@
+[Unit]
+Description=Remote shell via Web
+After=network.service network-online.target tailscaled.service
+
+[Service]
+# Assuming that the UNIX username is gildedguy and our default shell is being handed off through tmux via 'chsh -s /usr/bin/tmux' magic
+# for tmux or byobu-enable for Byobu.
+# That might not work on NixOS, since we need to update that too on every upgrade.
+ExecStart=/usr/local/bin/gotty --reconnect --port 42088 -w --title-format "{{ .hostname }}+shell@ajhalili2006.tailnet" -- login
+#Environment=GOTTY_ADDRESS=100.113.94.115
+
+[Install]
+WantedBy=multi-user.target
