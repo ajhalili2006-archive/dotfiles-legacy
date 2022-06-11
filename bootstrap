@@ -8,7 +8,9 @@
 # if undefined, use $HOME/.local
 if [[ $PREFIX == "" ]]; then
   export PREFIX="$HOME/.local"
-  [[ ! -d "$PREFIX/bin" ]] && mkdir "$PREFIX/bin" -p
+  if [[ ! -d "$PREFIX/bin" ]]; then
+    mkdir "$PREFIX/bin" -p
+  fi
 fi
 
 # Check if we're on Gitpod OR GitHub Codespaces before running the main script
@@ -95,8 +97,12 @@ setupSysPkgs() {
        setupGLabCli
     elif [[ $DOTFILES_OS_NAME == "debian" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
        sudo apt install gnupg git nano pass openssh-client -y
+       setupGhCli
+       setupGLabCli
     elif [[ $DOTFILES_OS_NAME == "ubuntu" ]] && [[ $SKIP_DEPENDENCY_INSTALL == "" ]]; then
        sudo apt install gnupg nano pass openssh-client -y
+       setupGhCli
+       setupGLabCli
     else
        warn "Dependency installs are being skipped"
     fi
@@ -206,14 +212,37 @@ cloneSecretsRepo() {
     sleep 5  
 }
 
+# TODO: Check whenever Linuxbrew is installed and use local Homebrew install instead when detected.
+# TODO: If installed using this script via FF_SETUP_HOMEBREW environment variable, defaults to
+# TODO: /home/linuxbrew/.nrew as per my bashrc and zshrc files.
 # Install GitHub CLI if we're gonna use that GitHub mirror
 setupGhCli() {
+  if command -v gh >>/dev/null; then
+    info "GitHub CLI installed for this environment, skipping system package manager setup"
+    return
+  fi
+
   if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
      pkg install gh # TODO: check Linux install docs in cli/cli
   elif [[ $DOTFILES_OS_NAME == "debian" || $DOTFILES_OS_NAME == "ubuntu" ]] && ! command -v gh >> /dev/null; then
      curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
      sudo apt update && sudo apt install gh
+  fi
+}
+# Also setup GLab CLI too
+setupGLabCli() {
+  if command -v glab >>/dev/null; then
+    info "GLab CLI installed for this environment, skipping running scripts from Git repo rawfile/Termux pkgrepo"
+    return
+  fi
+
+  if [[ "$DOTFILES_OS_NAME" == "android-termux" ]]; then
+    warn "GLab CLI is currently unavailable on Termux package repos yet."
+    return
+    #pkg install glab
+  else
+   curl -fsSL https://raw.githubusercontent.com/profclems/glab/trunk/scripts/install.sh | sh - "$PREFIX"
   fi
 }
 
@@ -251,7 +280,7 @@ setupSshConfig() {
 copyBashrc() {
     if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
         ln -s $HOME/.dotfiles/termux.bashrc ~/.bashrc
-    elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]]; then
+    elif [[ $DOTFILES_OS_NAME == "debian" ]] || [[ $DOTFILES_OS_NAME == "ubuntu" ]]; then
         if [[ $SKIP_CONFIG_LINKING == "" ]] && [ ! -f "$HOME/.bashrc" ]; then
            ln -s "$HOME/.dotfiles/ubuntu.bashrc" ~/.bashrc
         elif [[ $GOOGLE_CLOUD_SHELL == "true" ]] && [[ $SKIP_CONFIG_LINKING == "" ]] && [ -f "$HOME/.bashrc" ]; then
@@ -276,7 +305,7 @@ copyGitConfig() {
     # TODO: Write checks if it's Ubuntu or Debian
     # See https://superuser.com/a/741610/1124908 for details
     # By default, we'll use the one-size-fits-all Linux config for Git
-    elif [[ $DOTFILES_OS_NAME == "debian-ubuntu" ]] && [[ $SKIP_CONFIG_LINKING == "" ]]; then
+    elif echo $OSTYPE | grep -qE '^linux-gnu.*' && [[ $SKIP_CONFIG_LINKING == "" ]]; then
         [ ! -L "$HOME/.gitconfig" ] && ln -s "$HOME/.dotfiles/gitconfig/linux" "$HOME/.gitconfig" || warn "Git configuration on userspace found, either symlink is broken or customizations had been made. Please fix any conflicts or soft link them manually!"
     fi
 }
