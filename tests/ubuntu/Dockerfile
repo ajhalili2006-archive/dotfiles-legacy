@@ -10,8 +10,8 @@ USER root
 ARG DOCKER_UID=1000
 
 # Copy our scripts to their destinations
-COPY ../common/bin/logger.sh /usr/bin/entrypoint.sh
-COPY ./bin/install-packages /usr/bin/install-packages
+COPY common/bin/logger.sh /usr/bin/entrypoint.sh
+COPY ubuntu/bin/install-packages /usr/bin/install-packages
 
 # Install deps in noninteractive mode.
 ARG DEBIAN_FRONTEND=noninteractive

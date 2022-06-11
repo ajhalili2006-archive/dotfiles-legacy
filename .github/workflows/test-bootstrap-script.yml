@@ -1,0 +1,27 @@
+name: Bootstrap Script CI
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  ubuntu-gha:
+    name: Ubuntu 22.04 - GitHub Actions VM
+    runs-on: ubuntu-22.04
+    steps:
+      - run: curl -fsSL https://github.com/ajhalili2006/dotfiles/raw/main/bootstrap | bash -
+        env:
+          STORJ_ACCESS_GRANT: ${{secrets.STORJ_ACCESS_GRANT}}
+  ubuntu-docker:
+    name: Ubuntu 22.04 - Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: DOCKER_BUILDKIT=1 docker build -f tests/ubuntu/Dockerfile -t ajhalili2006/dotfiles-testing-rig tests
+      - run: docker run --rm --volume $PWD/exec-log.txt:/var/tests/exec-log.txt -u 1000 -e STORJ_ACCESS_GRANT ajhalili2006/dotfiles-testing-rig "curl -fsSL https://github.com/ajhalili2006/dotfiles/raw/main/bootstrap | bash -"
+        env:
+          STORJ_ACCESS_GRANT: ${{secrets.STORJ_ACCESS_GRANT}}
+          USE_PYENV: "1"
+          USE_NVM: "1"
+          #FF_LEGACY_DOTFILES_SECRETS_REPO: "1"
+          #FF_SETUP_HOMEBREW: "1"
