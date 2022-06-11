@@ -76,12 +76,12 @@ checkOs() {
     # among other sorts of shitfuckery. We may need to also run tests through the CI to ensure nothing breaks.
     if echo "$OSTYPE" | grep -qE "linux-android.*"; then
         export DOTFILES_OS_NAME=android-termux
-    elif echo "$OSTYPE" | grep -qE '^linux-gnu.*' && [ "$(lsh_release -is)" == "Debian" ]; then
+    elif echo "$OSTYPE" | grep -qE '^linux-gnu.*' && [ "$(lsb_release -is)" == "Debian" ]; then
         export DOTFILES_OS_NAME=debian
         if  [ -d '/google/devshell' ] && [ -f '/google/devshell/bashrc.google' ]; then
            export GOOGLE_CLOUD_SHELL=true
         fi
-    elif $OSTYPE | grep -qE '^linux-gnu.*' && [ "$(lsh_release -is)" == "Ubuntu" ]; then
+    elif $OSTYPE | grep -qE '^linux-gnu.*' && [ "$(lsb_release -is)" == "Ubuntu" ]; then
         export DOTFILES_OS_NAME=ubuntu
     else
         error "Script unsupported for this specific distro. If this was an downstream fork of another repo, you could override"
