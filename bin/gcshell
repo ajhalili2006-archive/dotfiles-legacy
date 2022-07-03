@@ -1,12 +1,18 @@
 #!/bin/bash
 #shellcheck disable=SC2034,SC1091
 
-# Configuration variables
-if [ -f "$DOTFILES_HOME/.config/gcshell.env" ]; then
-  source "$DOTFILES_HOME/.config/gcshell.env"
+if [[ $DEBUG != "" ]]; then
+  set -x
 fi
-CLOUD_SHELL_SSH_KEY=${GCLOUD_CLOUD_SHELL_SSH_KEY:="$HOME/.ssh/google_compute_engine"}
-OVERWRITE_CLOUD_SHELL_KEY=${OVERWRITE_CLOUD_SHELL_KEy:=false}
+
+# Init config
+DOTFILES_HOME=${DOTFILES_HOME:-"$HOME/.dotfiles"}
+if [ -f "$DOTFILES_HOME/config/gcshell.env" ]; then
+  source "$DOTFILES_HOME/config/gcshell.env"
+fi
+
+CLOUD_SHELL_SSH_KEY=${GCLOUD_CLOUD_SHELL_SSH_KEY:-"$HOME/.ssh/google_compute_engine"}
+OVERWRITE_CLOUD_SHELL_KEY=${OVERWRITE_CLOUD_SHELL_KEy:-"false"}
 
 # Only use colors if connected to a terminal
 if [ -t 1 ]; then
@@ -48,10 +54,8 @@ fi
 if [[ $1 == "debug" ]]; then
   echo "===== CONFIG DEBUG ====="
   echo "Cloud Shell/Compute Engine SSH key path: $CLOUD_SHELL_SSH_KEY [set \$CLOUD_SHELL_SSH_KEY to change path]"
-  if [ -f "$CLOUD_SHELL_SSH_KEY" ]; then
-    echo "Cloud Shell/Compute Engine Public Key: $(cat "$CLOUD_SHELL_SSH_KEY.pub")"
-  else
-    warn "Cloud Shell/Compute Engine Public key was Not Found"
+  if [ ! -f "$CLOUD_SHELL_SSH_KEY" ]; then
+    warn "Cloud Shell/Compute Engine SSH key was doesn't exist"
   fi
   if [[ $OVERWRITE_CLOUD_SHELL_KEY == "true" ]]; then
     echo "Overwrite SSH keys: enabled"

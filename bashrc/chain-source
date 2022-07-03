@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# these commands should be triggered on shell startup
-. ~/.dotfiles/bashrc/aliases
-. ~/.dotfiles/bashrc/worthwhile-functions
-guild-test

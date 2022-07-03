@@ -1,4 +1,5 @@
 {
-    "workbench.iconTheme": "vscode-icons",
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.productIconTheme": "material-product-icons",
     "git.alwaysSignOff": true
 }

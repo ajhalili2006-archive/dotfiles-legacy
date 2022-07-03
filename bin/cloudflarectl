@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# TODO: Detect whenever we can use HTTPie in the shell environment or use plain old curl.
 HTTP_CLIENT_PATH=$(command -v curl)
 
 if [[ $HTTP_CLIENT_PATH == "" ]]; then
@@ -8,11 +9,37 @@ if [[ $HTTP_CLIENT_PATH == "" ]]; then
 fi
 
 if command -v jq >> /dev/null; then
-   echo "OK" >> /dev/null
+   true
 else
    echo "Please install jq to prettify JSON responses from API."
    exit 1
 fi
+
+### COLORS ###
+RED=$(printf '\033[31m')
+GREEN=$(printf '\033[32m')
+YELLOW=$(printf '\033[33m')
+BLUE=$(printf '\033[34m')
+MAGENTA=$(printf '\033[35m')
+BOLD=$(printf '\033[1m')
+RESET=$(printf '\033[m')
+### COLORS ###
+
+warn() {
+    if [[ $NO_COLOR == "" ]]; then
+      echo "${YELLOW}warning: $* ${RESET}"
+    else
+      echo "warninh: $*"
+    fi
+}
+
+error() {
+    echo "${RED}error: $* ${RESET}"
+}
+
+info() {
+  echo "info: $*"
+}
 
 # API Handler
 apiHandler() {
@@ -30,7 +57,7 @@ if [[ $# == "0" ]] || [[ $1 == "help" ]]; then
   echo "validate-token        Check if an token is still working"
   echo "zones                 Manage your Cloudflare zones"
 else
-  if [[ $@ == "validate-token" ]]; then
+  if [[ $1 == "validate-token" ]]; then
      if [[ $CF_API_EMAIL != "" ]]; then
         echo "Unsupported variable found: CF_API_EMAIL"
         echo "Please use API keys instead of global API token."
@@ -42,7 +69,7 @@ else
         echo "No token found! Set your API token with:"
         echo "   export CF_API_KEY=abcdef123456"
      fi
-  elif [[ $@ == "zones" ]]; then
+  elif [[ $1 == "zones" ]]; then
      echo "Usage: $0 zones [ARGS]"
      echo
      echo "Manage and list your zones managed by Cloudflare."
@@ -51,7 +78,7 @@ else
      echo "add             Add new zone"
      echo "remove          Remove an zone"
      exit
-  elif [[ $@ == "zones list" ]]; then
+  elif [[ $1 == "zones" && $2 == "list" ]]; then
      apiHandler zones GET | jq .result
   else
      echo "Unsupported command! See the help command for details"

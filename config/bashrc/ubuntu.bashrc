@@ -19,8 +19,8 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=10000
+HISTFILESIZE=10000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -130,8 +130,8 @@ export PATH="$HOME/.deta/bin:$PATH"
 # scripts in ~/.local/bin and ~/.dotfiles/bin
 # also $HOME/.cargo/bin
 export DOTFILES_HOME="$HOME/.dotfiles"
-export DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin" GOLANG_PATH=/usr/local/go/bin
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$GOLANG_PATH:$DOTFILES_STUFF_BIN:$PATH"
+export DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$DOTFILES_STUFF_BIN:$PATH"
 
 # use nano instead of vi by default when on SSH
 # for git, there's the option of firing up VS Code, if you prefered.
@@ -152,18 +152,18 @@ fi
 
 # As long as possible, attempt to setup our GnuPG agent when we're on an SSH session.
 if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
-	eval $(keychain --agents gpg,ssh --eval --nogui --noinherit)
+	eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) || true
 	export GPG_TTY=$(tty)
 else
 	# We'll do some checks here btw, Currently I use GNOME and Xfce4 as my desktop environments
 	case $(ps -o comm= -p $PPID) in
         	# Sometimes, $SSH_CLIENT and/or $SSH_TTY doesn't exists so we'll pull what ps says
-		sshd | */sshd) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit);;
-		xfce*) eval $(keychain --agents gpg,ssh --eval);;
-		gnome*) eval $(keychain --agents gpg,ssh --eval);;
+		sshd | */sshd) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) || true;;
+		xfce*) eval $(keychain --agents gpg,ssh --eval) || true;;
+		gnome*) eval $(keychain --agents gpg,ssh --eval) || true;;
 		# Don't forget VS Code and code-server!
-		code) eval $(keychain --agents gpg,ssh --eval);;
-		*) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) ;;
+		code) eval $(keychain --agents gpg,ssh --eval) || true;;
+		*) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) || true;;
 	esac
 fi
 
@@ -172,7 +172,7 @@ eval "$(gh completion -s bash)"
 
 # custom aliases and functions I made
 # sorucing through the chain-source script
-source "$HOME/.dotfiles/bashrc/chain-source"
+source "$DOTFILES_HOME/config/bashrc/chain-source" # TODO: Remove guild-test stuff
 
 # https://packaging.ubuntu.com/html/getting-set-up.html#configure-your-shell
 export DEBFULLNAME="Andrei Jiroh Halili"
@@ -184,7 +184,7 @@ export DEBEMAIL="ajhalili2006@gmail.com"
 test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Golang, probably we need to tweak this btw
-export PATH=/home/gildedguy/go/bin:$PATH GOPATH=/home/gildedguy/go
+export PATH="$HOME/go/bin:$PATH" GOPATH="$HOME/go"
 
 # Use native builds when doing 'docker build' instead of 'docker buildx build'
 export DOCKER_BUILDKIT=1
@@ -197,4 +197,6 @@ eval "$(direnv hook bash)"
 
 # Don't install gems globally, that would be chaos for file permissions
 export GEM_HOME="$HOME/.gems" PATH="$HOME/.gems/bin:$PATH"
-source "/home/gildedguy/.bashbox/env";
+
+# bashbox
+[ -s "$HOME/.bashbox/env" ] && source "$HOME/.bashbox/env";

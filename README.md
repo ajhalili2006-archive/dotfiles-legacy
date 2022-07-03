@@ -7,7 +7,7 @@ working at The Pins Team, see [our dotfiles][df-gl].
 
 ## Getting Started
 
-### Using the bootstraper script without cloning
+### Running from 
 
 ```sh
 # configure required variables
