@@ -9,6 +9,7 @@
 	helper = !glab auth git-credential
 [credential "https://mau.dev"]
 	helper = !glab auth git-credential
+
 # User config
 [user]
 	email = ajhalili2006@gmail.com
@@ -31,14 +32,12 @@
 # Enforce SSH
 # We commented thus block out coz we use the GitHub CLI's Git Credential
 # helper stuff
-#[url "git@github.com:"]
-#  insteadOf = https://github.com/
-#  pushInsteadOf = https://github.com/
 [url "git+ssh://ajhalili2006@git.launchpad.net/"]
   insteadof = lp:
   pushInsteadOf = lp:
-[url "git@bitbucket.org:"]
-  insteadOf = https://bitbucket.org/
+[url "git@git.sr.ht:"]
+  insteadOf = https://git.sh.rt
+  pushInsteadOf = https://git.sh.rt
 [init]
   defaultBranch = main
 # TODO: Set up aliases for ther Git hosts, like in Launchpad.net
