@@ -2,20 +2,14 @@
 
 # Start GPG and SSH agents
 export GPG_TTY=$(tty)
-eval $(gpg-agent --daemon --enable-ssh-support --write-env-file "${HOME}/.gpg-agent-info")
-if [ -f "${HOME}/.gpg-agent-info" ]; then
-  # gpg-agent[****]: WARNING: "--write-env-file" is an obsolete
-  # option - it has no effect
-  . "${HOME}/.gpg-agent-info"
-  export GPG_AGENT_INFO
-  export SSH_AUTH_SOCK
-  export SSH_AGENT_PID
-else
-  echo "Howdy, user ID ${EUID}. Shenanigans beget shenanigans."
-  # not needed this because we have .ssh/config
-  # but keep this uncommented because Git is being
-  # an dougebag in every single shell sessiob.
-  source ~/.dotfiles/bin/source-ssh-agent
+# Use OkcAgent's SSH agent client to use my GPG key for SSH sessions.
+if ! pgrep okc-ssh-agent > /dev/null; then
+    okc-ssh-agent > "$PREFIX/tmp/okc-ssh-agent.env"
+fi
+source "$PREFIX/tmp/okc-ssh-agent.env"
+
+if ! pgrep sshd > /dev/null; then
+    sshd
 fi
 
 # Then add my scripts
@@ -27,22 +21,5 @@ export DOTFILES_HOME=$HOME/.dotfiles
 #rm -rf ~/.bash_history>>/dev/null && history -c && echo "history-cleanup: Shell history cleaned for past session" || echo "history-cleanup: No bash_history file found for past session."
 
 # then do chain sourcing
-source ~/.dotfiles/bashrc/chain-source
+source ~/.dotfiles/config/bashrc/chain-source
 
-# check if thefuck Python3 package is there in case I really
-# fricked the commands.
-TF_PYTHON_PATH=$(command -v thefuck)
-if [[ $TF_PYTHON_PATH != "" ]];then
-  eval $(thefuck --alias fuckwit)
-  eval $(thefuck --alias what-the-fuck)
-  eval $(thefuck --alias holy-shit)
-  eval $(thefuck --alias stfu)
-  eval $(thefuck --alias fuck)
-  eval $(thefuck --alias bullshit)
-fi
-
-# Export my Cloudflare API keys
-#source ~/.dotfiles/secrets/cloudflare.api-keys
-
-# do console cleanup
-#clear

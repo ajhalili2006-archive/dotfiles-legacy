@@ -17,6 +17,9 @@
 	## This way, we don't need to install VS Code again
 	## if we want to edit files.
 	editor = nano
+[gpg]
+        # use OkcAgent's GPG client to sign using my key in OpenKeychain
+	program = okc-gpg
 
 # Enforce SSH
 [url "git@github.com:"]
