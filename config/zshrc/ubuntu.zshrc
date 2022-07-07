@@ -159,7 +159,7 @@ eval "$(gh completion -s zsh)"
 
 # custom aliases and functions I made
 # sorucing through the chain-source script
-source "$HOME/.dotfiles/bashrc/chain-source"
+source "$HOME/.dotfiles/config/bashrc/chain-source"
 
 # https://packaging.ubuntu.com/html/getting-set-up.html#configure-your-shell
 export DEBFULLNAME="Andrei Jiroh Eugenio Halili"
@@ -208,7 +208,7 @@ source $ZSH/oh-my-zsh.sh
 
 source "$HOME/.bashbox/env";
 
-# Allow launching byobu behind the scenes
+# Allow launching byobu behind the scenes, should be handled by the login script
 #_byobu_sourced=1 . /usr/bin/byobu-launch 2>/dev/null || true
 
 # The next line updates PATH for the Google Cloud SDK.

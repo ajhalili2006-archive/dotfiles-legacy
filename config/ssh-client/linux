@@ -73,6 +73,10 @@ Host devshell.tailnet
    User abc
    Hostname 100.76.127.93
    RemoteForward 63100 localhost:63100
+Host ranboozler
+   User termux
+   Hostname ranboozler.tailnet
+   Port 8022
 # in case the mesh network went fucked-up by ISP d**kheads
 Host stellapent.local
    User cursed-remote-user
@@ -83,6 +87,10 @@ Host wsl.stellapent.local
    User mikedmoy
    Hostname stellapent.local
    Port 2222
+Host ranboozler.local
+   User termux
+   Hostname 192.168.254.116
+   Port 8022
 # SourceForge
 Host shell.sourceforge.net
    User ajhalili2006

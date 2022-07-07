@@ -38,6 +38,9 @@
 [url "git@git.sr.ht:"]
   insteadOf = https://git.sh.rt
   pushInsteadOf = https://git.sh.rt
+[url "git@git.sr.ht:"]
+  insteadOf = srht:
+  pushInsteadOf = srht:
 [init]
   defaultBranch = main
 # TODO: Set up aliases for ther Git hosts, like in Launchpad.net
@@ -68,3 +71,5 @@
 	rebase = true
 [push]
 	recurseSubmodules = check
+[format]
+	signOff = true
