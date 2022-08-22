@@ -1,0 +1,86 @@
+#!/bin/bash
+# shellcheck disable=SC2199,SC2068,SC1091,SC2086,SC2145
+
+# custom function management here
+# changes to the worthwhile-functions filepath requires
+# an update o the filepath via 'edit-script reload-funcs-bashrc
+# and also any reference here
+
+DOTFILES_HOME=${DOTFILES_HOME:-"$HOME/.dotfiles"}
+source "$DOTFILES_HOME/tools/bootstrap-utils/00-script-library.sh"
+
+disable-funcs () {
+   echo "info: Unimplemented yet. Tell Andrei to add it to his todo."
+}
+
+edit-funcs-bashrc() {
+   $(command -v nano>>/dev/null && echo nano || echo vi) ~/.dotfiles/bashrc/worthwhile-functions
+}
+
+list-debs-size() {
+   dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | less
+}
+
+edit-script-file() {
+    # if you use other editor, please set $EDITOR.
+    $EDITOR "$(command -v $1)"
+}
+
+# reloading stuff
+refresh-funcs() {
+  showStage "reloading current session with fresh functions"
+  source "$DOTFILES_HOME/config/bashrc/functions"
+}
+refresh-aliases() {
+  showStage "reloading current session with fresh aliases"
+  source "$DOTFILES_HOME/config/bashrc/aliases"
+}
+
+# https://commentedcode.org/blog/2020/09/21/changing-default-branch-of-git-init/
+# TODO: Deprecate this function once git-config:init.defaultBranch is used.
+git() {
+   # check command for some automation KEK, especially i want to do DCO by default
+   if [[ "$1" == "init" && "$@" != *"--help"* ]]; then
+     if command git "$@"; then
+       echo "Setting HEAD to branch main"
+       command git symbolic-ref HEAD refs/heads/main
+     fi
+   else
+     command git "$@"
+   fi
+}
+
+list-nodejs-scripts() {
+  [[ -f "package.json" ]] && jq .scripts < package.json || echo "No package.json found in current directory."
+}
+
+code() {
+  # quick trick in case only code-insiders is installed and not code
+  if ! command -v code >> /dev/null; then
+    if command -v code-insiders >>/dev/null; then
+      warn "code-stable is not installed, but code-insiders is found in PATH, setting USE_CODE_INSIDERS"
+      warn "for this run"
+      USE_CODE_INSIDERS=true
+    fi
+  fi
+
+  if [[ -f "/snap/bin/code" && "$USE_CODE_INSIDERS" == "" ]]; then
+    echo "info: execing /snap/bin/code with params: $*"
+    exec /snap/bin/code "$@"
+  elif [[ -f "/snap/bin/code-insiders" ]]; then
+    echo "info: execing /snap/bin/code-insiders with params: $*"
+    exec /snap/bin/code-insiders "$*"
+  fi
+
+  if [[ "$(command -v code)" != "" && "$USE_CODE_INSIDERS" == "" ]]; then
+    info "execing $(command -v code) with params: $*"
+    exec "$(command -v code)" "$*"
+  elif [[ $(command -v code-insiders) != "" ]]; then
+    info "execing $(command -v code-insiders) with params: $*"
+    exec "$(command -v code-insiders)" "$*"
+  fi
+
+  echo "Either VS Code Stable or Insiders aren't installed on your system. Please visit"
+  echo "https://go.rtapp.tk/get-code to install the code editor."
+  return 1
+}

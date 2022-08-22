@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
+#shellcheck disable=SC2034
 # Library code for the bootstrap scripts
 
 # Adding colors to some text in termnial based on checks
+# NO_COLOR: https://no-color.org/
 if [ -t 1 ] && [[ "$NO_COLOR" == "" ]]; then
   RED=$(printf '\033[31m')
   GREEN=$(printf '\033[32m')
@@ -19,3 +21,23 @@ else
   BOLD=""
   RESET=""
 fi
+
+error() {
+  echo "${RED}error: $*${RESET}"
+}
+
+success() {
+  echo "${GREEN}success: $*${RESET}"
+}
+
+warn() {
+  echo "${YELLOW}warning: $*${RESET}"
+}
+
+info() {
+  echo "${BOLD}info: $*${RESET}"
+}
+
+showStage() {
+  echo "${BOLD}==> $*${RESET}"
+}

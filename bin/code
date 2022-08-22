@@ -1,5 +1,0 @@
-#!/bin/bash
-
-if [[ -f "/snap/bin/code" ]]; then
-  exec /snap/bin/code $*
-fi

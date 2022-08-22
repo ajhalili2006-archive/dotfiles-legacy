@@ -1,9 +1,8 @@
 #!/bin/env sh
 
-SUDO_PATH=$(command -v sudo)
-SU_PATH=$(command -v su)
+SUDO=${SUDO:-"sudo"}
 
-if [ "$1" = "" -o "$1" = "help" ]; then
+if [ "$1" = "" ] || [ "$1" = "help" ]; then
     echo "Usage: [sudo|su root -] $0 COMMAND [ARG]"
     echo "Permanently installs your .dotfiles/bin scripts into your system for"
     echo "all users. These system-wide installs are on /usr/local/bin/dotfiles-bin"
@@ -36,11 +35,11 @@ if [ "$1" = "" -o "$1" = "help" ]; then
     exit 0
 fi
 
-if [ $@ = "status" ]; then
-   if [ ! $DOTFILES_SYS_INSTALL_PATH = "" ]; then
+if [ "$1" = "status" ]; then
+   if [ "! $DOTFILES_SYS_INSTALL_PATH" = "" ]; then
       echo "Local install: $DOTFILES_SYS_INSTALL_PATH"
    elif [ -f "$HOME/.dotfiles/config/sysbin-path" ]; then
-      DOTFILES_SYS_IBSTALL_PATH=$(cat "$HOME/.dotfiles/config/sysbin-path")
+      DOTFILES_SYS_INSTALL_PATH=$(cat "$HOME/.dotfiles/config/sysbin-path")
       echo "Local install: $DOTFILES_SYS_INSTALL_PATH"
    else
       echo "Local install: ✖ Not found"

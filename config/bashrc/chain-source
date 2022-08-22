@@ -2,5 +2,5 @@
 
 # these commands should be triggered on shell startup
 source "$DOTFILES_HOME/config/bashrc/aliases"
-source "$DOTFILES_HOME/config/bashrc/worthwhile-functions"
+source "$DOTFILES_HOME/config/bashrc/functions"
 #guild-test

@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
+source "$(dirname $0)/00-script-library.sh"
+
+stage "Symlinking shell configuration files..."
+
 if [[ $DOTFILES_OS_NAME == "android-termux" ]]; then
     if [ ! -f "$HOME/.bashrc" ]; then
-      ln -s $HOME/.dotfiles/termux.bashrc ~/.bashrc
+      ln -s "$HOME/.dotfiles/termux.bashrc" ~/.bashrc
     elif [ -f "$HOME/.bashrc" ]; then
+      cp "$HOME/.bashrc" "$HOME/.bashrc.bak"
+      ln -s "$HOME/.dotfiles/termux.bashrc" ~/.bashrc
+    fi
 elif [[ $DOTFILES_OS_NAME == "debian" ]] || [[ $DOTFILES_OS_NAME == "ubuntu" ]]; then
     if [[ $SKIP_CONFIG_LINKING == "" ]] && [ ! -f "$HOME/.bashrc" ]; then
         ln -s "$HOME/.dotfiles/ubuntu.bashrc" ~/.bashrc

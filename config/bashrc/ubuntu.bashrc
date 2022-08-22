@@ -5,11 +5,30 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+############################################################################
+
+# https://packaging.ubuntu.com/html/getting-set-up.html#configure-your-shell
+export DEBFULLNAME="Andrei Jiroh Halili"
+# Temporary Gmail address for devel stuff, even through my longer email one is, well,
+# on my public GPG key btw, so YOLO it.
+export DEBEMAIL="ajhalili2006@gmail.com"
+
+## Update path and inject some vars before the shell interactivity checks ##
+export DOTFILES_HOME="$HOME/.dotfiles"
+export DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$DOTFILES_STUFF_BIN:$PATH"
+
+## Add homebrew to path ##
+test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+test -d $HOME/.linuxbrew && eval $($HOME/.linuxbrew/bin/brew shellenv)
+
+############################################################################
+
 # If not running interactively, don't do anything
-#case $- in
-#    *i*) ;;
-#      *) return;;
-#esac
+case $- in
+    *i*) ;;
+      *) return;;
+esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -127,12 +146,6 @@ export NVM_DIR="$HOME/.nvm"
 # Deta CLI
 export PATH="$HOME/.deta/bin:$PATH"
 
-# scripts in ~/.local/bin and ~/.dotfiles/bin
-# also $HOME/.cargo/bin
-export DOTFILES_HOME="$HOME/.dotfiles"
-export DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin"
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$DOTFILES_STUFF_BIN:$PATH"
-
 # use nano instead of vi by default when on SSH
 # for git, there's the option of firing up VS Code, if you prefered.
 #export VISUAL="code --wait"
@@ -170,18 +183,8 @@ fi
 # autocompletion for GitHub CLI
 eval "$(gh completion -s bash)"
 
-# custom aliases and functions I made
-# sorucing through the chain-source script
-source "$DOTFILES_HOME/config/bashrc/chain-source" # TODO: Remove guild-test stuff
-
-# https://packaging.ubuntu.com/html/getting-set-up.html#configure-your-shell
-export DEBFULLNAME="Andrei Jiroh Halili"
-# Temporary Gmail address for devel stuff, even through my longer email one is, well,
-# on my public GPG key btw, so YOLO it.
-export DEBEMAIL="ajhalili2006@gmail.com"
-
-# Homebrew
-test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# Source both the custom aliases and shell functions in one go
+source "$DOTFILES_HOME/config/bashrc/chain-source"
 
 # Golang, probably we need to tweak this btw
 export PATH="$HOME/go/bin:$PATH" GOPATH="$HOME/go"
