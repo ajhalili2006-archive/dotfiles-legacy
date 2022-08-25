@@ -5,17 +5,17 @@ This onboarding page documents how do I bootstrap stuff for an new Linux machine
 ## Prerequisites
 
 * Access to my Bitwarden vault for GitLab PAT AND Tailscale reusable authtoken on an Vaultwarden instance at Railway. Once email has been fixed, probably my phone with 2FA number used for Google OR Authy app and Telegram client of choice.
-* An working browser, preferrly Firefox.
+* An working browser, preferrly Firefox or Chromium.
 * An desktop environment preinstalled, in case of Alpine/Arch/Gentoo-based distros, proceed with Xfce4. Unless has atleast 4 GBs of memory on an amd64 machine, install GNOME or KDE instead.
 
 ### Pre-flight Check
 
-* Check if the init system is systemd, and if not, check if we can swap init systems. This is required so we can install stuff using `snapd`. Using Flatpak is still being considered as alternative option.
-* If you messing up with partitioning, especially Windows might go berserk when resizing, backup everything as much as possible. Ohterwise, we might be f\*\*ked.
+* Check if the init system is systemd, and if not, check if we can swap init systems (or at least attempt to install systemd from source). This is required so we can install stuff using `snapd`. Using Flatpak is still being considered as alternative option.
+* If you messing up with partitioning, especially Windows might go berserk when resizing, backup everything as much as possible. Ohterwise, we might be fucked.
 * Check if Bash and/or Git is preinstalled while in live environment.
 * Remember to note down the root password! You may also need to take down notes of your regular account password too, if sudo is configured.
 * If you're trying an new distro (Arch, Gentoo, RHEL) or got an ChromeOS preinstalled and enabled devmode and Linux stuff, please install the tools one by one and note it down here in this document.
-* Check if that distro either has GitHub CLI from the official package repos (or atleast community maintained ones). Otherwise, maybe opt to building from source or use prebuilt binaries from GitHub Releases.
+* Check if that distro either has GitHub CLI, GLab CLI and/or `hut` from the official package repos (or atleast community maintained ones). Otherwise, maybe opt to building from source or use prebuilt binaries from GitHub/GitLab/SourceHut Releases.
 
 ## Per-Distro/Platform Docs
 
@@ -74,7 +74,7 @@ you need to `apk add bash@edge git@edge curl@edge coreutils@edge` instead.
 
 ### Gitpod?
 
-Currently unsupported yet, but we can setup an meta-workspace with my dotfiles stuff loaded too, in the future, probably.
+~~Currently unsupported yet, but we can setup an meta-workspace with my dotfiles stuff loaded too, in the future, probably.~~ This is currently planned to work on since Gitpod already added dotfiles support, but for now the system will symlinking everything from the dotfiles repo.
 
 ### WSL 2-specific back pain treatment for Tailscale
 
@@ -97,3 +97,4 @@ sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.de
 ## Optionals
 
 * Install Cloudflare tunnel and login. There's Tailscale, but if I don't brothered adding another device to the tailnet, we can setup da API instead.
+

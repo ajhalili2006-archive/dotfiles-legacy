@@ -1,43 +1,49 @@
-# My Personal Dotfiles
+# Andrei Jiroh's Personal Dotfiles
+<!-- markdownlint-disable-file MD033 -->
 
-Personal configuration for Linux/macOS stuff. If you're
-working at The Pins Team, see [our dotfiles][df-gl].
+This is the main portal to my personal configuration for Linux/macOS stuff. If you're
+working at Recap Time Squad (formerly The Pins Team), see [our dotfiles][df-gl] (currently unmaintained and on old namespace).
 
 [df-gl]: https://gitlab.com/MadeByThePinsHub/dotfiles
 
 ## Getting Started
 
-### Running from 
+While the clone URLs use GitLab SaaS as the canonical Git repository URL, you can still clone the repository from the following URLs:
+
+* GitLab self-hosted instances: `https://mau.dev/ajhalili2006/dotfiles`
+* SourceHut (official instance): `https://git.sr.ht/~ajhalili2006/dotfiles` (SSH: `git@git.sr.ht:~ajhalili2006/dotfiles)
+
+To get started, run the bootstrap script which handles the repository cloning/pulling for you and then sets things up for you.
 
 ```sh
-# configure required variables
-export GITLAB_LOGIN=ajhalili2006
-export GITLAB_TOKEN=<my-gitlab1dotcom-PAT>
+# Pro-tip: Install the essientials like Git and Doppler first!
+# Using the essientials setup script will handle Homebrewing for you, among other software-related
+# chores. Works on Debian-based distros and Alpine Linux.
+$(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://ctrl-c.club/~ajhalili2006/bin/essientials-setup-dotfiles.sh
 
-# Run the bootstrap script
-$(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://raw.githubusercontent.com/ajhalili2006/dotfiles/main/bootstrap | bash -
-
-# Done? Don't forget to cleanup as needed.
-unset GITLAB_TOKEN GITLAB_LOGIN && history -c
-```
-
-### With Cloning the Repo
-
-```sh
-# assuming git is installed
-git clone https://github.com/ajhalili2006/dotfiles $HOME/.dotfiles
-cd $HOME/.dotfiles
-
-# you may need to export the required variables before running the bootstrap script locally
-# you may optionally run the bootstrapper script if you want
-GITLAB_LOGIN=AndreiJirohHaliliDev2006 GITLAB_TOKEN=<my-gitlab-saas-pat> ./bootstrap --flags-over here
+# Run the bootstrap script without Doppler
+$(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://gitlab.com/ajhalili2006/dotfiles/raw/main/bootstrap | bash -
 ```
 
 ### Documentation
 
-Available documentation for the on/offboarding processes I do + other tidbits of the bootstrap script can be accessible through [the `docs` directory](./docs).
+Available documentation for the on/offboarding processes I do for devices + other tidbits of the bootstrap script can be accessible through [the `docs` directory](./docs) and on [my personal wiki hosted on Miraheze](https://ajhalili2006.miraheze.org/wiki/Dotfiles).
+
+## License and contributions
+
+Code is licensed under [the MPL-2.0](LICENSE) license, while docs on my MediaWiki-powered wiki
+uses [CC BY-SA 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/legalcode).
+
+Patches are welcome, but technical support for forks is currently unavailable due to this repository
+being used for personal day-to-day use.
+
+<details>
+
+<summary>Deprecated docs stashed here for archival purposes, might be removed later.</summary>
 
 ## Want to fork me owo?
+
+> This section is outdated and will be revised in the future since I also have other stuff to do behind the scenes.
 
 Follow the checklist below after forking to ensure no references to mine are found. **Remember that your fork, your problem.** It's up to you on how do you customize stuff. You can use [The Pins Team's dotfiles template][template] to start from our template.
 
@@ -48,3 +54,5 @@ Follow the checklist below after forking to ensure no references to mine are fou
 * [ ] Edit `bin/fix-wrong-emails#L6-7` to use your email instead of mine.
 * [ ] Edit `bin/add-ssh-keys#L4` to use your SSH key in `~/.ssh` directory.
 * [ ] Want to backup your worst secrets AKA SSH and PGP keys (and some Pyrgoram session files?) Use my `bin/init-secrets-dir` script to setup an `secrets` directory. Don't forget to push this into an GitLab private repo.
+
+</details>

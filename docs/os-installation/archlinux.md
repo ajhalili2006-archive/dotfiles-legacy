@@ -1,5 +1,7 @@
 # Bloody Docs for installing Arch Linux
 
+> Wiki version: https://ajhalili2006.miraheze.org/wiki/Onboarding_new_device/Computers/Linux/Arch
+
 ## Afer booting into the hell
 
 If you're inside an Virtualbox eenvironment, make sure SSH is enabled and setup port forwarding stuff. Don't forget changing the root password for live
@@ -32,10 +34,14 @@ grub-install --target=i386-pc /dev/sda; grub-mkconfig -o /boot/grub/grub.cfg
 
 ```sh
 # Change sda into device name for your target hard drive/SSD
-grub-install --target=i386-pc /dev/sda; grub-mkconfig -o /boot/grub/grub.cfg
+grub-install --target=x86_64-efi /dev/sda; grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 * With Secure Boot:
+
+```sh
+# TBD, check the docs!
+```
 
 ## Final Steps
 
