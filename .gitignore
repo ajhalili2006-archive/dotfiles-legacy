@@ -1,2 +1,21 @@
-/secrets
+## general ##
 .envrc
+# used by ctags for code indexing in some tools
+# or via "ctags -R ."
+tags
+# deprecated dotfiles-secrets repo for compartibility and
+# secret leakage prevention
+secrets
+
+## kate and other editors ##
+*~
+*-swp
+
+## Doplhin ##
+.directory
+
+## from kdiff3 ##
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
