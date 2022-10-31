@@ -1,9 +1,13 @@
 #!/bin/env bash
 
+# SPDX-License-Identifier: MPL-2.0
+# An bloody script for opening text editors from the command line via $EDITOR and
+# command flags, work in progress and probably abandoned.
+
 # shellcheck disable=SC2034
-VSCODE_PATH=$(command -v code)
+VSCODE_PATH=$(command -v code) # TODO: Add PATH detection for VS Code Desktop+Server/OpenVSCode Server/VSCodium/code-server
 NANO_PATH=$(command -v nano)
-VI_PATH=$(command -v vi)
+VI_PATH=$(command -v vi) # maybe neovim?
 OPEN_EDITOR_LOCKFILE=$HOME/.dotfiles/config/open-editor
 
 if [[ $1 == "" ]]; then

@@ -16,11 +16,14 @@ export DEBEMAIL="ajhalili2006@gmail.com"
 ## Update path and inject some vars before the shell interactivity checks ##
 export DOTFILES_HOME="$HOME/.dotfiles"
 export DOTFILES_STUFF_BIN="$DOTFILES_HOME/bin"
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$DOTFILES_STUFF_BIN:$PATH"
+export PATH="$HOME/.asdf/shims:$HOME/.local/bin:$HOME/.cargo/bin:$DOTFILES_STUFF_BIN:$PATH"
 
 ## Add homebrew to path ##
-test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-test -d $HOME/.linuxbrew && eval $($HOME/.linuxbrew/bin/brew shellenv)
+export HOMEBREW_HOME=${HOMEBREW_HOME:-"/home/linuxbrew/.linuxbrew"}
+test -d "$HOMEBREW_HOME" && eval "$($HOMEBREW_HOME/bin/brew shellenv)"
+[[ -r "$HOMEBREW_HOME/etc/profile.d/bash_completion.sh" ]] && . "/home/linuxbrew/.linuxbrew/etc/profile.d/bash_completion.sh"
+
+export GPG_TTY=$(tty) # in case shit happens
 
 ############################################################################
 
@@ -203,3 +206,4 @@ export GEM_HOME="$HOME/.gems" PATH="$HOME/.gems/bin:$PATH"
 
 # bashbox
 [ -s "$HOME/.bashbox/env" ] && source "$HOME/.bashbox/env";
+source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/bashrc"

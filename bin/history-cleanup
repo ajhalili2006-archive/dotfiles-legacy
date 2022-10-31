@@ -1,4 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: MPL-2.0
+# An utility script for cleaning up history files from your home directory
+# for different shells and even some programming languages' REPLs.
 
 usage() {
     echo "history-cleanup: Remove .*_history files from your home directory"
@@ -7,14 +11,25 @@ usage() {
     echo
     echo "WARNING: Since this script is written in Bash, there'll be no support"
     echo "for other shells, considering the best-effort policy, from the"
-    echo "original script author"
-    echo "Available commands:"
-    echo "all                  Delete any history file found in home directory."
-    echo "bash                 Delete ~/.bash_history + run history -c"
-    echo "python"
+    echo "original script author. Proceed at your own risk!"
+    echo
+    echo "COMMANDS:"
+    echo "  list                 List all .*history files within your home directory"
+    echo "  all                  Delete any history file found in home directory."
+    echo "  bash                 Delete ~/.bash_history + run history -c"
+    echo "  python"
     exit
 }
 
-if [[ $@ == "" ]]; then
+list() {
+    # shellcheck disable=SC2010
+    ls ~ -Al | grep history
+}
+
+bash_history_cleanup() {
+    rm ~/.bash_history
+}
+
+if [[ $1 == "" ]]; then
     usage
 fi

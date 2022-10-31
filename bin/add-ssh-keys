@@ -1,9 +1,25 @@
 #!/usr/bin/env bash
 
-if [[ $@ != "" ]]; then
+# SPDX-License-Identifier: MPL-2.0
+# An script to lazy-add all of my SSH keys to keychain or ssh-agent (if left blank) or
+# auto-load an specific ssh key when $1 is defined.
+
+if [[ $1 != "" ]]; then
     echo "==> Adding your SSH key ($1) to SSH agent..."
-    ssh-add $HOME/.ssh/$@
-elif [[ $@ == "" ]]; then
+    ssh-add $HOME/.ssh/$1
+elif [[ $1 == "" ]]; then
     echo "==> Adding all of your SSH keys from ~/.ssh directory..."
-    ssh-add ~/.ssh/launchpad
+    for key in ~/.ssh/*; do
+      if [[ $key == "$HOME/.ssh/*config" ]] || [[ $key == "$HOME/.ssh/*known_hosts*" ]]; then
+        true
+      elif [[ $key == "$HOME/.ssh/*.pub" ]]; then
+        true
+      else
+        if command -v keychain >> /dev/null; then
+          eval "$(keychain --eval $key)"
+        else 
+          ssh-add "$key"
+        fi
+      fi
+    done
 fi
