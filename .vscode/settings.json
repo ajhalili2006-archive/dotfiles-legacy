@@ -1,5 +1,20 @@
 {
     "workbench.iconTheme": "material-icon-theme",
     "workbench.productIconTheme": "material-product-icons",
-    "git.alwaysSignOff": true
+    "workbench.colorTheme": "Gitpod Dark",
+    "git.alwaysSignOff": true,
+    "conventionalCommits.scopes": [
+        "scripts",
+        "config",
+        "builds.sr.ht",
+        "gitlab-ci",
+        "github-actions",
+        "vscode",
+        "kdev",
+        "kate",
+        "dotfiles-docs",
+        "gitignore",
+        "mailmap",
+        "global"
+    ]
 }
