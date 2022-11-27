@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "GitHub.github-vscode-theme",
+        "ms-azuretools.vscode-docker",
+		"formulahendry.docker-explorer",
+		"donjayamanne.githistory",
+		"cschleiden.vscode-github-actions",
+		"me-dutour-mathieu.vscode-github-actions",
+		"michelemelluso.gitignore",
+		"timonwong.shellcheck",
+		"WakaTime.vscode-wakatime",
+		"PKief.material-icon-theme",
+		"PKief.material-product-icons"
+    ]
+}
