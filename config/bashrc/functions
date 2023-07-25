@@ -1,10 +1,8 @@
 #!/bin/bash
 # shellcheck disable=SC2199,SC2068,SC1091,SC2086,SC2145
 
-# custom function management here
-# changes to the worthwhile-functions filepath requires
-# an update o the filepath via 'edit-script reload-funcs-bashrc
-# and also any reference here
+# SPDX-License-Identifier: MPL-2.0
+
 
 DOTFILES_HOME=${DOTFILES_HOME:-"$HOME/.dotfiles"}
 source "$DOTFILES_HOME/tools/bootstrap-utils/00-script-library.sh"
@@ -14,7 +12,7 @@ disable-funcs () {
 }
 
 edit-funcs-bashrc() {
-   $(command -v nano>>/dev/null && echo nano || echo vi) ~/.dotfiles/bashrc/worthwhile-functions
+   $(command -v nano>>/dev/null && echo nano || echo vi) ~/.dotfiles/bashrc/functions
 }
 
 list-debs-size() {
@@ -23,10 +21,10 @@ list-debs-size() {
 
 edit-script-file() {
     # if you use other editor, please set $EDITOR.
-    $EDITOR "$(command -v $1)"
+    ${EDITOR:-"nano"} "$(command -v $1)"
 }
 
-# reloading stuff
+# Refreshing shell with latest updates
 refresh-funcs() {
   showStage "reloading current session with fresh functions"
   source "$DOTFILES_HOME/config/bashrc/functions"
@@ -54,33 +52,36 @@ list-nodejs-scripts() {
   [[ -f "package.json" ]] && jq .scripts < package.json || echo "No package.json found in current directory."
 }
 
+# TODO: Support code-server from Coder and Gitpod's OpenVSCode Server.
+# TODO: Might also add support for Theia IDE too soon.
 code() {
   # quick trick in case only code-insiders is installed and not code
-  if ! command -v code >> /dev/null; then
+  if [[ $(type -p code) == "" ]]; then
     if command -v code-insiders >>/dev/null; then
-      warn "code-stable is not installed, but code-insiders is found in PATH, setting USE_CODE_INSIDERS"
-      warn "for this run"
+      warn "code is not installed, but code-insiders is found in PATH, setting USE_CODE_INSIDERS"
+      warn "for this run behind the scenes for you"
       USE_CODE_INSIDERS=true
     fi
   fi
 
   if [[ -f "/snap/bin/code" && "$USE_CODE_INSIDERS" == "" ]]; then
     echo "info: execing /snap/bin/code with params: $*"
-    exec /snap/bin/code "$@"
+    /snap/bin/code "$@"
   elif [[ -f "/snap/bin/code-insiders" ]]; then
     echo "info: execing /snap/bin/code-insiders with params: $*"
-    exec /snap/bin/code-insiders "$*"
+    /snap/bin/code-insiders "$*"
   fi
 
-  if [[ "$(command -v code)" != "" && "$USE_CODE_INSIDERS" == "" ]]; then
-    info "execing $(command -v code) with params: $*"
-    exec "$(command -v code)" "$*"
-  elif [[ $(command -v code-insiders) != "" ]]; then
-    info "execing $(command -v code-insiders) with params: $*"
-    exec "$(command -v code-insiders)" "$*"
+  if [[ "$(type -p code)" != "" && "$USE_CODE_INSIDERS" == "" ]]; then
+    info "execing $(type -p code) with params: $*"
+    "$(type -p code)" "$*"
+  elif [[ $(type -p code-insiders) != "" ]]; then
+    info "execing $(type -p code-insiders) with params: $*"
+    "$(command -v code-insiders)" "$*"
+  else
+    echo "Either VS Code Stable or Insiders aren't installed on your system. Please visit"
+    echo "https://go.rtapp.tk/get-code to install VS Code. If you're using VS Code server,"
+    echo ""
+    return 1
   fi
-
-  echo "Either VS Code Stable or Insiders aren't installed on your system. Please visit"
-  echo "https://go.rtapp.tk/get-code to install the code editor."
-  return 1
 }

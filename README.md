@@ -10,8 +10,10 @@ working at Recap Time Squad (formerly The Pins Team), see [our dotfiles][df-gl] 
 
 While the clone URLs use GitLab SaaS as the canonical Git repository URL, you can still clone the repository from the following URLs:
 
-* GitLab self-hosted instances: `https://mau.dev/ajhalili2006/dotfiles`
-* SourceHut (official instance): `https://git.sr.ht/~ajhalili2006/dotfiles` (SSH: `git@git.sr.ht:~ajhalili2006/dotfiles)
+* GitLab self-hosted instances: `https://mau.dev/ajhalili2006/dotfiles`[^1]
+* SourceHut (official instance): `https://git.sr.ht/~ajhalili2006/dotfiles` (SSH: `git@git.sr.ht:~ajhalili2006/dotfiles`)
+
+[^1]: mau.dev will be my GitLab instance homeserver due to changes to the SaaS free plan, but I'll stay the GitLab SaaS repo on as an mirror.
 
 To get started, run the bootstrap script which handles the repository cloning/pulling for you and then sets things up for you.
 
@@ -29,41 +31,45 @@ $(command -v curl>>/dev/null && echo curl -o- || echo wget -q0-) https://gitlab.
 
 ```bash
 $ date && echo && tree -d .
-Saturday, 10 September, 2022 11:41:26 PM PST
+# Monday, 31 October, 2022 11:39:54 PM PST
+#
+# .
+# |-- bash-wakatime # TODO: Migrate to tools directory
+# |-- bin # Handmade and third-party scripts go here. (binaries should be in ~/.local/bin instead)
+# |-- config # Configuration files, mostly not per distro, with exception of Termux and WSL2 in some cases.
+# |   |-- aerc
+# |   |   `-- templates
+# |   |-- bashrc
+# |   |-- byobu
+# |   |-- gitconfig
+# |   |-- konsole
+# |   |-- nanorc
+# |   |   |-- config
+# |   |   `-- highlighting
+# |   |-- ssh-client
+# |   |-- systemd
+# |   |   `-- system
+# |   |-- tmux
+# |   `-- zshrc
+# |-- docs # Markdown versions of my dotfiles docs at my Miraheze-hosted wiki
+# |   |-- additional-tools
+# |   `-- os-installation
+# |-- gnupg # TODO: Migrate to config directory
+# |-- nixos # TODO: Migrate to config directory
+# |-- systemd -> config/systemd # TODO: Remove symlink soon
+# |-- tests # Testing bootstrap scripts across distros
+# |   |-- alpine
+# |   |-- common
+# |   |   `-- bin
+# |   `-- ubuntu
+# |-- tools # A bit of homegrown tools and some other stuff I use
+# |   |-- archive
+# |   |   `-- scripts
+# |   |-- bootstrap-utils
+# |   `-- setup-scripts
+# `-- update-golang # TODO: Migrate to tools directory, might be deprecated due to usage of asdf/other tools
 
-.
-|-- bash-wakatime # TODO: Migrate to tools directory
-|-- bin # Scripts go here.
-|-- config # Configuration files, mostly not per distro, with exception of Termux and WSL2.
-|   |-- bashrc
-|   |-- byobu
-|   |-- gitconfig
-|   |-- konsole
-|   |-- nanorc
-|   |   |-- config
-|   |   `-- highlighting
-|   |-- ssh-client
-|   |-- systemd
-|   |   `-- system
-|   |-- tmux
-|   `-- zshrc
-|-- docs # Markdown versions of my dotfiles docs at my Miraheze-hosted wiki
-|   |-- additional-tools
-|   `-- os-installation
-|-- gnupg # TODO: Migrate to config directory
-|-- nixos # TODO: Migrate to config directory
-|-- systemd -> config/systemd # TODO: Remove symlink soon
-|-- tests # Testing bootstrap scripts across distros
-|   |-- alpine
-|   |-- common
-|   |   `-- bin
-|   `-- ubuntu
-|-- tools # A bit of homegrown tools and some other stuff I use
-|   |-- bootstrap-utils
-|   `-- setup-scripts
-`-- update-golang # TODO: Migrate to tools directory, might be deprecated due to usage of asdf/other tools
-
-30 directories
+34 directories
 ```
 
 ### Documentation
@@ -73,7 +79,7 @@ Available documentation for the on/offboarding processes I do for devices + othe
 ## License and contributions
 
 Code is licensed under [the MPL-2.0](LICENSE) license, while docs on my MediaWiki-powered wiki + here in this repository are licensed
-under [CC BY-SA 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/legalcode).
+under [CC BY-SA 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/legalcode) license.
 
 Patches (either via GitLab merge requests or email patches via
 `~ajhalili2006/public-inbox@lists.sr.ht`) are welcome, but technical

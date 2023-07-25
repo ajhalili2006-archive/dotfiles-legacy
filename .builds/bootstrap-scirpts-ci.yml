@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://cdn.recaptime.eu.org/schema/builds.sr.ht
+image: "alpine/edge"
+sources:
+  - https://git.sr.ht/~ajhalili2006/dotfiles
+packages:
+  # linting chores
+  - shellcheck
+  - bash
+  - coreutils
+  - docker # for running tests related to env detection
+environment: 
+  DOTFILES_HOME: "$HOME/dotfiles"
+tasks:
+  - lint: |
+      cd dotfiles
+      shellcheck --severity=warning bootstrap tools/bootstrap-utils/*.sh
+  - run_script: |
+      bash ./dotfiles/bootstrap

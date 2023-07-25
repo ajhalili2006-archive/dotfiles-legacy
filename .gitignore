@@ -1,5 +1,7 @@
 ## general ##
 .envrc
+.env*
+!.env.example
 # used by ctags for code indexing in some tools
 # or via "ctags -R ."
 tags
@@ -10,6 +12,7 @@ secrets
 ## kate and other editors ##
 *~
 *-swp
+*.save
 
 ## Doplhin ##
 .directory
@@ -19,3 +22,7 @@ secrets
 *.BASE.*
 *.LOCAL.*
 *.REMOTE.*
+
+
+## other secrets ##
+config/aerc/accounts.conf

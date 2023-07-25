@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# SPDX-License-Identifier: MPL-2.0
+#
 ##################################################
 #                                                #
 #     AN NOTE ON ADDING ALIASES INTO HERE:       #
@@ -37,7 +39,8 @@ alias tag-checkpoint="git tag --gpg-sign"
 alias tag-checkpoint-nogpg="git tag --no-gpg-sign"
 alias new-tag="tag-checkpoint"
 alias new-tag-nogpg="tag-checkpoint-nogpg"
-## shortcuts to managing yiff stash
+## shortcuts to managing yiff stash, might be converted into an full-blown
+## function/shell script later
 alias stash="git stash push --keep-index"
 alias pop-stash="git stash pop"
 alias apply-stash="git stash apply"
@@ -46,6 +49,7 @@ alias yeet-stash="git stash drop"
 alias stage="git add"
 alias unstage="git restore --staged"
 alias nuke-from-index="git rm"
+alias nuke-cached="git rm --cached"
 
 # branch management
 alias rename-branch="git branch -m"
@@ -63,7 +67,7 @@ alias remove-remote="nuke-remote"
 alias push="git push"
 ## add main:master since Git assumes local branch to
 ## remote branch when running this alias
-alias deploy-divio="git push divio"
+alias deploy-divio="git push divio" # might use divio again after getting an CC in the future
 
 # fetch / pull
 alias fetch="git fetch --all"
@@ -73,11 +77,12 @@ alias pull-upstream="fetch && git pull upstream"
 alias pull-origin="fetch && git pull origin"
 
 # history-cleanup like scripts
-alias clean-shellhis="history -c && clear"
+#alias clean-shellhis="history -c && clear"
 
 # test SSH connections
-alias test-gh-ssh="ssh -p 22 git@github.com"
-alias test-gl-ssh="ssh -p 22 git@gitlab.com"
+alias test-gh-ssh="ssh -T -p 22 git@github.com"
+alias test-gl-ssh="ssh -T -p 22 git@gitlab.com"
+alias test-git-hut-ssh="ssh -T -p 22 git@git.sr.ht"
 
 # ssh-agent stuff
 ## quock shortcut into add-ssh-keys stuff
@@ -85,9 +90,10 @@ alias add-ssh-key="$HOME/.dotfiles/bin/add-ssh-keys"
 
 # shortcuts to some functions
 alias edit-script="edit-script-file"
+alias edit-functions="edit-funcs-bashrc"
 
 # add a bit of test here
 alias guild-test="echo successfully imported owo"
 
 # shortcuts for rdp stuff
-alias bshq-cursed='rdesktop --user cursed-remote-user -r audio:local -x lan -r clipboard:PRIMARYCLIPBOARD -n guildedguy bullshit.hq'
+#alias bshq-cursed='rdesktop --user cursed-remote-user -r audio:local -x lan -r clipboard:PRIMARYCLIPBOARD -n guildedguy bullshit.hq'

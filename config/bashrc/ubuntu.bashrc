@@ -167,19 +167,22 @@ else
 fi
 
 # As long as possible, attempt to setup our GnuPG agent when we're on an SSH session.
+KEYCHAIN_FLAGS_NOGUI="--nogui --noinherit"
+#KEYCHAIN_FLAGS=""
 if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
-	eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) || true
+	eval $(keychain --agents gpg,ssh --eval $KEYCHAIN_FLAGS_NOGUI) || true
 	export GPG_TTY=$(tty)
 else
 	# We'll do some checks here btw, Currently I use GNOME and Xfce4 as my desktop environments
 	case $(ps -o comm= -p $PPID) in
         	# Sometimes, $SSH_CLIENT and/or $SSH_TTY doesn't exists so we'll pull what ps says
-		sshd | */sshd) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) || true;;
+		sshd | */sshd) eval $(keychain --agents gpg,ssh --eval $KEYCHAIN_FLAGS_NOGUI) || true;;
 		xfce*) eval $(keychain --agents gpg,ssh --eval) || true;;
 		gnome*) eval $(keychain --agents gpg,ssh --eval) || true;;
+                
 		# Don't forget VS Code and code-server!
 		code) eval $(keychain --agents gpg,ssh --eval) || true;;
-		*) eval $(keychain --agents gpg,ssh --eval --nogui --noinherit) || true;;
+		*) eval $(keychain --agents gpg,ssh --eval $KEYCHAIN_FLAGS_NOGUI) || true;;
 	esac
 fi
 

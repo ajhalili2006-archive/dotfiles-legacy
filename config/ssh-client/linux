@@ -24,7 +24,6 @@ Host github.com
 Host gitlab.alpinelinux.org
     User git
     IdentityFile ~/.ssh/launchpad
-
 # Launchpad.net SSH keys for mirroring some repos manually,
 # partularly the gitlab.com:termux-package-android5x/src.git repo
 # among any sort of shits and giggles.
@@ -34,6 +33,9 @@ Host git.launchpad.net
 Host bazar.launchpad.net
     IdentityFile ~/.ssh/launchpad
     User ajhalili2006
+Host git.sr.ht
+   IdentityFile ~/.ssh/personal
+   User git
 
 # LXC containers, please append as possible
 Host ghost-localhost
@@ -82,9 +84,9 @@ Host wsl.stellapent.local
    Hostname stellapent.local
    Port 2222
 # SourceForge
-Host sourceforge
+Host shell.sourceforge.net
    User ajhalili2006
-   Hostname shell.sourceforge.net
+   #Hostname shell.sourceforge.net
    IdentityFile ~/.ssh/launchpad
 
 # hax.co.id
@@ -94,14 +96,13 @@ Host sourceforge
 #   User ajhalili2006
 #   Port 4830
 #   IdentityFile ~/.ssh/launchpad
-
-Host sandbox.ajhalili2006.dev
-   Hostname 148.251.50.26
-   Port 12411
-   User ajhalili2006
-   IdentityFile ~/.ssh/launchpad
-Host mau-dev-mirrors-haxserver.runners.recaptime.dev
-   Hostname todo.recaptime.app
-   User ajhalili2006
-   Port 6666
-   IdentityFile ~/.ssh/ajhalili2006.recaptime.dev
+#Host sandbox.ajhalili2006.dev
+#   Hostname 148.251.50.26
+#   Port 12411
+#   User ajhalili2006
+#   IdentityFile ~/.ssh/launchpad
+#Host mau-dev-mirrors-haxserver.runners.recaptime.dev
+#   Hostname todo.recaptime.app
+#   User ajhalili2006
+#   Port 6666
+#   IdentityFile ~/.ssh/ajhalili2006.recaptime.dev

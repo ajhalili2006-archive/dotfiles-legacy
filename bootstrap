@@ -1,18 +1,137 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034
+
+# SPDX-License-Identifier: MPL-2.0
+# The holy grail for all the Linux setup.
 
 {
 
-if ! command -v git >>/dev/null; then
-  
+# Make sure to bail out when something went wrong in any steps.
+set -e
+
+# Enable shell debugging if $DEBUG is set
+if [[ $DEBUG != "" ]]; then
+  set -x
 fi
 
-DOTFILES_HOME=${DOTFILES_HOME:-"$HOME/.odtfiles"}
-DOTFILES_GIT_MIRROR=${DOTFILES_GIT_MIRROR:-"https://gitlab.com/ajhalili2006/dotfiles"}
-
-if [[ ! -d "$DOTFILES_HOME" ]]; then
-  git clone "$DOTFILES_GIT_MIRROR" "$DOTFILES_HOME"
+# Adding colors to some text in termnial based on envvar checks
+# NO_COLOR: https://no-color.org/
+if [ -t 1 ] && [[ "$NO_COLOR" == "" ]]; then
+  RED=$(printf '\033[31m')
+  GREEN=$(printf '\033[32m')
+  YELLOW=$(printf '\033[33m')
+  BLUE=$(printf '\033[34m')
+  MAGENTA=$(printf '\033[35m')
+  BOLD=$(printf '\033[1m')
+  RESET=$(printf '\033[m')
 else
-  git -C "$DOTFILES_HOME" pull
+  RED=""
+  GREEN=""
+  YELLOW=""
+  BLUE=""
+  MAGENTA=""
+  BOLD=""
+  RESET=""
 fi
+
+error() {
+  echo "${RED}error: $*${RESET}"
+}
+
+success() {
+  echo "${GREEN}success: $*${RESET}"
+}
+
+warn() {
+  echo "${YELLOW}warning: $*${RESET}"
+}
+
+info() {
+  echo "${BOLD}info: $*${RESET}"
+}
+
+stage() {
+  echo "${BOLD}==> $*${RESET}"
+}
+
+if ! command -v git >>/dev/null; then
+  error "Git is required to setup the dotfiles and other configurations."
+  exit 1
+fi
+
+osCheck() {
+  # This step is required for different actions, like installing deps from system-wide package managers
+  # among other sorts of shitfuckery. We may need to also run tests through the CI to ensure nothing breaks.
+  if echo "$OSTYPE" | grep -qE "linux-android.*"; then
+      export DOTFILES_OS_NAME=android-termux
+  elif echo "$OSTYPE" | grep -qE '^linux-gnu.*'; then
+      if [ "$(lsb_release -is)" == "Debian" ]; then
+        export DOTFILES_OS_NAME=debian
+          if  [ -d '/google/devshell' ] && [ -f '/google/devshell/bashrc.google' ]; then
+            export GOOGLE_CLOUD_SHELL=true
+          fi
+      elif [ "$(lsb_release -is)" == "Ubuntu" ]; then
+        export DOTFILES_OS_NAME=ubuntu
+      fi
+  else
+      error "Script unsupported for this specific distro. If this was an downstream fork of"
+      error "another repo, you could override the DOTFILES_OS_NAME variable (and enabling the"
+      error "FF_DISABLE_OS_DETECTION flag)"
+      exit 1
+  fi
+}
+
+checkEnv() {
+  stage "Checking environment for some possible issues"
+  if [[ $CODESPACES == "true" ]]; then
+    warn "GitHub Codespace environment detected, fixing..."
+    export DOTFILES_PATH="/workspaces/.codespaces/.persistedshare/dotfiles"
+    export PASSWORD_STORE_DIR="/workspaces/.codespaces/.presistedshare/password-store"
+  elif [[ $GITPOD_INSTANCE_ID != "" ]]; then
+    warn "Gitpod workspace detected, fixing..."
+    export PASSWORD_STORE_DIR="/workspace/.password-store"
+  fi
+}
+
+dotfilesInit() {
+  DOTFILES_HOME=${DOTFILES_HOME:-"$HOME/.dotfiles"}
+  DOTFILES_GIT_MIRROR=${DOTFILES_GIT_MIRROR:-"https://mau.dev/ajhalili2006/dotfiles"}
+  DOTFILES_GIT_BRANCH=${DOTFILES_GIT_BRANCH:-"main"}
+
+  if [[ $DOTFILES_HOME != "$HOME/.dotfiles" ]]; then
+    echo "DOTFILES_HOME=${DOTFILES_HOME}" > ~/.dotfilescfg.env
+  fi
+
+  if [[ ! -d "$DOTFILES_HOME" ]]; then
+    git clone --verbose "$DOTFILES_GIT_MIRROR" "$DOTFILES_HOME" --branch "$DOTFILES_GIT_BRANCH" --recursive
+  else
+    git remote set-url origin "$DOTFILES_GIT_MIRROR"
+    git -C "$DOTFILES_HOME" fetch --all --verbose
+    git -C "$DOTFILES_HOME" switch "$DOTFILES_GIT_BRANCH"
+    git -C "$DOTFILES_HOME" pull "$DOTFILES_GIT_BRANCH"
+  fi
+}
+
+passwdstoreInit() {
+  PASSWORD_STORE_DIR=${PASSWORD_STORE_DIR:-"~/.password-store"}
+}
+
+runBootstrapScripts() {
+  for script_stage in "$DOTFILES_HOME"/tools/bootstrap-utils/*.sh; do
+    if [[ "$script_stage" != "$DOTFILES_HOME/tools/bootstrap-utils/00-script-library.sh" ]]; then
+       bash "$script_stage"
+    else
+       continue
+    fi
+  done
+}
+
+main() {
+  checkEnv
+  osCheck
+  dotfilesInit
+}
+
+main "$@"
 
 }

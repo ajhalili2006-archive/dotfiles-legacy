@@ -91,7 +91,7 @@ sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.de
 ## Post System Preparation/Wramup
 
 * Run the bootstrap script as noted in the README. **Remember that Tailscale setup is still manual due to presence of ACL policies in `recaptime.org.github` tailnet.**
-* After bootstrapping, run the `tailscale-provisioner` script, which requires Python instealled. It'll prompt you for an Tailscale authtoken and select tags. You don't need to do this on Termux, assuming the Android app is installed. If already configured, you may need to add `--force` flag on it.
+* After bootstrapping, run the `tailscale-provisioner` script, which requires Deno instealled. It'll prompt you for an Tailscale authtoken and select tags. You don't need to do this on Termux, assuming the Android app is installed. If already configured, you may need to add `--force` flag on it.
 * Manually import GPG keys with `gpg --decrypt "$DOTFILES_HOME/secrets/pgp/personal.key.asc" | gpg --import`.
 
 ## Optionals

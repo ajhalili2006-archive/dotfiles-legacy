@@ -3,4 +3,7 @@
 # these commands should be triggered on shell startup
 source "$DOTFILES_HOME/config/bashrc/aliases"
 source "$DOTFILES_HOME/config/bashrc/functions"
-#guild-test
+
+if ! command -v keychain >> /dev/null; then
+  keychain ~/.ssh/personal ~/.ssh/ajhalili2006.recaptime.dev
+fi
