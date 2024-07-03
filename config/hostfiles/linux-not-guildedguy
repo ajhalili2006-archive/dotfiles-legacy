@@ -1,0 +1,27 @@
+127.0.0.1 localhost
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+# shortcuts whatever to localhost, for my Linux box/laptop
+127.0.1.1 mikedmoy michael gildedguy glidedguy guildedguy gilded micheal
+
+##### CUSTOM DNS STUFF GOES BELOW THIS LINE! #####
+
+# my personal Tailnet on ajhalili2006.github.tailscale.net #
+### IPv4 ###
+100.113.94.115 gildedguy.tailnet mikedmoy.tailnet glidedguy.tailnet guildedguy.tailnet
+100.86.38.12 stellapent.tailnet bullshit.hq shitfuckery.bullshit.hq
+100.88.157.113 ubuntu.stellapent.tailnet 2.bullshit.hq 2.shitfuckery.bullshit.hq
+100.79.201.83 ranboozler.tailnet ranboozled.tailnet
+
+### IPv6 ###
+fd7a:115c:a1e0:ab12:4843:cd96:6271:5e73 gildedguy.tailnet mikedmoy.tailnet glidedguy.tailnet guildedguy.tailnet
+fd7a:115c:a1e0:ab12:4843:cd96:6256:260c stellapent.tailnet bullshit.hq shitfuckery.bullshit.hq
+fd7a:115c:a1e0:ab12:4843:cd96:6258:9d71 ubuntu.stellapent.tailnet 2.bullshit.hq 2.shitfuckery.bullshit.hq
+fd7a:115c:a1e0:ab12:4843:cd96:624f:c953 ranboozler.tailnet ranboozled.tailnet
+
+# local network through WLAN/LAN on home network, assuming manual IP address setup or DHCP config
+192.168.254.161 stellapent.local ubuntu.stellapent.local
+192.168.254.172 gildedguy.local
+192.168.254.116 ranboozler.local ranboozled.local

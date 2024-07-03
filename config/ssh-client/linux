@@ -73,9 +73,13 @@ Host devshell.tailnet
    User abc
    Hostname 100.76.127.93
    RemoteForward 63100 localhost:63100
-Host ranboozler
+Host termux
    User termux
    Hostname ranboozler.tailnet
+   Port 8022
+Host termux.local
+   User termux
+   Hostname ranboozled.local
    Port 8022
 # in case the mesh network went fucked-up by ISP d**kheads
 Host stellapent.local
